@@ -1,4 +1,7 @@
 eclipse.preferences.version=1
+encoding//Except/EventAction.py=utf-8
+encoding//Except/ExcelMakeBak.py=utf-8
+encoding//Except/GetCoastBak.py=utf-8
 encoding//others/others.py=utf-8
 encoding//src/ExcelMake.py=utf-8
 encoding//src/GetCoast.py=utf-8
