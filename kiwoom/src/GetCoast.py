@@ -7,6 +7,8 @@ from PyQt4.QAxContainer import *
 from PyQt4.QtCore import QVariant
 import re
 import ExcelMake
+from bs4 import BeautifulSoup
+from BeautifulSoup import btsoup
 
 
 
@@ -36,7 +38,6 @@ class Ui_Form(QAxWidget):
 #         self.ExcelList = list
 #         self.excel = ExcelMake.ExcelCode()
         
-        
 
 
     def btn_login(self):
@@ -54,6 +55,7 @@ class Ui_Form(QAxWidget):
             self.pushButton.setEnabled(True)
             self.pushButton_2.setEnabled(False)
             self.pushButton_3.setEnabled(True)
+            self.ExtractExcel.setEnabled(True)
             self.SendOrder.setEnabled(True)
             self.textEdit.setEnabled(True)
             self.comboBox.setEnabled(True)
@@ -96,7 +98,6 @@ class Ui_Form(QAxWidget):
             cnt = self.dynamicCall('GetRepeatCnt(QString, QString)', sTrCode, sRQName)
             ItemName = self.dynamicCall('CommGetData(QString, QString, QString, int, QString)', sTrCode, "", sRQName, 0, "종목명")
             CurrCoast = self.dynamicCall('CommGetData(QString, QString, QString, int, QString)', sTrCode, "", sRQName, 0, "현재가")
-            self.codelist = self.GetCodeListByMarket(10)
             
             totalItem = self.dynamicCall('CommGetData(QString, QString, QString, int, QString)', sTrCode, "", sRQName, 0, "상장종목수")
             self.textEdit.append("카운트 :" +str(cnt))
@@ -121,6 +122,12 @@ class Ui_Form(QAxWidget):
             elif ItemCode.strip()=='001':
                 self.lineEdit_9.setText(totalItem.strip())
                 
+        if sTrCode == "OPT10071":
+            
+            time = self.dynamicCall('CommGetData(QString, QString, QString, int, QString)', sTrCode, "", sRQName, 0, "시간")
+            timeCurrCoast = self.dynamicCall('CommGetData(QString, QString, QString, int, QString)', sTrCode, "", sRQName, 0, "현재가")
+            print(time)
+            print(timeCurrCoast)
             
                 
         
@@ -129,12 +136,15 @@ class Ui_Form(QAxWidget):
         Code = self.lineEdit.text().strip()
         ret = self.dynamicCall('SetInputValue(QString, QString)', "종목코드", Code)
         ret = self.dynamicCall('CommRqData(QString, QString, int, QString)', "주식기본정보", "OPT10001", 2, "0101")
+        print(str(ret)+"코드")
          
     def getTotalInfo(self):    
         ret = self.dynamicCall('SetInputValue(QString, QString)', "업종코드", '101')
         ret = self.dynamicCall('CommRqData(QString, QString, int, QString)', "주식기본정보", "OPT20003", 2, "0102")
         ret = self.dynamicCall('SetInputValue(QString, QString)', "업종코드", '001')
         ret = self.dynamicCall('CommRqData(QString, QString, int, QString)', "주식기본정보", "OPT20003", 2, "0101")
+        print(str(ret)+"코드")
+
 #     def getKospiInfo(self):
 #         ret = self.dynamicCall('SetInputValue(QString, QString)', "업종코드", '001')
 #         ret = self.dynamicCall('CommRqData(QString, QString, int, QString)', "주식기본정보", "OPT20003", 0, "0101")
@@ -148,18 +158,45 @@ class Ui_Form(QAxWidget):
         ACCNO = re.sub(';','', ACC_NO)
         self.textEdit.append("보유 계좌수: "+ACCOUNT_CNT + " " + "계좌번호: "+ACCNO)
         self.lineEdit_2.setText(ACCNO)
+        print(ACCNO)
+        
+            
+    def btn_ExtractExcel(self):
+        self.codelist = self.GetCodeListByMarket(10)
         self.excel = ExcelMake.ExcelCode()          #클릭때마다 객체가생성됨.
         self.excel.addToExcel(self.codelist)
-        self.mylist =self.codelist.split(';')
-        
-#         self.ExcelList.append(self.excel)
+        self.namelist =self.codelist.split(';')
         
         
-        for a in self.mylist:
+        for a in self.namelist:
             self.excel.addToExcelCodeName(self.GetMasterCodeName(a))
             
-        print(ACCNO)
-
+        self.excel.excelVisible()
+#             rett=self.dynamicCall('SetInputValue(QString,QString)',"종목코드",a)
+#             rett=self.dynamicCall('SetInputValue(QString,QString)',"시간구분",10)
+#             rett=self.dynamicCall('CommRqData(QString, QString, int, QString)',"주식기본정보", "OPT10071",2,"0102")
+#             print(str(rett)+"코드!")
+        # /********************************************************************/
+        # /// ########## Open API 함수를 이용한 전문처리 C++용 샘플코드 예제입니다. 
+        # 
+        #  [ OPT10071 : 시간대별전일비거래비중요청 ]
+        # 
+        #  1. Open API 조회 함수 입력값을 설정합니다.
+        #     종목코드 = 전문 조회할 종목코드
+        #     SetInputValue("종목코드"    ,  "000660");
+        # 
+        #     시간구분 = 1:1분,3:3분,5:5분,10:10분,15:15분,30:30분,60:60분
+        #     SetInputValue("시간구분"    ,  "10");
+        # 
+        # 
+        #  2. Open API 조회 함수를 호출해서 전문을 서버로 전송합니다.
+        #     CommRqData( "RQName"    ,  "OPT10071"    ,  "0"    ,  "화면번호"); 
+        # 
+        # /********************************************************************/
+    def callBeautifulSoup(self):
+        bt= btsoup()
+    
+    
 
     def GetChjanData(self, nFid):
         chjang = self.dynamicCall('GetChejanData(QString)', nFid)
@@ -280,6 +317,12 @@ class Ui_Form(QAxWidget):
         self.SendOrder.setObjectName(_fromUtf8("SendOrder"))
         self.connect(self.SendOrder, SIGNAL("clicked()"), self.btn_SendOrder)
         
+        self.ExtractExcel = QtGui.QPushButton(self.groupBox)
+        self.ExtractExcel.setEnabled(False)
+        self.ExtractExcel.setGeometry(QtCore.QRect(50, 360, 75, 23))
+        self.ExtractExcel.setObjectName(_fromUtf8("ExtractExcel"))
+        self.connect(self.ExtractExcel, SIGNAL("clicked()"), self.btn_ExtractExcel)
+        
         self.textEdit = QtGui.QTextEdit(Form)
         self.textEdit.setEnabled(False)
         self.textEdit.setGeometry(QtCore.QRect(270, 20, 331, 211))
@@ -337,6 +380,7 @@ class Ui_Form(QAxWidget):
         self.comboBox_2.setItemText(3, _translate("Form", "4:   매도취소", None))
         self.pushButton.setText(_translate("Form", "GetInfo", None))
         self.SendOrder.setText(_translate("Form", "주 문", None))
+        self.ExtractExcel.setText(_translate("Form", "액셀로 추출", None))
         self.pushButton_2.setText(_translate("Form", "로그인", None))
         self.pushButton_4.setText(_translate("Form", "종 료", None))
         self.pushButton_3.setText(_translate("Form", "계좌조회", None))
