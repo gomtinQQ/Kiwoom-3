@@ -8,7 +8,6 @@ from PyQt4.QtCore import QVariant
 import re
 import ExcelMake
 from bs4 import BeautifulSoup
-from BeautifulSoup import btsoup
 
 
 
@@ -124,11 +123,12 @@ class Ui_Form(QAxWidget):
                 
         if sTrCode == "OPT10071":
             
-            time = self.dynamicCall('CommGetData(QString, QString, QString, int, QString)', sTrCode, "", sRQName, 0, "시간")
-            timeCurrCoast = self.dynamicCall('CommGetData(QString, QString, QString, int, QString)', sTrCode, "", sRQName, 0, "현재가")
-            print(time)
-            print(timeCurrCoast)
+            cnt = self.dynamicCall('GetRepeatCnt(QString, QString)', sTrCode, sRQName)
+            cnt=int(cnt)
+            print('###########'+str(cnt))
+            strData = self.dynamicCall('GetCommData(QString,QString,int,QString)',"OPT10071","시간대별전일비거래비중",0,"000660")
             
+            print(strData)
                 
         
 
@@ -168,14 +168,24 @@ class Ui_Form(QAxWidget):
         self.namelist =self.codelist.split(';')
         
         
-        for a in self.namelist:
-            self.excel.addToExcelCodeName(self.GetMasterCodeName(a))
-            
-        self.excel.excelVisible()
+#         for a in self.namelist:
+#             self.excel.addToExcelCodeName(self.GetMasterCodeName(a))
+#              
 #             rett=self.dynamicCall('SetInputValue(QString,QString)',"종목코드",a)
+#             print("rett1 : "+str(rett))
 #             rett=self.dynamicCall('SetInputValue(QString,QString)',"시간구분",10)
+#             print("rett2 : "+str(rett))
 #             rett=self.dynamicCall('CommRqData(QString, QString, int, QString)',"주식기본정보", "OPT10071",2,"0102")
 #             print(str(rett)+"코드!")
+
+        retInput = self.dynamicCall('SetInputValue(QString,QString)','종목코드','000660')
+        retInput = self.dynamicCall('SetInputValue(QString,QString)','시간구분','10')
+        print("retInput1"+str(retInput))
+        ret = self.dynamicCall('GetCommData(QString,QString,int,QString)',"OPT10071","시간대별전일비거래비중",0,"d")
+         
+        print("retInput2"+str(retInput))
+        print("ret"+str(ret))
+        self.excel.excelVisible()
         # /********************************************************************/
         # /// ########## Open API 함수를 이용한 전문처리 C++용 샘플코드 예제입니다. 
         # 
@@ -193,9 +203,7 @@ class Ui_Form(QAxWidget):
         #     CommRqData( "RQName"    ,  "OPT10071"    ,  "0"    ,  "화면번호"); 
         # 
         # /********************************************************************/
-    def callBeautifulSoup(self):
-        bt= btsoup()
-    
+
     
 
     def GetChjanData(self, nFid):
