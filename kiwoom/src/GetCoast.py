@@ -191,18 +191,18 @@ class Ui_Form(QAxWidget):
         
         self.codelist = self.GetCodeListByMarket(10)
         self.namelist =self.codelist.split(';')
-        for a in self.namelist:
+#         for a in self.namelist:
 #             print('a '+str(a))
-            print('codename '+str(self.GetMasterCodeName(a)))
-            retInput = self.dynamicCall('SetInputValue(QString,QString)','종목코드',a)
+#             print('codename '+str(self.GetMasterCodeName(a)))
+        retInput = self.dynamicCall('SetInputValue(QString,QString)','종목코드','000660')
              
 #             print("retInput1"+str(retInput))
-            retInput = self.dynamicCall('SetInputValue(QString,QString)','시간구분','10')
-            rets= self.dynamicCall('CommRqData(QString,QString,int,QString)','RQName','OPT10071','0','화면번호')
+        retInput = self.dynamicCall('SetInputValue(QString,QString)','시간구분','10')
+        rets= self.dynamicCall('CommRqData(QString,QString,int,QString)','RQName','OPT10071','0','화면번호')
                
               
 #             print("retInput2"+str(retInput))
-            print("reslt"+str(rets))
+        print("reslt"+str(rets))
         
         print('==================MassiveData End======================')
         
