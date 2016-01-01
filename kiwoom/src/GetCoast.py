@@ -202,7 +202,7 @@ class Ui_Form(QAxWidget):
                
               
 #             print("retInput2"+str(retInput))
-#             print(rets)
+            print("reslt"+str(rets))
         
         print('==================MassiveData End======================')
         
