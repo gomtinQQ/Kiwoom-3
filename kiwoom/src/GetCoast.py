@@ -8,7 +8,6 @@ from PyQt4.QtCore import QVariant
 import re
 import ExcelMake
 from bs4 import BeautifulSoup
-from BeautifulSoup import btsoup
 
 
 
@@ -56,6 +55,7 @@ class Ui_Form(QAxWidget):
             self.pushButton_2.setEnabled(False)
             self.pushButton_3.setEnabled(True)
             self.ExtractExcel.setEnabled(True)
+            self.Massive.setEnabled(True)
             self.SendOrder.setEnabled(True)
             self.textEdit.setEnabled(True)
             self.comboBox.setEnabled(True)
@@ -124,11 +124,15 @@ class Ui_Form(QAxWidget):
                 
         if sTrCode == "OPT10071":
             
-            time = self.dynamicCall('CommGetData(QString, QString, QString, int, QString)', sTrCode, "", sRQName, 0, "시간")
-            timeCurrCoast = self.dynamicCall('CommGetData(QString, QString, QString, int, QString)', sTrCode, "", sRQName, 0, "현재가")
-            print(time)
-            print(timeCurrCoast)
-            
+            print('Called OPT10071')
+            cnt = self.dynamicCall('GetRepeatCnt(QString, QString)', sTrCode, sRQName)
+            cnt=int(cnt)
+            print('########### count ##########'+str(cnt))
+            vTemp = self.dynamicCall('GetCommDataEx(QString,QString)',"OPT10071","시간대별전일비거래비중")
+            rTemp = self.dynamicCall('GetCommData(QString,QString,int,QString)',"OPT10071","sRQname",0,"시간")
+            print('vtemp'+str(vTemp))
+            print('rtemp'+str(rTemp))
+                    
                 
         
 
@@ -168,35 +172,41 @@ class Ui_Form(QAxWidget):
         self.namelist =self.codelist.split(';')
         
         
-        for a in self.namelist:
-            self.excel.addToExcelCodeName(self.GetMasterCodeName(a))
-            
-        self.excel.excelVisible()
+        for a in self.namelist: #a 종목명
+            self.excel.addToExcelCodeName(self.GetMasterCodeName(a)) #종목코드
+              
 #             rett=self.dynamicCall('SetInputValue(QString,QString)',"종목코드",a)
+#             print("rett1 : "+str(rett))
 #             rett=self.dynamicCall('SetInputValue(QString,QString)',"시간구분",10)
+#             print("rett2 : "+str(rett))
 #             rett=self.dynamicCall('CommRqData(QString, QString, int, QString)',"주식기본정보", "OPT10071",2,"0102")
 #             print(str(rett)+"코드!")
-        # /********************************************************************/
-        # /// ########## Open API 함수를 이용한 전문처리 C++용 샘플코드 예제입니다. 
-        # 
-        #  [ OPT10071 : 시간대별전일비거래비중요청 ]
-        # 
-        #  1. Open API 조회 함수 입력값을 설정합니다.
-        #     종목코드 = 전문 조회할 종목코드
-        #     SetInputValue("종목코드"    ,  "000660");
-        # 
-        #     시간구분 = 1:1분,3:3분,5:5분,10:10분,15:15분,30:30분,60:60분
-        #     SetInputValue("시간구분"    ,  "10");
-        # 
-        # 
-        #  2. Open API 조회 함수를 호출해서 전문을 서버로 전송합니다.
-        #     CommRqData( "RQName"    ,  "OPT10071"    ,  "0"    ,  "화면번호"); 
-        # 
-        # /********************************************************************/
-    def callBeautifulSoup(self):
-        bt= btsoup()
-    
-    
+
+        self.excel.excelVisible()
+        
+
+    def getMassiveData(self):
+        print()
+        print('==================MassiveData Call======================')
+        
+        self.codelist = self.GetCodeListByMarket(10)
+        self.namelist =self.codelist.split(';')
+        for a in self.namelist:
+#             print('a '+str(a))
+            print('codename '+str(self.GetMasterCodeName(a)))
+            retInput = self.dynamicCall('SetInputValue(QString,QString)','종목코드',a)
+             
+#             print("retInput1"+str(retInput))
+            retInput = self.dynamicCall('SetInputValue(QString,QString)','시간구분','10')
+            rets= self.dynamicCall('CommRqData(QString,QString,int,QString)','RQName','OPT10071','0','화면번호')
+               
+              
+#             print("retInput2"+str(retInput))
+#             print(rets)
+        
+        print('==================MassiveData End======================')
+        
+        
 
     def GetChjanData(self, nFid):
         chjang = self.dynamicCall('GetChejanData(QString)', nFid)
@@ -319,9 +329,15 @@ class Ui_Form(QAxWidget):
         
         self.ExtractExcel = QtGui.QPushButton(self.groupBox)
         self.ExtractExcel.setEnabled(False)
-        self.ExtractExcel.setGeometry(QtCore.QRect(50, 360, 75, 23))
+        self.ExtractExcel.setGeometry(QtCore.QRect(10, 360, 75, 23))
         self.ExtractExcel.setObjectName(_fromUtf8("ExtractExcel"))
         self.connect(self.ExtractExcel, SIGNAL("clicked()"), self.btn_ExtractExcel)
+        
+        self.Massive= QtGui.QPushButton(self.groupBox)
+        self.ExtractExcel.setEnabled(False)
+        self.Massive.setGeometry(QtCore.QRect(100, 360, 75, 23))
+        self.Massive.setObjectName(_fromUtf8("Massive"))
+        self.connect(self.Massive, SIGNAL("clicked()"), self.getMassiveData)
         
         self.textEdit = QtGui.QTextEdit(Form)
         self.textEdit.setEnabled(False)
@@ -337,6 +353,10 @@ class Ui_Form(QAxWidget):
         self.pushButton_4.setGeometry(QtCore.QRect(480, 250, 75, 23))
         self.pushButton_4.setObjectName(_fromUtf8("pushButton_4"))
         self.connect(self.pushButton_4, SIGNAL("clicked()"), self.btn_Quit)
+        
+
+        
+        
         
         self.pushButton_3 = QtGui.QPushButton(Form)
         self.pushButton_3.setEnabled(False)
@@ -381,6 +401,7 @@ class Ui_Form(QAxWidget):
         self.pushButton.setText(_translate("Form", "GetInfo", None))
         self.SendOrder.setText(_translate("Form", "주 문", None))
         self.ExtractExcel.setText(_translate("Form", "액셀로 추출", None))
+        self.Massive.setText(_translate("Form", "대량데이타", None))
         self.pushButton_2.setText(_translate("Form", "로그인", None))
         self.pushButton_4.setText(_translate("Form", "종 료", None))
         self.pushButton_3.setText(_translate("Form", "계좌조회", None))
