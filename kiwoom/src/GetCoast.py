@@ -183,6 +183,7 @@ class Ui_Form(QAxWidget):
 #             print(str(rett)+"코드!")
 
         self.excel.excelVisible()
+        print('Excel created')
         
 
     def getMassiveData(self):
