@@ -3,12 +3,15 @@
 import win32com.client
 from time import sleep
 
+import BeautifulSoup
 
 
 
 
 class ExcelCode:
-            
+    
+    
+#     엑셀 초기화 및 시간설정
     def __init__(self):
         self.excel = win32com.client.Dispatch("Excel.Application")
         self.wb = self.excel.Workbooks.Add()
@@ -19,12 +22,14 @@ class ExcelCode:
         print('Excel Object Created')
         
         print('Making Excel..')        
-        totalMinute=5
-        for i in range(9,16):
-            for j in range(0,61):
+        totalMinute=3
+        for i in range(9,15):
+            for j in range(0,60):
                 self.ws.Cells(1,totalMinute).Value =str(i)+":"+str(j)
                 totalMinute+=1
         
+        
+#     코드리스트를 받으면 각 코드들 세로로 추가
     def addToExcel(self,codelist):
         self.codelist=codelist.split(';')
         i=2
@@ -32,12 +37,16 @@ class ExcelCode:
         for a in self.codelist:
             self.ws.Cells(i,1).Value = a
             i += 1
-                
+#                 코드를받으면 이름으로 추가
     def addToExcelCodeName(self,mylist):
         self.ws.Cells(self.j,2).Value=mylist
         self.j+=1
         
+    def WritePercentage(self):
+        bt = bts()
         
+        
+         
         
     def excelVisible(self):
         self.excel.Visible = True
