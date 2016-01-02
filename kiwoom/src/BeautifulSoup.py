@@ -4,6 +4,12 @@ import urllib
 import requests
 
 
+try:
+    from itertools import izip
+except ImportError:
+    izip=zip
+
+
 # 가져올 URL
 # html = requests.get("http://finance.daum.net/quote/all.daum?type=U&stype=Q")
 # html = requests.get("http://finance.daum.net/quote/all.daum?type=U&stype=P") #코스피
@@ -24,18 +30,22 @@ iframe_content=BeautifulSoup(requests.get(iframe_src).text,"lxml")
 
 # eachItem = iframe_content.findAll("tr",onmouseout="highlight(this,false)")
 
-eachTime = iframe_content.find("td",class_="datetime2")
-eachPercent = iframe_content.find("td",class_="num cUp")
+eachTime = iframe_content.findAll("td",class_="datetime2")
+eachPercent = iframe_content.findAll("td",class_="num cUp")
 
-print("time : "+str(eachTime))
-print("percent : "+str(eachPercent))
+
+
+
+
+c = izip(eachTime.contents,eachPercent.contents)
+
+print(c)
 
 i=0
-
-# for a in eachTime:
-#     print("time : "+str(eachTime[i]))
-#     print("percent : "+str(eachPercent[i]))
-
+# 
+# for a in c:
+#     print(a)
+#     i+=1
 
 # for a in eachItem:
 #     btt = BeautifulSoup(a,"lxml")
