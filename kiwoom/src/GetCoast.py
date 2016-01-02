@@ -36,7 +36,6 @@ class Ui_Form(QAxWidget):
         self.connect(self, SIGNAL("OnReceiveChejanData(QString, int, QString)"),self.OnReceiveChejanData)
 #         self.ExcelList = list
 #         self.excel = ExcelMake.ExcelCode()
-        
 
 
     def btn_login(self):

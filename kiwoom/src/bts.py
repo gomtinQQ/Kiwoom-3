@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import urllib
 import requests
 
-class bts:
+class mbts:
 
 # html = requests.get("http://finance.daum.net/quote/all.daum?type=U&stype=Q")
 # html = requests.get("http://finance.daum.net/quote/all.daum?type=U&stype=P") #코스피
@@ -88,7 +88,7 @@ class bts:
         return self.eachPercent        
 
 if __name__ == "__main__":
-    bttest = bts()
+    bttest = mbts()
     
     bttest.IframeUrlWithCode('000660')
     

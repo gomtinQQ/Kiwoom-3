@@ -3,7 +3,7 @@
 import win32com.client
 from time import sleep
 
-import BeautifulSoup
+import bts
 
 
 
@@ -42,9 +42,10 @@ class ExcelCode:
         self.ws.Cells(self.j,2).Value=mylist
         self.j+=1
         
-    def WritePercentage(self):
-        bt = bts()
         
+    def WritePercentage(self):
+        bt = bts.mbts()
+        bt.IframeUrl()
         
          
         
