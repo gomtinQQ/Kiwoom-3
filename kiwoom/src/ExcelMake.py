@@ -15,9 +15,15 @@ class ExcelCode:
         self.ws = self.wb.Worksheets("Sheet1")
         self.ws.Cells(1,1).Value ="종목코드"
         self.ws.Cells(1,2).Value ="종목명"
-        
         self.j=2
         print('Excel Object Created')
+        
+        print('Making Excel..')        
+        totalMinute=5
+        for i in range(9,16):
+            for j in range(0,61):
+                self.ws.Cells(1,totalMinute).Value =str(i)+":"+str(j)
+                totalMinute+=1
         
     def addToExcel(self,codelist):
         self.codelist=codelist.split(';')
