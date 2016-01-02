@@ -334,8 +334,8 @@ class Ui_Form(QAxWidget):
         self.connect(self.ExtractExcel, SIGNAL("clicked()"), self.btn_ExtractExcel)
         
         self.Massive= QtGui.QPushButton(self.groupBox)
-        self.ExtractExcel.setEnabled(False)
-        self.Massive.setGeometry(QtCore.QRect(100, 360, 75, 23))
+        self.Massive.setEnabled(False)
+        self.Massive.setGeometry(QtCore.QRect(120, 360, 75, 23))
         self.Massive.setObjectName(_fromUtf8("Massive"))
         self.connect(self.Massive, SIGNAL("clicked()"), self.getMassiveData)
         

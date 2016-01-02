@@ -3,59 +3,61 @@ from bs4 import BeautifulSoup
 import urllib
 import requests
 
-
+class bts:
 # 가져올 URL
 # html = requests.get("http://finance.daum.net/quote/all.daum?type=U&stype=Q")
 # html = requests.get("http://finance.daum.net/quote/all.daum?type=U&stype=P") #코스피
-html = requests.get("http://finance.daum.net/item/hhmm.daum?code=069110")
 
-bt = BeautifulSoup(html.text,"lxml")
+    def IframeUrl(self):
+#         html = requests.get("http://finance.daum.net/item/hhmm.daum?code=069110")
+#         html = requests.get(urladdress)
+#         bt = BeautifulSoup(html.text,"lxml")
+#         forchild = bt.find('iframe')
+#         iframe_src=forchild.attrs['src']
+#         iframe_src='http://finance.daum.net'+iframe_src
+        code='069110'   #하이비젼
+#         code='021080'  #에이티넘
+        self.total=0
+        self.end=True
+        self.page=1
+        while self.end:
+            
+            iframe_src='http://finance.daum.net/item/quote_hhmm_sub.daum?page='+str(self.page)+'&code='+str(code)
+            print('you requested src is : %s'%iframe_src)
+            self.iframeParse(iframe_src)
+            self.page+=1
+        print("총 갯수 :"+str(self.total))
+        print("총 페이지 :"+str(self.page))
+        
+    def iframeParse(self,IframeAddress):
+        self.iframe_content=BeautifulSoup(requests.get(IframeAddress).text,"lxml")
+        self.printTimeResult()
+        self.printPercentResult()
 
-
-forchild = bt.find('iframe')
-
-iframe_src=forchild.attrs['src']
-iframe_src='http://finance.daum.net'+iframe_src
-print(iframe_src)
-iframe_content=BeautifulSoup(requests.get(iframe_src).text,"lxml")
-
-
-# print(iframe_content)
-
-# eachItem = iframe_content.findAll("tr",onmouseout="highlight(this,false)")
-
-eachTime = iframe_content.find("td",class_="datetime2")
-eachPercent = iframe_content.find("td",class_="num cUp")
-
-print("time : "+str(eachTime))
-print("percent : "+str(eachPercent))
-
-i=0
-
-# for a in eachTime:
-#     print("time : "+str(eachTime[i]))
-#     print("percent : "+str(eachPercent[i]))
-
-
-# for a in eachItem:
-#     btt = BeautifulSoup(a,"lxml")
-#      
-#     time=btt.find('td',class_="datetime2")
-#     percent=btt.find('td',class_="num cUp")
-#     print('time : '+str(time))
-#     print('percent : '+str(percent))
-#     print(btt)
-#     i+=1
-    
-print("총 갯수"+str(i))
-
-# datetime2.findAll("td",class_="datetime2")
-# i=0
-# for a in datetime2:
-#     bt=BeautifulSoup(a.text,"lxml")
-#  
-#     print(bt.get_text('num cUp'))
-#     i+=1
+    def printTimeResult(self):
+        eachTime = self.iframe_content.findAll("td",class_="datetime2")
+#         eachPercent = self.iframe_content.findAll("td",class_="num cUp")
+        
+        print(eachTime)
+        
+        for a in eachTime:
+            print("time : %s"%a.contents[0])
+            if a.contents[0]=='09:00':          #실전에서 수정필요
+                self.end=False
+                break
+            self.total+=1
+#     def printPercentResult(self):
+#         eachPercent = self.iframe_content.findAll("td",class_="num cUp")
+#         for a in range(self.total):
+#             print("eachPercent : %s"%a.contents[0])
+#             self.total+=1
+                
 
 
+
+
+if __name__ == "__main__":
+    bttest = bts()
+    stockcode='069110'
+    bttest.IframeUrl()
     
