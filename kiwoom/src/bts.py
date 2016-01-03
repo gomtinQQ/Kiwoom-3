@@ -2,6 +2,7 @@
 from bs4 import BeautifulSoup
 import urllib
 import requests
+import time
 
 class mbts:
 
@@ -32,30 +33,32 @@ class mbts:
         
     def IframeUrlWithCode(self,Code):
 
-        print('from code')
+        print('코드 프레임 호출')
 #         code='021080'  #에이티넘
         self.total=0
         self.end=True
         self.page=1
         self.eachPercent=[]
-        
+        start_time=time.time()
         while self.end:
             
             iframe_src='http://finance.daum.net/item/quote_hhmm_sub.daum?page='+str(self.page)+'&code='+str(Code)
             self.iframeParse(iframe_src)
             self.page+=1
             
-        print("총 갯수 :"+str(self.total))
-        print("총 페이지 :"+str(self.page))
-        
-        print("show PercentList : "+str(self.eachPercent))
-        print("show PercentTotal "+str(self.eachPercent.__len__()))
-
+#         print("총 갯수 :"+str(self.total))
+#         print("총 페이지 :"+str(self.page))
+#         
+#         print("show PercentList : "+str(self.eachPercent))
+#         print("show PercentTotal "+str(self.eachPercent.__len__()))
+        end_time=time.time()
+        print('1종목  파싱완료 ('+str(end_time-start_time)+')')
 
 
     def iframeParse(self,IframeAddress):
         self.iframe_content=BeautifulSoup(requests.get(IframeAddress).text,"lxml")
         eachTime = self.iframe_content.findAll("td",class_="datetime2")
+        
         
         for i in range(0,eachTime.__len__()):
 
@@ -64,12 +67,10 @@ class mbts:
                 self.end=False
                 break
             self.total+=1
-        self.showEachPercent()
-
+#         self.showEachPercent()
+        
     def printTimeResult(self):
         eachTime = self.iframe_content.findAll("td",class_="datetime2")
-#         eachPercent = self.iframe_content.findAll("td",class_="num cUp")
-        
         print(eachTime)
         
         for a in eachTime:
@@ -84,7 +85,7 @@ class mbts:
             print(self.eachPercent[i])
             
     def getEachPercent(self):
-        return self.eachPercent        
+        return self.eachPercent
 
 if __name__ == "__main__":
     bttest = mbts()

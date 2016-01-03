@@ -3,6 +3,7 @@
 import win32com.client
 from time import sleep
 import bts
+import time
 
 class ExcelCode:
     
@@ -30,26 +31,35 @@ class ExcelCode:
         self.codelist=codelist.split(';')
         i=2
         
+        start_time=time.time()
         for a in self.codelist:
             self.ws.Cells(i,1).Value = a
             i += 1
+        end_time=time.time()
+        print('코드리스트 추가  ('+str(end_time-start_time)+')')
 #                 코드를받으면 이름으로 추가
     def addToExcelCodeName(self,mylist):
+        
         self.ws.Cells(self.j,2).Value=mylist
         self.j+=1
-        WritePercentage()
+
         
     def WritePercentage(self):
+        start_time=time.time()
         bt = bts.mbts()
         code='000660'
         bt.IframeUrlWithCode(code)
         codeCurrList = bt.getEachPercent()
         
         c =3
-        for a in codeCurrList:
-            self.ws.Cells(2,c).Value = a
-            c+=1
-        print('1 line ended') 
+        d =2
+        for b in range(3,1100):
+            for a in codeCurrList:
+                self.ws.Cells(d,c).Value = a
+                c+=1
+            print(str(d-1)+'라인 퍼센테이지 입력 ('+str(time.time()-start_time)+')') 
+            d+=1
+        print('1100라인  making '+str(time.time()-start_time))
         
     def excelVisible(self):
         self.excel.Visible = True

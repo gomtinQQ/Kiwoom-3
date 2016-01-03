@@ -8,6 +8,7 @@ from PyQt4.QtCore import QVariant
 import re
 import ExcelMake
 from bs4 import BeautifulSoup
+import time
 
 
 
@@ -165,24 +166,30 @@ class Ui_Form(QAxWidget):
         
             
     def btn_ExtractExcel(self):
+        excel_total_time = time.time()
+        print('==================ExcelMaking Call======================')
         self.codelist = self.GetCodeListByMarket(10)
         self.excel = ExcelMake.ExcelCode()          #클릭때마다 객체가생성됨.
         self.excel.addToExcel(self.codelist)
         self.namelist =self.codelist.split(';')
         
-        
+        start_time=time.time()
         for a in self.namelist: #a 종목명
             self.excel.addToExcelCodeName(self.GetMasterCodeName(a)) #종목코드
-              
+            
 #             rett=self.dynamicCall('SetInputValue(QString,QString)',"종목코드",a)
 #             print("rett1 : "+str(rett))
 #             rett=self.dynamicCall('SetInputValue(QString,QString)',"시간구분",10)
 #             print("rett2 : "+str(rett))
 #             rett=self.dynamicCall('CommRqData(QString, QString, int, QString)',"주식기본정보", "OPT10071",2,"0102")
 #             print(str(rett)+"코드!")
-
-        self.excel.excelVisible()
+        end_time=time.time()
+        print('코드이름 추가  ('+str(end_time-start_time)+')')
         
+        self.excel.WritePercentage()
+        self.excel.excelVisible()
+        print('총 엑셀 만드는데 걸린시간 : '+str(time.time()-excel_total_time))
+        print('==================ExcelMaking End======================')
 
     def getMassiveData(self):
         print()
