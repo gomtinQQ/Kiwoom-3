@@ -55,9 +55,16 @@ class mbts:
 
     def iframeParse(self,IframeAddress):
         self.iframe_content=BeautifulSoup(requests.get(IframeAddress).text,"lxml")
-#         self.printTimeResult()
-#         self.printPercentResult()
-        self.mergeTimeAndPercent()
+        eachTime = self.iframe_content.findAll("td",class_="datetime2")
+        
+        for i in range(0,eachTime.__len__()):
+
+            self.eachPercent.append(eachTime[i].next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.contents[0])
+            if eachTime[i].contents[0]=='09:00':          #실전에서 수정필요
+                self.end=False
+                break
+            self.total+=1
+        self.showEachPercent()
 
     def printTimeResult(self):
         eachTime = self.iframe_content.findAll("td",class_="datetime2")
@@ -72,18 +79,10 @@ class mbts:
                 break
             self.total+=1
             
-    def mergeTimeAndPercent(self):
-        eachTime = self.iframe_content.findAll("td",class_="datetime2")
-        
-        self.dictt={}
-        for i in range(0,eachTime.__len__()):
-#             print('eachTime : '+str(eachTime[i].contents[0]))
-#             print('eachPercent : '+str(eachTime[i].next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.contents[0]))
-            self.eachPercent.append(eachTime[i].next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.contents[0])
-            if eachTime[i].contents[0]=='09:00':          #실전에서 수정필요
-                self.end=False
-                break
-            self.total+=1
+    def showEachPercent(self):
+        for i in range(0,self.eachPercent.__len__()):
+            print(self.eachPercent[i])
+            
     def getEachPercent(self):
         return self.eachPercent        
 

@@ -2,11 +2,7 @@
 
 import win32com.client
 from time import sleep
-
 import bts
-
-
-
 
 class ExcelCode:
     
@@ -41,13 +37,19 @@ class ExcelCode:
     def addToExcelCodeName(self,mylist):
         self.ws.Cells(self.j,2).Value=mylist
         self.j+=1
-        
+        WritePercentage()
         
     def WritePercentage(self):
         bt = bts.mbts()
-        bt.IframeUrl()
+        code='000660'
+        bt.IframeUrlWithCode(code)
+        codeCurrList = bt.getEachPercent()
         
-         
+        c =3
+        for a in codeCurrList:
+            self.ws.Cells(2,c).Value = a
+            c+=1
+        print('1 line ended') 
         
     def excelVisible(self):
         self.excel.Visible = True
