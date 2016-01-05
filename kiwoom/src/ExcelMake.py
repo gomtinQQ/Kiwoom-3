@@ -54,7 +54,7 @@ class ExcelCode:
         c =3
         d =2
         self.excelVisible()
-        for b in range(3,1100):
+        for howmanytimes in range(3,self.codelist.__len__()):
             for a in codeCurrList:
                 self.ws.Cells(d,c).Value = a
                 c+=1
@@ -63,6 +63,20 @@ class ExcelCode:
             c =3 #한종목 파싱 다 하면 다시초기화
             d+=1
         print('1100라인  making '+str(time.time()-start_time))
+        
+    def WriteTimePerDict(self):
+        start_time=time.time()
+        bt = bts.mbts()
+        self.excelVisible()
+
+        for StckCode in self.codelist:
+            bt.IframeUrlWithCode(StckCode)
+            TimerPerDict = bt.getTimePerDic()
+            
+            '''
+            #Stock코드에 따라서 퍼센테이지 넣는코드 작성하시오.
+            '''
+            
     def excelVisible(self):
         self.excel.Visible = True
         
