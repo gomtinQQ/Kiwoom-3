@@ -44,7 +44,11 @@ class ExcelCode:
         self.j+=1
 
         
+
+
+#####################################################################################
     def WritePercentage(self):
+
         start_time=time.time()
         bt = bts.mbts()
         code='000660'
@@ -58,25 +62,37 @@ class ExcelCode:
             for a in codeCurrList:
                 self.ws.Cells(d,c).Value = a
                 c+=1
+            
             print(str(d-1)+'라인 퍼센테이지 입력 ('+str(time.time()-start_time)+')')
             print('d : '+str(d)+' c : '+str(c)) 
             c =3 #한종목 파싱 다 하면 다시초기화
             d+=1
         print('1100라인  making '+str(time.time()-start_time))
-        
+#####################################################################################
+
+#####################################################################################        
     def WriteTimePerDict(self):
         start_time=time.time()
         bt = bts.mbts()
         self.excelVisible()
-
+        
+        print(self.ws.Cells(1,7).Value)
+        
         for StckCode in self.codelist:
             bt.IframeUrlWithCode(StckCode)
             TimerPerDict = bt.getTimePerDic()
             
-            '''
-            #Stock코드에 따라서 퍼센테이지 넣는코드 작성하시오.
-            '''
+            i=2
+            while(self.ws.Cells(i,1) != None):
+               if StckCode == self.ws.Cells(i,1):
+                   print('성공') 
+                   self.ws.Cells(i,3).Value = 33
             
+            
+            
+            
+#####################################################################################
+
     def excelVisible(self):
         self.excel.Visible = True
         
