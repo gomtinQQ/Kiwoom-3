@@ -53,14 +53,16 @@ class ExcelCode:
         
         c =3
         d =2
+        self.excelVisible()
         for b in range(3,1100):
             for a in codeCurrList:
                 self.ws.Cells(d,c).Value = a
                 c+=1
-            print(str(d-1)+'라인 퍼센테이지 입력 ('+str(time.time()-start_time)+')') 
+            print(str(d-1)+'라인 퍼센테이지 입력 ('+str(time.time()-start_time)+')')
+            print('d : '+str(d)+' c : '+str(c)) 
+            c =3 #한종목 파시앋하면 다시초기화
             d+=1
         print('1100라인  making '+str(time.time()-start_time))
-        
     def excelVisible(self):
         self.excel.Visible = True
         

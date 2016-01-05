@@ -184,10 +184,10 @@ class Ui_Form(QAxWidget):
 #             rett=self.dynamicCall('CommRqData(QString, QString, int, QString)',"주식기본정보", "OPT10071",2,"0102")
 #             print(str(rett)+"코드!")
         end_time=time.time()
-        print('코드이름 추가  ('+str(end_time-start_time)+')')
+        print('이름 추가  ('+str(end_time-start_time)+')')
         
         self.excel.WritePercentage()
-        self.excel.excelVisible()
+#         self.excel.excelVisible()
         print('총 엑셀 만드는데 걸린시간 : '+str(time.time()-excel_total_time))
         print('==================ExcelMaking End======================')
 
