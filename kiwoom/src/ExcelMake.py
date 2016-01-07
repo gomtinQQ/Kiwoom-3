@@ -20,11 +20,13 @@ class ExcelCode:
         
         print('Making Excel..')        
         totalMinute=3
-        for i in range(9,15):
+        for i in range(9,15):##시간 분단위로 설정.
             for j in range(0,60):
                 self.ws.Cells(1,totalMinute).Value =str(i)+":"+str(j)
                 totalMinute+=1
-        
+                
+#         print(self.ws.Cells(1,1).Value)
+#         self.excelVisible()
         
 #     코드리스트를 받으면 각 코드들 세로로 추가
     def addToExcel(self,codelist):
@@ -38,6 +40,7 @@ class ExcelCode:
         end_time=time.time()
         print('코드리스트 추가  ('+str(end_time-start_time)+')')
 #                 코드를받으면 이름으로 추가
+        self.WriteTimePerDict()
     def addToExcelCodeName(self,mylist):
         
         self.ws.Cells(self.j,2).Value=mylist
@@ -73,18 +76,24 @@ class ExcelCode:
 #####################################################################################        
     def WriteTimePerDict(self):
         start_time=time.time()
+#         self.excelVisible()
+        
+        print(self.ws.Cells(1,1).Value)
+        print(str(self.ws.Cells(1,7).Value))
+        print(str(self.ws.Cells(2,7).Value))
+        print(str(self.ws.Cells(1,8).Value))
+        print(str(self.ws.Cells(1,9).Value))
+        print(str(self.ws.Cells(3,7).Value))
         bt = bts.mbts()
         self.excelVisible()
-        
-        print(self.ws.Cells(1,7).Value)
         
         for StckCode in self.codelist:
             bt.IframeUrlWithCode(StckCode)
             TimerPerDict = bt.getTimePerDic()
             
             i=2
-            while(self.ws.Cells(i,1) != None):
-               if StckCode == self.ws.Cells(i,1):
+            while(self.ws.Cells(i,1).Value != None):
+               if StckCode == self.ws.Cells(i,1).Value:
                    print('성공') 
                    self.ws.Cells(i,3).Value = 33
             
@@ -107,4 +116,6 @@ class ExcelCode:
             while(len(str.strip())!=6):
                 str=str[:0]+"0"+str[0:]
         return str
+if __name__ == '__main__':
+    tt = ExcelCode()
     

@@ -187,7 +187,7 @@ class Ui_Form(QAxWidget):
         print('이름 추가  ('+str(end_time-start_time)+')')
         
 #         self.excel.WritePercentage()
-        self.excel.WriteTimePerDict()
+#         self.excel.WriteTimePerDict()
 #         self.excel.excelVisible()
         print('총 엑셀 만드는데 걸린시간 : '+str(time.time()-excel_total_time))
         print('==================ExcelMaking End======================')
