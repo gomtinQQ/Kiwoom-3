@@ -4,6 +4,7 @@ import win32com.client
 from time import sleep
 import bts
 import time
+import os
 
 class ExcelCode:
     
@@ -108,6 +109,32 @@ class ExcelCode:
     def getCodeList(self):
         return self.codelist
     
+    def saveas(self):
+        filePath = 'D:\\Kiwoo\\ExcelData'
+        now = time.localtime()
+        nowYear =now.tm_year
+        nowMon =now.tm_mon
+        if int(nowMon) <10:
+            nowMon=str(nowMon)
+            nowMon=nowMon[:0]+'0'+nowMon[0:]
+        nowmDay = now.tm_mday
+        if int(nowmDay) <10:
+            nowmDay=str(nowmDay)
+            nowmDay=nowmDay[:0]+'0'+nowmDay[0:]
+        
+        dirPath= filePath+str('\\')+str(nowYear)+str(nowMon)+str(nowmDay)
+        if not os.path.isdir(dirPath):
+            os.mkdir(dirPath)
+        self.logCount=0
+        print('hi2')
+        while(os.path.exists(dirPath+str('\\')+str(nowYear)+str(nowMon)+str(nowmDay)+str('_yang_')+str(self.logCount))):
+#             print(os.path.isfile(dirPath+str('\\')+str(nowYear)+str(nowMon)+str(nowmDay)+str('_yang_')+str(self.logCount)))
+            self.logCount+=1
+            print(self.logCount)
+        self.wb.SaveAs(dirPath+str('\\')+str(nowYear)+str(nowMon)+str(nowmDay)+str('_yang_')+str(self.logCount))
+        print('경로 : '+str(dirPath)+str('_yang_')+str(self.logCount))
+        self.excel.Quit()
+            
     
     def addZero(self,str):
         str=str.strip()
@@ -118,4 +145,10 @@ class ExcelCode:
         return str
 if __name__ == '__main__':
     tt = ExcelCode()
+    
+    
+    
+#     tt.excelVisible()
+    tt.saveas()
+    
     
