@@ -121,18 +121,26 @@ class ExcelCode:
         if int(nowmDay) <10:
             nowmDay=str(nowmDay)
             nowmDay=nowmDay[:0]+'0'+nowmDay[0:]
-        
         dirPath= filePath+str('\\')+str(nowYear)+str(nowMon)+str(nowmDay)
+        
         if not os.path.isdir(dirPath):
             os.mkdir(dirPath)
-        self.logCount=0
-        print('hi2')
-        while(os.path.exists(dirPath+str('\\')+str(nowYear)+str(nowMon)+str(nowmDay)+str('_yang_')+str(self.logCount))):
+        self.logCount=1
+        
+        
+        filePath = dirPath
+        print(os.path.exists(filePath))
+        
+        fileName = str(nowYear)+str(nowMon)+str(nowmDay)+str('_yang_')+str(self.logCount)+str('.xlsx')
+        print(os.path.isfile(filePath+str('\\')+fileName))
+        print(filePath+str('\\')+fileName)
+        while(os.path.exists(filePath+str('\\')+fileName)):
 #             print(os.path.isfile(dirPath+str('\\')+str(nowYear)+str(nowMon)+str(nowmDay)+str('_yang_')+str(self.logCount)))
             self.logCount+=1
-            print(self.logCount)
-        self.wb.SaveAs(dirPath+str('\\')+str(nowYear)+str(nowMon)+str(nowmDay)+str('_yang_')+str(self.logCount))
-        print('경로 : '+str(dirPath)+str('_yang_')+str(self.logCount))
+            fileName = str(nowYear)+str(nowMon)+str(nowmDay)+str('_yang_')+str(self.logCount)+str('.xlsx')
+            print(filePath+str('\\')+fileName)
+        self.wb.SaveAs(filePath+str('\\')+fileName)
+        print('경로 : '+filePath+str('\\')+fileName)
         self.excel.Quit()
             
     
