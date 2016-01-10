@@ -2,6 +2,7 @@
 
 import win32com.client
 from time import sleep
+
 import bts
 import time
 import os
@@ -72,36 +73,29 @@ class ExcelCode:
             c =3 #한종목 파싱 다 하면 다시초기화
             d+=1
         print('1100라인  making '+str(time.time()-start_time))
-#####################################################################################
-
-#####################################################################################        
     def WriteTimePerDict(self):
         start_time=time.time()
 #         self.excelVisible()
         
-        print(self.ws.Cells(1,1).Value)
-        print(str(self.ws.Cells(1,7).Value))
-        print(str(self.ws.Cells(2,7).Value))
-        print(str(self.ws.Cells(1,8).Value))
-        print(str(self.ws.Cells(1,9).Value))
-        print(str(self.ws.Cells(3,7).Value))
+#         print(self.ws.Cells(1,1).Value)
+#         print(str(self.ws.Cells(1,7).Value))
+#         print(str(self.ws.Cells(2,7).Value))
+#         print(str(self.ws.Cells(1,8).Value))
+#         print(str(self.ws.Cells(1,9).Value))
+#         print(str(self.ws.Cells(3,7).Value))
         bt = bts.mbts()
-        self.excelVisible()
+#         self.excelVisible()
         
         for StckCode in self.codelist:
             bt.IframeUrlWithCode(StckCode)
             TimerPerDict = bt.getTimePerDic()
             
-            i=2
+            i=1
             while(self.ws.Cells(i,1).Value != None):
-               if StckCode == self.ws.Cells(i,1).Value:
-                   print('성공') 
-                   self.ws.Cells(i,3).Value = 33
-            
-            
-            
-            
-#####################################################################################
+                if StckCode == self.ws.Cells(i,1).Value:
+                    print('성공') 
+                    self.ws.Cells(i,3).Value = 33
+                i+=1
 
     def excelVisible(self):
         self.excel.Visible = True
@@ -110,10 +104,62 @@ class ExcelCode:
         return self.codelist
     
     def saveas(self):
+
+        fileName=self.getFileName()
+
+        self.wb.SaveAs(fileName)
+        self.excel.Quit()
+            
+    
+    def addZero(self,str):
+        str=str.strip()
+
+        if len(str.strip())<=6:
+            while(len(str.strip())!=6):
+                str=str[:0]+"0"+str[0:]
+        return str
+    
+    def ExcelRead(self):
+        
+
+        
+        fileName = self.getFileName()
+        
+        self.wb = self.excel.Workbooks.Open(fileName)
+        self.ws = self.wb.ActiveSheet
+        print('read success')
+        
+    def getTimePetDict(self,code):
+        bt = bts.mbts()
+        
+        bt.IframeUrlWithCode(code)
+        TimePerDict = bt.getTimePerDic()
+            
+        i=2
+        j=3
+        print(int(self.ws.Cells(i,1).Value))
+        while(True):
+            if int(code) == int(self.ws.Cells(i,1).Value):
+                print('성공') 
+#                 print(int(self.ws.Cells(i,1).Value))
+                for a in TimePerDict:
+                    
+                    
+                    self.ws.Cells(i,j).Value = a
+                    j+=1
+                break
+            i+=1
+        
+        self.excelVisible()
+        
+        
+    def getFileName(self):
         filePath = 'D:\\Kiwoo\\ExcelData'
         now = time.localtime()
         nowYear =now.tm_year
         nowMon =now.tm_mon
+        
+        
         if int(nowMon) <10:
             nowMon=str(nowMon)
             nowMon=nowMon[:0]+'0'+nowMon[0:]
@@ -129,34 +175,15 @@ class ExcelCode:
         
         
         filePath = dirPath
-        print(os.path.exists(filePath))
-        
-        fileName = str(nowYear)+str(nowMon)+str(nowmDay)+str('_yang_')+str(self.logCount)+str('.xlsx')
-        print(os.path.isfile(filePath+str('\\')+fileName))
-        print(filePath+str('\\')+fileName)
-        while(os.path.exists(filePath+str('\\')+fileName)):
-#             print(os.path.isfile(dirPath+str('\\')+str(nowYear)+str(nowMon)+str(nowmDay)+str('_yang_')+str(self.logCount)))
-            self.logCount+=1
-            fileName = str(nowYear)+str(nowMon)+str(nowmDay)+str('_yang_')+str(self.logCount)+str('.xlsx')
-            print(filePath+str('\\')+fileName)
-        self.wb.SaveAs(filePath+str('\\')+fileName)
-        print('경로 : '+filePath+str('\\')+fileName)
-        self.excel.Quit()
-            
-    
-    def addZero(self,str):
-        str=str.strip()
+        fileName = filePath+str('\\')+str(nowYear)+str(nowMon)+str(nowmDay)+str('_yang_')+str(self.logCount)+str('.xlsx')
 
-        if len(str.strip())<=6:
-            while(len(str.strip())!=6):
-                str=str[:0]+"0"+str[0:]
-        return str
+        return fileName
+    
 if __name__ == '__main__':
     tt = ExcelCode()
     
-    
-    
 #     tt.excelVisible()
-    tt.saveas()
-    
+#     tt.ExcelRead()
+    tt.ExcelRead()
+    tt.getTimePetDict('035460')
     

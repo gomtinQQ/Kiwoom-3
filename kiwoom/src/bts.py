@@ -98,4 +98,7 @@ if __name__ == "__main__":
     bttest.IframeUrlWithCode('000660')
 #     bttest.showEachPercent()
     
-    print(bttest.getTimePerDic())
+    bttp = bttest.getTimePerDic()
+    
+    
+    print(bttp['09:05'])
