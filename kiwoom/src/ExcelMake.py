@@ -76,16 +76,9 @@ class ExcelCode:
             c =3 #한종목 파싱 다 하면 다시초기화
             d+=1
         print('1100라인  making '+str(time.time()-start_time))
+        
     def WriteTimePerDict(self):
         start_time=time.time()
-#         self.excelVisible()
-        
-#         print(self.ws.Cells(1,1).Value)
-#         print(str(self.ws.Cells(1,7).Value))
-#         print(str(self.ws.Cells(2,7).Value))
-#         print(str(self.ws.Cells(1,8).Value))
-#         print(str(self.ws.Cells(1,9).Value))
-#         print(str(self.ws.Cells(3,7).Value))
         bt = bts.mbts()
 #         self.excelVisible()
         
@@ -108,7 +101,7 @@ class ExcelCode:
     
     def saveas(self):
 
-        fileName=self.getFileName()
+        fileName=self.getFileNameForsave()
 
         self.wb.SaveAs(fileName)
         self.excel.Quit()
@@ -131,10 +124,8 @@ class ExcelCode:
         self.wb = self.excel.Workbooks.Open(fileName)
         self.ws = self.wb.ActiveSheet
         print('read success')
-        print(self.ws.Cells(1,1).Value)
-        print(self.ws.Cells(1,2).Value)
-        print(self.ws.Cells(1,3).Value)
-        print(self.ws.Cells(1,4).Value)
+        
+#         print(str(self.ws.Cells(53,2).Value))
         
     def getTimePetDict(self,code):
         bt = bts.mbts()
@@ -144,30 +135,28 @@ class ExcelCode:
             
         i=2
         j=3
-        print(str(self.ws.Cells(i,1).Value))
+#         print(str(self.ws.Cells(i,1).Value))
         while(True):
-            if int(code) == str(self.ws.Cells(i,1).Value):
-#                 print('성공') 
-#                 print(int(self.ws.Cells(i,1).Value))
-#                 for a in TimePerDict:
-#                     self.ws.Cells(i,j).Value = a
-#                     j+=1
+            print(int(self.ws.Cells(i,1).Value))
+            print('hihi')
+            print(int(code))
+            if int(code) == int(self.ws.Cells(i,1).Value):
+                print('나올까 ? ')
                 for a in TimePerDict:
-                    print(a)
-                    print(j)
+                    print('나왔다 !')
                     print(self.ws.Cells(1,j).Value)
                     if self.ws.Cells(1,j).Value == a:
-                        print('hr')
                         self.ws.Cells(i,j).Value = TimerPerDict[a]
                         print(TimePerDict[a])
                     j+=1
-                break
+            print('한줄완성')
             i+=1
         
         self.excelVisible()
         
         
-    def getFileName(self):
+    def getFileNameForsave(self):
+        
         filePath = 'D:\\Kiwoo\\ExcelData'
         now = time.localtime()
         nowYear =now.tm_year
@@ -187,23 +176,58 @@ class ExcelCode:
             os.mkdir(dirPath)
         self.logCount=1
         
-        
-        filePath = dirPath
-        fileName = filePath+str('\\')+str(nowYear)+str(nowMon)+str(nowmDay)+str('_yang_')+str(self.logCount)+str('.xlsx')
-
+        while(os.path.exists(dirPath+str('\\')+str(nowYear)+str(nowMon)+str(nowmDay)+str('_yang_')+str(self.logCount)+str('.xlsx'))):
+            self.logCount+=1
+            
+        fileName = dirPath+str('\\')+str(nowYear)+str(nowMon)+str(nowmDay)+str('_yang_')+str(self.logCount)+str('.xlsx')
+        print('엑셀 추가['+str(fileName)+']')
         return fileName
     
-    def ExcelExit(self):
+    def getFileName(self):
+        
+        filePath = 'D:\\Kiwoo\\ExcelData'
+        now = time.localtime()
+        nowYear =now.tm_year
+        nowMon =now.tm_mon
+        
+        
+        if int(nowMon) <10:
+            nowMon=str(nowMon)
+            nowMon=nowMon[:0]+'0'+nowMon[0:]
+        nowmDay = now.tm_mday
+        if int(nowmDay) <10:
+            nowmDay=str(nowmDay)
+            nowmDay=nowmDay[:0]+'0'+nowmDay[0:]
+        dirPath= filePath+str('\\')+str(nowYear)+str(nowMon)+str(nowmDay)
+        
+        if not os.path.isdir(dirPath):
+            os.mkdir(dirPath)
+        self.logCount=1
+        
+            
+        fileName = dirPath+str('\\')+str(nowYear)+str(nowMon)+str(nowmDay)+str('_yang_')+str(self.logCount)+str('.xlsx')
+        print(fileName)
+        return fileName
+    
+    def ExcelExitWithoutSave(self):
+        
+        self.wb.Close(False)
+        self.excel.DisplayAlerts = False        #창보이는걸 방지.
+        self.excel.Quit()
+        del self.ws
+        del self.excel
+    
+    def ExcelExitWithSave(self):
+        
+        self.saveas()
         self.excel.Quit()
     
 if __name__ == '__main__':
     tt = ExcelCode()
     
-#     tt.excelVisible()
-#     tt.ExcelRead()
-#     tt.ExcelRead()
-#     tt.saveas()
-#     tt.ExcelRead()
-    tt.ExcelExit()
-#     tt.getTimePetDict('035460')
+
+    tt.ExcelRead()
+    tt.excelVisible()
+    tt.getTimePetDict('069110')
+#     tt.ExcelExitWithoutSave()
     
