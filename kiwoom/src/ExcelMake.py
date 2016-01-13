@@ -30,6 +30,7 @@ class ExcelCode:
                 self.ws.Cells(1,totalMinute).Value =str(i)+str(j)
                 totalMinute+=1
                 
+        print('excel init end')
 #         print(self.ws.Cells(1,1).Value)
 #         self.excelVisible()
         
@@ -45,7 +46,7 @@ class ExcelCode:
         end_time=time.time()
         print('코드리스트 추가  ('+str(end_time-start_time)+')')
 #                 코드를받으면 이름으로 추가
-        self.WriteTimePerDict()
+#         self.WriteTimePerDict()
     def addToExcelCodeName(self,mylist):
         
         self.ws.Cells(self.j,2).Value=mylist
