@@ -100,5 +100,6 @@ if __name__ == "__main__":
     
     bttp = bttest.getTimePerDic()
     
-    
-    print(bttp['09:05'])
+    for a in bttp:
+        print(a)
+#     print(bttp['09:05'])

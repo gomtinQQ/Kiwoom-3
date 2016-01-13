@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import win32com.client
-from time import sleep
 
 import bts
 import time
@@ -24,7 +23,11 @@ class ExcelCode:
         totalMinute=3
         for i in range(9,15):##시간 분단위로 설정.
             for j in range(0,60):
-                self.ws.Cells(1,totalMinute).Value =str(i)+":"+str(j)
+#                 self.ws.Cells(1,totalMinute).Value =str(i)+":"+str(j)
+                if j<10:
+                    j=str(j)
+                    j=j[:0]+str('0')+j[0:]
+                self.ws.Cells(1,totalMinute).Value =str(i)+str(j)
                 totalMinute+=1
                 
 #         print(self.ws.Cells(1,1).Value)
@@ -111,7 +114,7 @@ class ExcelCode:
         self.excel.Quit()
             
     
-    def addZero(self,str):
+    def addZeroToStockCode(self,str):
         str=str.strip()
 
         if len(str.strip())<=6:
@@ -128,6 +131,10 @@ class ExcelCode:
         self.wb = self.excel.Workbooks.Open(fileName)
         self.ws = self.wb.ActiveSheet
         print('read success')
+        print(self.ws.Cells(1,1).Value)
+        print(self.ws.Cells(1,2).Value)
+        print(self.ws.Cells(1,3).Value)
+        print(self.ws.Cells(1,4).Value)
         
     def getTimePetDict(self,code):
         bt = bts.mbts()
@@ -137,15 +144,22 @@ class ExcelCode:
             
         i=2
         j=3
-        print(int(self.ws.Cells(i,1).Value))
+        print(str(self.ws.Cells(i,1).Value))
         while(True):
-            if int(code) == int(self.ws.Cells(i,1).Value):
-                print('성공') 
+            if int(code) == str(self.ws.Cells(i,1).Value):
+#                 print('성공') 
 #                 print(int(self.ws.Cells(i,1).Value))
+#                 for a in TimePerDict:
+#                     self.ws.Cells(i,j).Value = a
+#                     j+=1
                 for a in TimePerDict:
-                    
-                    
-                    self.ws.Cells(i,j).Value = a
+                    print(a)
+                    print(j)
+                    print(self.ws.Cells(1,j).Value)
+                    if self.ws.Cells(1,j).Value == a:
+                        print('hr')
+                        self.ws.Cells(i,j).Value = TimerPerDict[a]
+                        print(TimePerDict[a])
                     j+=1
                 break
             i+=1
@@ -179,11 +193,17 @@ class ExcelCode:
 
         return fileName
     
+    def ExcelExit(self):
+        self.excel.Quit()
+    
 if __name__ == '__main__':
     tt = ExcelCode()
     
 #     tt.excelVisible()
 #     tt.ExcelRead()
-    tt.ExcelRead()
-    tt.getTimePetDict('035460')
+#     tt.ExcelRead()
+#     tt.saveas()
+#     tt.ExcelRead()
+    tt.ExcelExit()
+#     tt.getTimePetDict('035460')
     
