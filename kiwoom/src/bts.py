@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import urllib
 import requests
 import time
+from blaze.expr.math import notnull
 
 class mbts:
 
@@ -100,6 +101,11 @@ if __name__ == "__main__":
     
     bttp = bttest.getTimePerDic()
     
-    for a in bttp:
-        print(a)
+    try :
+        print(bttp['08:05'])
+    except KeyError:
+        print(bttp['09:05'])
 #     print(bttp['09:05'])
+
+
+    

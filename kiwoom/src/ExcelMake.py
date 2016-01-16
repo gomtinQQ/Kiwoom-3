@@ -5,6 +5,7 @@ import win32com.client
 import bts
 import time
 import os
+from _overlapped import NULL
 
 class ExcelCode:
     
@@ -23,7 +24,6 @@ class ExcelCode:
         totalMinute=3
         for i in range(9,15):##시간 분단위로 설정.
             for j in range(0,60):
-#                 self.ws.Cells(1,totalMinute).Value =str(i)+":"+str(j)
                 if j<10:
                     j=str(j)
                     j=j[:0]+str('0')+j[0:]
@@ -31,8 +31,6 @@ class ExcelCode:
                 totalMinute+=1
                 
         print('excel init end')
-#         print(self.ws.Cells(1,1).Value)
-#         self.excelVisible()
         
 #     코드리스트를 받으면 각 코드들 세로로 추가
     def addToExcel(self,codelist):
@@ -66,7 +64,7 @@ class ExcelCode:
         
         c =3
         d =2
-        self.excelVisible()
+        
         for howmanytimes in range(3,self.codelist.__len__()):
             for a in codeCurrList:
                 self.ws.Cells(d,c).Value = a
@@ -139,21 +137,29 @@ class ExcelCode:
 #         print(str(self.ws.Cells(i,1).Value))
         while(True):
             print(int(self.ws.Cells(i,1).Value))
-            print('hihi')
+#             print('hihi')
             print(int(code))
+            
             if int(code) == int(self.ws.Cells(i,1).Value):
-                print('나올까 ? ')
-                for a in TimePerDict:
-                    print('나왔다 !')
-                    print(self.ws.Cells(1,j).Value)
-                    if self.ws.Cells(1,j).Value == a:
-                        self.ws.Cells(i,j).Value = TimerPerDict[a]
-                        print(TimePerDict[a])
+                
+                while(True):
+#                     self.ws.Cells(1,j).Value= int(self.ws.Cells(1,j).Value)
+                    timeVal= str(int(self.ws.Cells(1,j).Value))
+#                     print('before timeVal : '+str(timeVal))
+                    if int(timeVal[:1])==9:
+                        timeVal=timeVal[:0]+str('0')+timeVal[0:]
+                    timeVal= timeVal[:2]+str(':')+timeVal[2:]
+#                     print('timeVal : '+str(timeVal))
+#                     print('TimePerDict[timeVal]'+str(TimePerDict[timeVal]))
+                    
+                    
+                    self.ws.Cells(i,j).Value=TimePerDict[timeVal]
                     j+=1
-            print('한줄완성')
+            j=3
             i+=1
+#             print('한줄완성')
         
-        self.excelVisible()
+        
         
         
     def getFileNameForsave(self):
@@ -213,7 +219,7 @@ class ExcelCode:
     def ExcelExitWithoutSave(self):
         
         self.wb.Close(False)
-        self.excel.DisplayAlerts = False        #창보이는걸 방지.
+        self.excel.DisplayAlerts = False
         self.excel.Quit()
         del self.ws
         del self.excel
@@ -221,14 +227,20 @@ class ExcelCode:
     def ExcelExitWithSave(self):
         
         self.saveas()
+        
+        self.wb.Close(False)
+        self.excel.DisplayAlerts = False
         self.excel.Quit()
+        del self.ws
+        del self.excel
     
 if __name__ == '__main__':
     tt = ExcelCode()
     
+#     tt.ExcelExitWithSave()
 
     tt.ExcelRead()
     tt.excelVisible()
     tt.getTimePetDict('069110')
-#     tt.ExcelExitWithoutSave()
+    tt.ExcelExitWithoutSave()
     
