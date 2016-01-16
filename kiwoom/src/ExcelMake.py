@@ -115,16 +115,10 @@ class ExcelCode:
         return str
     
     def ExcelRead(self):
-        
-
-        
         fileName = self.getFileName()
-        
         self.wb = self.excel.Workbooks.Open(fileName)
         self.ws = self.wb.ActiveSheet
         print('read success')
-        
-#         print(str(self.ws.Cells(53,2).Value))
         
     def getTimePetDict(self,code):
         bt = bts.mbts()
@@ -135,28 +129,29 @@ class ExcelCode:
         i=2
         j=3
 #         print(str(self.ws.Cells(i,1).Value))
-        while(True):
+        while(self.ws.Cells(i,1).Value is not None):
             print(int(self.ws.Cells(i,1).Value))
 #             print('hihi')
             print(int(code))
             
             if int(code) == int(self.ws.Cells(i,1).Value):
-                
-                while(True):
+                while(int(self.ws.Cells(1,j).Value) != 1451):
 #                     self.ws.Cells(1,j).Value= int(self.ws.Cells(1,j).Value)
-                    timeVal= str(int(self.ws.Cells(1,j).Value))
-#                     print('before timeVal : '+str(timeVal))
-                    if int(timeVal[:1])==9:
-                        timeVal=timeVal[:0]+str('0')+timeVal[0:]
-                    timeVal= timeVal[:2]+str(':')+timeVal[2:]
-#                     print('timeVal : '+str(timeVal))
-#                     print('TimePerDict[timeVal]'+str(TimePerDict[timeVal]))
-                    
-                    
-                    self.ws.Cells(i,j).Value=TimePerDict[timeVal]
-                    j+=1
+                    try:
+                        timeVal= str(int(self.ws.Cells(1,j).Value))
+                        if int(timeVal[:1])==9:
+                            timeVal=timeVal[:0]+str('0')+timeVal[0:]
+                        timeVal= timeVal[:2]+str(':')+timeVal[2:]
+                            #                     print('timeVal : '+str(timeVal))
+                            #                     print('TimePerDict[timeVal]'+str(TimePerDict[timeVal]))
+                        self.ws.Cells(i,j).Value=TimePerDict[timeVal]
+                        j+=1
+                    except KeyError:
+                        j+=1
+                        continue
             j=3
             i+=1
+        print('성공!')
 #             print('한줄완성')
         
         
@@ -241,6 +236,6 @@ if __name__ == '__main__':
 
     tt.ExcelRead()
     tt.excelVisible()
-    tt.getTimePetDict('069110')
-    tt.ExcelExitWithoutSave()
+    tt.getTimePetDict('900090')
+#     tt.ExcelExitWithoutSave()
     

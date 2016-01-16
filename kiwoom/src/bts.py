@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 import urllib
 import requests
 import time
-from blaze.expr.math import notnull
 
 class mbts:
 
