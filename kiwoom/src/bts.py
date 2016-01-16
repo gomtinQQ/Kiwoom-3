@@ -36,7 +36,7 @@ class mbts:
         
     def IframeUrlWithCode(self,Code):
 
-        print('코드 프레임 호출')
+        print('[GET '+str(Code)+' VALUES FROM DAUM . . . . . . .]')
 #         code='021080'  #에이티넘
         self.total=0
         self.end=True
@@ -45,19 +45,24 @@ class mbts:
         self.timePerDic={}
         start_time=time.time()
         while self.end:
-            
             iframe_src='http://finance.daum.net/item/quote_hhmm_sub.daum?page='+str(self.page)+'&code='+str(Code)
-            self.iframeParse(iframe_src)
+            if self.iframeParse(iframe_src) == False:
+                print(self.page)
+                break
+            
             self.page+=1
             
         end_time=time.time()
-        print('1종목  파싱완료 ('+str(end_time-start_time)+')')
+        print(str(Code)+' PARSE ['+str(end_time-start_time)+']')
 
 
     def iframeParse(self,IframeAddress):
         self.iframe_content=BeautifulSoup(requests.get(IframeAddress).text,"lxml")
         eachTime = self.iframe_content.findAll("td",class_="datetime2")
         
+        if len(eachTime) ==0 :
+            print('False returned')
+            return False
         
         for i in range(0,eachTime.__len__()):
             
@@ -68,7 +73,7 @@ class mbts:
                 self.end=False
                 break
             self.total+=1
-
+        return True
         
     def printTimeResult(self):
         eachTime = self.iframe_content.findAll("td",class_="datetime2")
@@ -95,16 +100,12 @@ class mbts:
 if __name__ == "__main__":
     bttest = mbts()
     
-    bttest.IframeUrlWithCode('000660')
+    bttest.IframeUrlWithCode('003800')
 #     bttest.showEachPercent()
     
     bttp = bttest.getTimePerDic()
     
-    try :
-        print(bttp['08:05'])
-    except KeyError:
-        print(bttp['09:05'])
-#     print(bttp['09:05'])
+    
 
 
     
