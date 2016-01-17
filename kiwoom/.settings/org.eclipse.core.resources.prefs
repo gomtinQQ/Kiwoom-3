@@ -2,5 +2,6 @@ eclipse.preferences.version=1
 encoding//Test/testForExcel.py=utf-8
 encoding//others/others.py=utf-8
 encoding//src/ExcelMake.py=utf-8
+encoding//src/ExcelParser.py=utf-8
 encoding//src/GetCoast.py=utf-8
 encoding//src/bts.py=utf-8
