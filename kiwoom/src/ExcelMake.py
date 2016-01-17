@@ -20,8 +20,8 @@ class ExcelCode:
     def setLayout(self):
         self.wb = self.excel.Workbooks.Add()
         self.ws = self.wb.Worksheets("Sheet1")
-        self.ws.Cells(1,1).Value ="종목코드"
-        self.ws.Cells(1,2).Value ="종목명"
+        self.ws.Cells(1,1).Value ="StockCode"
+        self.ws.Cells(1,2).Value ="StockName"
         self.j=2
         print('Excel Object Created')
         
@@ -48,7 +48,7 @@ class ExcelCode:
             self.ws.Cells(i,1).Value = a
             i += 1
         end_time=time.time()
-        print('코드리스트 추가  ['+str(end_time-start_time)+']')
+        print('CodeList Added  ['+str(end_time-start_time)+']')
 #                 코드를받으면 이름으로 추가
 #         self.WriteTimePerDict()
     def addToExcelCodeName(self,mylist):
@@ -98,8 +98,8 @@ class ExcelCode:
     def excelVisible(self):
         self.excel.Visible = True
         
-    def getCodeList(self):
-        return self.codelist
+    # def getCodeList(self):
+    #     return self.codelist
     
     def saveas(self):
 
@@ -145,52 +145,75 @@ class ExcelCode:
             self.logCount=1
             fileName = dirPath+str('\\')+str(nowYear)+str(nowMon)+str(nowmDay)+str('_yang_')+str(self.logCount)+str('.xlsx')
             shutil.copy(fileName,self.getFileName())
+            self.wb = self.excel.Workbooks.Open(fileName)
         
         self.ws = self.wb.ActiveSheet
         
-        self.dictCodeList=self.setCodeList();
+        # self.dictCodeList=self.setCodeList();
         print('read success')
+
+    def getWorkBook(self):
+        return self.wb
+
+    def getWorkSheet(self):
+        return self.ws
         
-    def setCodeList(self):
+    def getCodeList(self):
         i=2
-        codelist ={}
+        codelistforIndex ={}
         start_time = time.time()
         while(self.ws.Cells(i,1).Value is not None):
-            codelist[int(self.ws.Cells(i,1).Value)]=i
+            codelistforIndex[int(self.ws.Cells(i,1).Value)]=i
             i+=1
         
-        print('codelist vale setting! ['+str(time.time()-start_time)+']')
-        return codelist
-            
-    def getTimePetDict(self,code):
-        bt = bts.mbts()
-        
-        bt.IframeUrlWithCode(code)
-        TimePerDict = bt.getTimePerDic()
-            
+        print('codelistforIndex value setting (codelistforIndex[StockCode]=Index) ['+str(time.time()-start_time)+']')
+        return codelistforIndex
+    
+    def getIndexCode(self):
+
         i=2
-        j=3
+        IndexCode={}
+        start_time = time.time()
 
         while(self.ws.Cells(i,1).Value is not None):
-            print(int(self.ws.Cells(i,1).Value))
-
-            print(int(code))
-            
-            if int(code) == int(self.ws.Cells(i,1).Value):
-                while(int(self.ws.Cells(1,j).Value) != 1451):
-                    try:
-                        timeVal= str(int(self.ws.Cells(1,j).Value))
-                        if int(timeVal[:1])==9:
-                            timeVal=timeVal[:0]+str('0')+timeVal[0:]
-                        timeVal= timeVal[:2]+str(':')+timeVal[2:]
-                        self.ws.Cells(i,j).Value=TimePerDict[timeVal]
-                        j+=1
-                    except KeyError:
-                        j+=1
-                        continue
-            j=3
+            IndexCode[i]=int(self.ws.Cells(i,1).Value)
             i+=1
-        print('성공!')
+
+
+        print('IndexCode Value Setting(IndexCode[Index]=StockCode) ['+str(time.time()-start_time)+']')
+
+        return IndexCode
+
+
+    # def getTimePetDict(self,code):
+    #     bt = bts.mbts()
+        
+    #     bt.IframeUrlWithCode(code)
+    #     TimePerDict = bt.getTimePerDic()
+            
+    #     i=2
+    #     j=3
+
+    #     while(self.ws.Cells(i,1).Value is not None):
+    #         print(int(self.ws.Cells(i,1).Value))
+
+    #         print(int(code))
+            
+    #         if int(code) == int(self.ws.Cells(i,1).Value):
+    #             while(int(self.ws.Cells(1,j).Value) != 1451):
+    #                 try:
+    #                     timeVal= str(int(self.ws.Cells(1,j).Value))
+    #                     if int(timeVal[:1])==9:
+    #                         timeVal=timeVal[:0]+str('0')+timeVal[0:]
+    #                     timeVal= timeVal[:2]+str(':')+timeVal[2:]
+    #                     self.ws.Cells(i,j).Value=TimePerDict[timeVal]
+    #                     j+=1
+    #                 except KeyError:
+    #                     j+=1
+    #                     continue
+    #         j=3
+    #         i+=1
+    #     print('성공!')
     
     def setPercent(self,code):
         bt = bts.mbts()
@@ -292,6 +315,7 @@ class ExcelCode:
         
         start_time=time.time()
         all =2
+        self.dictCodeList=self.getCodeList()
         while(self.ws.Cells(all,1).Value is not None):
             print('======================================================================')
             print('['+str(self.ws.Cells(all,2).Value)+']setting. . . .')
@@ -300,7 +324,7 @@ class ExcelCode:
             all+=1
             
         end_time=time.time()
-        print('total items ['+str(all)+']'+' time ['+str(end_time-start_time)+']')
+        print('total items ['+str(all)+']'+' time ['+str(end_time-start_time)+']  success!!')
         
 if __name__ == '__main__':
     tt = ExcelCode(False)

@@ -10,11 +10,21 @@ class ExcelParser:
         self.readedExcel = ExcelMake.ExcelCode(False)
         self.readedExcel.ExcelRead()
 
+        self.codelist = self.readedExcel.getIndexCode()
 
-        print('hi')
+        self.wb = self.readedExcel.getWorkBook()
+        self.ws = self.readedExcel.getWorkSheet()
+        
+    def parse(self):
+    	
+    	try:
+    		
+
+    	except Exception:
+
         
         
         
 if __name__ == '__main__':
     test = ExcelParser()
-    
+    test.parse()
