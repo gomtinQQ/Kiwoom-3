@@ -320,7 +320,7 @@ class ExcelCode:
             print('======================================================================')
             print('['+str(self.ws.Cells(all,2).Value)+']setting. . . .')
             self.setPercent(int(self.ws.Cells(all,1).Value))
-            print('['+str(self.ws.Cells(all,2).Value)+']setting finish ')
+            print('['+str(self.ws.Cells(all,2).Value)+']setting finish ['+str(int(all)-1)+'/'+str(len(self.dictCodeList))+']')
             all+=1
             
         end_time=time.time()
