@@ -1,7 +1,16 @@
 # -*- coding: utf-8 -*-
 
 
+import multiprocessing as mp
 
-a='1234567'
-a=a[:2]+str(':')+a[2:]
-print(a)
+q = mp.Queue()
+
+
+for i in range(1,51):
+    q.put(i)
+
+
+
+
+while(q.empty() ==False ):
+    print(q.get())
