@@ -9,6 +9,8 @@ import re
 import ExcelMake
 from bs4 import BeautifulSoup
 import time
+import sys
+from win32ras import GetConnectStatus
 
 
 
@@ -41,11 +43,26 @@ class Ui_Form(QAxWidget):
 
     def btn_login(self):
 #         self.excel.addToExcel(self.codelist)
+        
         ret = self.dynamicCall("CommConnect()")
+        
+        
+    
+    def getConnectState(self):
+        ret = self.dynamicCall('GetConnectState()')
+        return ret
 
     def btn_Quit(self):
         self.dynamicCall("CommTerminate()")
         sys.exit()
+        
+    def getExcel(self):
+        self.btn_login()
+        
+        
+        
+        print("success")
+        
 
     def OnEventConnect(self, nErrCode):
         if nErrCode == 0:
@@ -68,6 +85,7 @@ class Ui_Form(QAxWidget):
             self.lineEdit_9.setEnabled(True)
             self.lineEdit_10.setEnabled(True)
             self.lineEdit_4.setEnabled(True)
+            
 
         else:
             self.textEdit.append("서버 연결에 실패 했습니다...")
@@ -166,6 +184,20 @@ class Ui_Form(QAxWidget):
         
             
     def btn_ExtractExcel(self):
+        
+        
+        if self.getConnectState()!=1:
+            print('cannot connect')
+            return
+            
+        
+        
+                
+        
+
+
+        
+        
         excel_total_time = time.time()
         print('==================ExcelMaking Call======================')
         self.codelist = self.GetCodeListByMarket(10)
@@ -224,6 +256,7 @@ class Ui_Form(QAxWidget):
         return codelist 
   
 
+    
     def btn_SendOrder(self):
         HogaGb = self.comboBox.currentText()[0:2].strip()
         Type = int(self.comboBox_2.currentText()[0:1].strip())
