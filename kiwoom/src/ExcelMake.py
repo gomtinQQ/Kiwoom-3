@@ -177,6 +177,7 @@ class ExcelCode:
 
         while(self.ws.Cells(i,1).Value is not None):
             IndexCode[i]=int(self.ws.Cells(i,1).Value)
+            print(str(i-1)+'th setting. . . ['+str(self.ws.Cells(i,2).Value)+']')
             i+=1
 
 
