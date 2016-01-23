@@ -118,7 +118,9 @@ class ExcelCode:
         return str
     
     def ExcelRead(self):
-        fileName = self.getFileName()
+#         fileName = self.getFileName()
+        
+        fileName = 'D:\\Kiwoo\\ExcelData\\yang_1'
         try:
             self.wb = self.excel.Workbooks.Open(fileName)
         except Exception:
@@ -148,7 +150,7 @@ class ExcelCode:
             self.wb = self.excel.Workbooks.Open(fileName)
         
         self.ws = self.wb.ActiveSheet
-        
+        self.dictCodeList=self.getCodeList()
         # self.dictCodeList=self.setCodeList();
         print('read success')
 
@@ -306,7 +308,7 @@ class ExcelCode:
         
         self.saveas()
         
-        self.wb.Close(False)
+#         self.wb.Close(False)
         self.excel.DisplayAlerts = False
         self.excel.Quit()
         del self.ws
@@ -316,7 +318,7 @@ class ExcelCode:
         
         start_time=time.time()
         all =2
-        self.dictCodeList=self.getCodeList()
+#         self.dictCodeList=self.getCodeList()
         while(self.ws.Cells(all,1).Value is not None):
             print('======================================================================')
             print('['+str(self.ws.Cells(all,2).Value)+']setting. . . .')
@@ -335,6 +337,11 @@ if __name__ == '__main__':
     tt.ExcelRead()
     tt.excelVisible()
     tt.setAllValue()
+#     tt.setPercent('900090')
+    tt.ExcelExitWithSave()
+
+#     tt.getFileNameForsave()
+    
 #     tt.setPercent('003800')
 #     tt.setPercent('900080')
 #     
