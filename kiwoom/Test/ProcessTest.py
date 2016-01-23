@@ -1,4 +1,4 @@
-import multiprocessing
+import multiprocessing as mp
 
 import time
 
@@ -20,6 +20,7 @@ def my_service():
 def f(name):
     print('hello',name)
     
+
     
     
     
@@ -33,6 +34,8 @@ if __name__ == '__main__':
 #     worker_2.start()
 #     service.start()
     
-    p = multiprocessing.Process(target=f,args=('bob',))
-    p.start()
-    p.join()
+    a=0
+    for i in range(1,6):
+        a+=i
+    print(a)
+

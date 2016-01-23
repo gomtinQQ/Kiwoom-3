@@ -1,48 +1,34 @@
 import multiprocessing
 import os
-
+import time
 
 
 class Prt:
-    
-    def info(self,title):
-        print(title)
-        print('module name:',__name__)
-        print('parent process:',os.getppid())
-        print('process id:',os.getpid())
-    
-    def f(self,start,end,q):
-#         self.info('fuction f')
 
-        print('parent process:',os.getppid())
-        print('process id:',os.getpid())
-        
-        
-        i=start
-        for i in range(start,end):
-            i+=i
-            
-        q.put(i)
+    def reader(self,queue):
+        while True:
+            msg = queue.get()
+            if (msg=='DONE'):
+                break;
     
+    def writer(self,count,queue):
+        for ii in range(0,count):
+            queue.put(ii)
+        queue.put('DONE')
+
     
 if __name__ == '__main__':
     pt = Prt()
-#     pt.info('main line')
-#     p = multiprocessing.Process(target=pt.f('bob'))
-#     p.start()
-#     p.join()
-#     
-#     p = multiprocessing.Process(target=pt.f('bo'))
-#     
-#     
-    q = multiprocessing.Queue()
-    pl=[]
-    q.put(50)
-    
-    for p in range(2):
-        p = multiprocessing.Process(target=pt.f ,args=(1,3,q))
-        pl.append(p)
-        p.start()
+
+    for count in [10000,100000,1000000]:
+        queue = multiprocessing.Queue()
+
+        reader_p = multiprocessing.Process(target = pt.reader,args=((queue),))
         
-    print(q.get())
-    
+        reader_p.start()
+
+        _start = time.time()
+        pt.writer(count,queue)
+        reader_p.join()
+
+        print(count,'hi',(time.time()-_start))
