@@ -35,7 +35,6 @@ class ExcelParser:
                 while(int(self.ws.Cells(1,j).Value) !=1451):
                     try:
                         self.value[int(self.ws.Cells(i,1).Value)].append(round(self.ws.Cells(i,j).Value*100,2))
-#                         print(round(self.ws.Cells(i,j).Value*100,2))
                         j+=1
                     except TypeError:
                         j+=1
