@@ -47,7 +47,7 @@ class mbts:
         while self.end:
             iframe_src='http://finance.daum.net/item/quote_hhmm_sub.daum?page='+str(self.page)+'&code='+str(Code)
             if self.iframeParse(iframe_src) == False:
-                print(self.page)
+                # print(self.page)
                 break
             
             self.page+=1
