@@ -241,6 +241,20 @@ class ExcelCode:
             except KeyError:
                 j+=1
                 continue
+
+    def getPercent(self,code):
+
+        bt = bts.mbts()
+        code=self.addZeroToStockCode(str(code))
+        bt.IframeUrlWithCode(code)
+        
+        
+        code=int(code)
+        i = self.dictCodeList[code]
+        
+        TimePerDict = bt.getTimePerDic()
+
+        return TimePerDict
         
     def getFileNameForsave(self):
         
@@ -337,7 +351,6 @@ if __name__ == '__main__':
     tt.ExcelRead()
     tt.excelVisible()
     tt.setAllValue()
-#     tt.setPercent('900090')
     tt.ExcelExitWithSave()
 
 #     tt.getFileNameForsave()
