@@ -117,7 +117,7 @@ class ExcelCode:
                 str=str[:0]+"0"+str[0:]
         return str
     
-    def ExcelRead(self,boolean=True):
+    def ExcelRead(self):
 #         fileName = self.getFileName()
         
         fileName = 'D:\\Kiwoo\\ExcelData\\yang_1'
@@ -150,8 +150,7 @@ class ExcelCode:
             self.wb = self.excel.Workbooks.Open(fileName)
         
         self.ws = self.wb.ActiveSheet
-        if boolean==True:
-            self.dictCodeList=self.getCodeList()
+        self.dictCodeList=self.getCodeList()
         # self.dictCodeList=self.setCodeList();
         print('read success')
 
@@ -350,7 +349,7 @@ if __name__ == '__main__':
 #     tt.ExcelExitWithSave()
 
     tt.ExcelRead()
-    tt.excelVisible()
+#     tt.excelVisible()
     tt.setAllValue()
     tt.ExcelExitWithSave()
 
