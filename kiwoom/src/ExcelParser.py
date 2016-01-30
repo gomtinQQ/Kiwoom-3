@@ -8,8 +8,8 @@ class ExcelParser:
     
     def __init__(self):
         self.excel = win32com.client.Dispatch("Excel.Application")
-        self.readedExcel = ExcelMake.ExcelCode(False)
-        self.readedExcel.ExcelRead()
+        self.readedExcel = ExcelMake.ExcelCode(setLayout=False)
+        self.readedExcel.ExcelRead(fileName='D:\\Kiwoo\\ExcelData\\20160127\\20160127_yang_1.xlsx')
 
         self.codelist = self.readedExcel.getCodeList()
 
@@ -18,9 +18,6 @@ class ExcelParser:
         
     def parse(self):
 
-        # for index in range(2,len(self.codelist)+1):
-        #     self.MuchVal = 
-        #     print(index)
         i=2
         self.value=self.codelist
         try:
@@ -56,9 +53,3 @@ class ExcelParser:
 if __name__ == '__main__':
     test = ExcelParser()
     test.parse()
-#     testval = {}
-#     
-#     testval['hi']=[23]
-#     testval['hi'].append(32)
-#     
-#     print(testval)
