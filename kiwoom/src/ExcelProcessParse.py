@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import sqlite3
 import win32com.client
 import multiprocessing as mp
 import bts
@@ -39,6 +39,13 @@ class CodeWriter(mp.Process):
     def setRW(self,rq):
         self.rq=rq
         self.wq=wq
+        
+    def run(self):
+        
+        conn = sqlite3.connect("kospi.db")
+        cursor = conn.cursor()
+        cursor.execute("select * from kospi")
+        print(cursor.fetchall())
     
     
 if __name__ == '__main__':
@@ -55,5 +62,9 @@ if __name__ == '__main__':
     wq = mp.Queue()
     
     parser.setRW(rq, wq, codelist,readedExcel)
-    parser.start()
+#     parser.start()
+    
+    codewriter = CodeWriter()
+    
+    codewriter.start()
     
