@@ -114,6 +114,27 @@ class ExcelCode:
 
         return IndexCode
 
+    def getNameList(self):
+        i=2
+        namelistforIndex={}
+        start_time=time.time()
+        while(self.ws.Cells(i,1).Value is not None):
+            namelistforIndex[str(self.ws.Cells(i,2).Value)]=i
+            i+=1
+        print('namelistForIndex value Setting. (namelistForIndex[name]=Index) ['+str(time.time()-start_time)+']')
+        
+        return namelistforIndex
+    
+    def getCodeName(self):
+        i=2
+        codeName={}
+        start_time=time.time()
+        while(self.ws.Cells(i,1).Value is not None):
+            codeName[int(self.ws.Cells(i,1).Value)]=str(self.ws.Cells(i,2).Value)
+            i+=1
+        print('codeName value Setting. (codeName[code]=name) ['+str(time.time()-start_time)+']')
+        
+        return codeName
     
     def setPercent(self,code,TimePerDict):
         
