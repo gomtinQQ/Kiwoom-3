@@ -68,6 +68,10 @@ class mbts:
         for i in range(0,eachTime.__len__()):
             
             percentage = eachTime[i].next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.contents[0]
+            
+            percentage=str(percentage)
+            percentage=percentage[0:percentage.index('%')]
+            
             self.eachPercent.append(percentage)
             self.timePerDic[eachTime[i].contents[0]]=percentage
             
@@ -116,6 +120,13 @@ if __name__ == "__main__":
 #     bttest.showEachPercent()
     
     bttp = bttest.getTimePerDic()
+    
+    strr = bttp['10:34']
+    str=str(strr)
+#     print(str.index('%'))
+    str=str[0:str.index('%')]
+    print(bttp)
+    print(str)
     
     
 

@@ -4,16 +4,17 @@ import sqlite3
 import ExcelMake
 import bts
 import time
+import multiprocessing as mp
 from _sqlite3 import OperationalError
 
-class dbm:
+class dbm(mp.Process):
     
     def __init__(self,dbname=""):
-        
+        super(multi, self).__init__()
         self.conn=""
         
         if dbname=="":
-            self.conn = sqlite3.connect("D:\\OneDrive\\python\\sqlite3\\kosdaq.db")
+            self.conn = sqlite3.connect("D:\\OneDrive\\python\\sqlite3\\kosdaq1.db")
         else:
             self.conn = sqlite3.connect(dbname)
             
@@ -50,13 +51,7 @@ class dbm:
             name = str(name)
             self.cursor.execute("insert into "+tablename+" (StockName) values ("+name+")")
         conn.commit()
-        
-    def update(self):
-        self.cursor = self.conn.cursor()
-        self.cursor.execute('''update kosdaq set '900'='100','901'='320' where StockCode='900090' ''')
-        
-        '''update kosdaq set '900'='100','901'='320' where StockCode='900090' '''
-        self.conn.commit()
+
         
     def updateCode(self,code,TimePerDict):
         _start = time.time()
@@ -77,7 +72,41 @@ class dbm:
     
     def commit(self):
         self.conn.commit()
+    
+    def setWQueue(self,WQueue):
+        self.WQueue=WQueue
+        
+    def run(self):
+        while True:
+            TimePerDict = self.Wqueue.get()
+        
+            self.updateCode(code,TimePerDict)
+        
+    def setCodelist(self,codelist):
+        self.codelist = codelist
+    
 
+class multi(mp.Process):
+    
+    def __init__(self,RQueue,WQueue,bts):
+        super(multi, self).__init__()
+        self.WQueue=WQueue
+        self.RQueue=RQueue
+        self.bts=bts
+    
+    def run(self):
+        
+        while(True):
+            print(self.name+" is working")
+            code = self.RQueue.get()
+            if code == 'END':
+                self.RQueue.put('END')
+                break
+            self.bts.IframeUrlWithCode(code)
+            tpd = self.bts.getTimePerDic()
+            
+            self.WQueue.put(tpd)
+                        
 
 if __name__ == '__main__':
 
@@ -91,13 +120,21 @@ if __name__ == '__main__':
     dbm = dbm()
     bts = bts.mbts()
     
-    i = 1
-    all = len(codelist)
+    RQueue = mp.Queue()
+    WQueue = mp.Queue()
     for code in codelist:
-        bts.IframeUrlWithCode(code)
-        tpd = bts.getTimePerDic()
+        RQueue.put(code)
+    RQueue.put('END')
+    
+    print('RQsetting ')
+    process=[]
+    for proc in range(5):
+        proc = multi(RQueue,WQueue,bts)
+        process.append(proc)
+        proc.start()
+     
+    for code in codelist:
          
-        dbm.updateCode(code,tpd)
-        print(str(code)+' ['+str(i)+'/'+str(all)+']')
-        i+=1
-        dbm.commit()
+    
+    
+    dbm.commit()

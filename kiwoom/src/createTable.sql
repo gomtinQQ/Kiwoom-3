@@ -11,3 +11,12 @@ for i in range(9,15):
             j=str(j)
             j=j[:0]+str('0')+j[0:]
         cursor.execute("alter table kosdaq add '"+str(i)+str(j)+"' REAL")
+        
+        
+select * from kosdaq where "900"<"901"
+
+select * from kosdaq where "900"= (
+	 select "900" from kosdaq where StockCode=900090
+	)
+	
+select "900",StockCode from kosdaq where StockCode=900090
