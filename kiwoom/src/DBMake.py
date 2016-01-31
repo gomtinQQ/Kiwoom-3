@@ -2,29 +2,24 @@
 
 import sqlite3
 import ExcelMake
-
-conn = sqlite3.connect("D:\\OneDrive\\python\\sqlite3\\kosdaq.db")
-
-
-
-cursor = conn.cursor()
-
-# cursor.execute("CREATE TABLE kosdaq1(StockCode text, StockName int)")
-# cursor.executemany('''insert into kosdaq values(?,?)''',("한",'한양'))
-
-# cursor.execute("insert into kosdaq ('StockCode','StockName') values(?,?)",(900090,'gg'))
-
-
+import bts
+import time
+from _sqlite3 import OperationalError
 
 class dbm:
     
-    def con(self,dbname=""):
+    def __init__(self,dbname=""):
+        
         self.conn=""
         
         if dbname=="":
             self.conn = sqlite3.connect("D:\\OneDrive\\python\\sqlite3\\kosdaq.db")
         else:
             self.conn = sqlite3.connect(dbname)
+            
+        self.cursor = self.conn.cursor()
+    
+    def getConnection(self,dbname=""):
             
         return self.conn
         
@@ -56,29 +51,53 @@ class dbm:
             self.cursor.execute("insert into "+tablename+" (StockName) values ("+name+")")
         conn.commit()
         
+    def update(self):
+        self.cursor = self.conn.cursor()
+        self.cursor.execute('''update kosdaq set '900'='100','901'='320' where StockCode='900090' ''')
+        
+        '''update kosdaq set '900'='100','901'='320' where StockCode='900090' '''
+        self.conn.commit()
+        
+    def updateCode(self,code,TimePerDict):
+        _start = time.time()
+        for tp in TimePerDict.keys():
+            try:
+                rtime = tp
+                if tp[0]==9:
+                    tp=tp[0:]+'0'+tp[:0]
+                rec=tp[:2]+tp[3:]
+                rec=int(rec)
+#                 print(str(rec))
+#                 print(str(TimePerDict[rtime]))
+#                 print(str(code))
+                self.cursor.execute('update kosdaq set "'+str(rec)+'"="'+str(TimePerDict[rtime])+'" where StockCode='+str(code))
+            except OperationalError:
+                continue
+        print(str(code)+' setting ['+str(time.time()-_start)+']')
     
+    def commit(self):
+        self.conn.commit()
+
 
 if __name__ == '__main__':
-#     ex = dbm()
-#     con = dbm().con()
-    
+
     readedExcel = ExcelMake.ExcelCode(setLayout=False)
     readedExcel.ExcelRead(fileName='D:\\Kiwoo\\ExcelData\\20160127\\20160127_yang_1.xlsx')
     wb = readedExcel.getWorkBook()
     ws = readedExcel.getWorkSheet()
     
-    codeName = readedExcel.getCodeName()
-    
     codelist = readedExcel.getCodeList()
-    print(codeName)
     
-    dbm().con()
+    dbm = dbm()
+    bts = bts.mbts()
     
-    dbm().setCodelist(codelist, 'kosdaq' , dbm().con())
-#     dbm().setNamelist(namelist, 'kosdaq' , dbm().con())
-#     
-# cursor.execute("select * from kosdaq")
-# conn.commit()
-# 
-# print(cursor.fetchall())
-# conn.close()
+    i = 1
+    all = len(codelist)
+    for code in codelist:
+        bts.IframeUrlWithCode(code)
+        tpd = bts.getTimePerDic()
+         
+        dbm.updateCode(code,tpd)
+        print(str(code)+' ['+str(i)+'/'+str(all)+']')
+        i+=1
+        dbm.commit()

@@ -35,7 +35,8 @@ class mbts:
         
         
     def IframeUrlWithCode(self,Code):
-
+        
+        Code = self.addZeroToStockCode(str(Code))
         print('[GET '+str(Code)+' VALUES FROM DAUM . . . . . . .]')
 #         code='021080'  #에이티넘
         self.total=0
@@ -61,18 +62,21 @@ class mbts:
         eachTime = self.iframe_content.findAll("td",class_="datetime2")
         
         if len(eachTime) ==0 :
-            print('False returned')
+#             print('False returned')
             return False
         
         for i in range(0,eachTime.__len__()):
             
-            self.eachPercent.append(eachTime[i].next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.contents[0])
-            self.timePerDic[eachTime[i].contents[0]]=eachTime[i].next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.contents[0]
+            percentage = eachTime[i].next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.contents[0]
+            self.eachPercent.append(percentage)
+            self.timePerDic[eachTime[i].contents[0]]=percentage
             
             if eachTime[i].contents[0]=='09:00':          #실전에서 수정필요
                 self.end=False
                 break
             self.total+=1
+            
+        '''ex)timePerDic[1023]=2.34%'''
         return True
         
     def printTimeResult(self):
@@ -96,6 +100,14 @@ class mbts:
     def getTimePerDic(self):
 #         print(self.timePerDic.__len__())
         return self.timePerDic
+    
+    def addZeroToStockCode(self,str):
+        str=str.strip()
+    
+        if len(str.strip())<=6:
+            while(len(str.strip())!=6):
+                str=str[:0]+"0"+str[0:]
+        return str
 
 if __name__ == "__main__":
     bttest = mbts()
