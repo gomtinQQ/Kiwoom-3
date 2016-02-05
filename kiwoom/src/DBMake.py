@@ -12,66 +12,44 @@ class dbm2(mp.Process):
     
     def __init__(self,dbname=""):
         super(dbm2, self).__init__()
-        self.conn=""
-        if dbname=="":
-            self.conn = sqlite3.connect("D:\\OneDrive\\python\\sqlite3\\kosdaq1.db")
-        else:
-            self.conn = sqlite3.connect(dbname)
-            
-        self.cursor = self.conn.cursor()
-    def getConnection(self,dbname=""):
-            
+
+        
+    def getConnection(self):
         return self.conn
         
-    def setCursor(self,conn):
-        
-        self.cursor=conn.cursor()
-        
-    def setNamelist(self,namelist,tablename,conn):
-        
-        self.cursor = conn.cursor()
-        
-        for name in namelist:
-            name = str(name)
-            self.cursor.execute("insert into "+tablename+" (StockName) values ("+name+")")
-        conn.commit()
-
-    def setNameCode(self,codeName,tablename,conn):
-        
-        self.cursor = conn.cursor()
-        
-        for name in namelist:
-            name = str(name)
-            self.cursor.execute("insert into "+tablename+" (StockName) values ("+name+")")
-        conn.commit()
 
         
-    def updateCode(self,code,TimePerDict):
+    def updateCode(self,code,TimePerDict,cursor):
         _start = time.time()
         
-        for tp in TimePerDict.keys():
+#         for tp in TimePerDict.keys():
+        for tp in list(TimePerDict):
             try:
                 rtime = tp
                 if tp[0]==9:
                     tp=tp[0:]+'0'+tp[:0]
                 rec=tp[:2]+tp[3:]
                 rec=int(rec)
-                self.cursor.execute('update kosdaq set "'+str(rec)+'"="'+str(TimePerDict[rtime])+'" where StockCode='+str(code))
+                cursor.execute('update kosdaq set "'+str(rec)+'"="'+str(TimePerDict[rtime])+'" where StockCode='+str(code))
             except OperationalError:
+                print("exception occured!!")
                 continue
         print(str(code)+' setting ['+str(time.time()-_start)+']')
+        self.commit()
     
-    def commit(self):
-        self.conn.commit()
+
     
-    def setWQueue(self,WQueue):
-        self.WQueue=WQueue
+    def setDBName(self,dbname):
+        self.dbName=dbname
         
     def run(self):
+        self.conn= sqlite3.connect(self.dbName)
+        self.cursor = self.conn.cursor()
         
         _start=time.time()
         all = len(self.codelist)
         i=0
+        
         while True:
             TimePerDict = self.WQueue.get()
             if TimePerDict=='END':
@@ -79,14 +57,18 @@ class dbm2(mp.Process):
                 break
             i+=1
             for code in TimePerDict:
-                self.updateCode(code,TimePerDict[code])
+                self.updateCode(code,TimePerDict[code],self.cursor)
             print('=======================================================['+str(i)+'/'+str(all)+']')
 #         print('hi')
         
         
     def setCodelist(self,codelist):
         self.codelist = codelist
-    
+        
+    def commit(self):
+        self.conn.commit()
+    def setWQueue(self,WQueue):
+        self.WQueue=WQueue
 
 class multi(mp.Process):
     
@@ -120,15 +102,17 @@ if __name__ == '__main__':
     readedExcel.ExcelRead(fileName='D:\\Kiwoo\\ExcelData\\20160127\\20160127_yang_1.xlsx')
     wb = readedExcel.getWorkBook()
     ws = readedExcel.getWorkSheet()
-    
     codelist = readedExcel.getCodeList()
-    
+    RQueue = mp.Queue()
     WQueue = mp.Queue()
-    dbm = dbm2()
     
+    
+    dbm = dbm2()
+    dbm.setDBName("D:\\OneDrive\\python\\sqlite3\\kosdaq.db")
     bts = bts.mbts()
     
-    RQueue = mp.Queue()
+    
+    
     for code in codelist:
         RQueue.put(code)
     RQueue.put('END')
@@ -143,7 +127,6 @@ if __name__ == '__main__':
 #     WQueue.put('END')
     dbm.setWQueue(WQueue)
     dbm.setCodelist(codelist)
-    dbm.setCursor(dbm.getConnection())
     dbm.start()
     dbm.join()
     dbm.commit()
