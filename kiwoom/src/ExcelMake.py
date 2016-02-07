@@ -233,7 +233,7 @@ if __name__ == '__main__':
     tt = ExcelCode(setLayout=False)
 
     tt.ExcelRead()
-    tt.excelVisible()
+#     tt.excelVisible()
     tt.setAllValue()
     tt.ExcelExitWithSave()
     

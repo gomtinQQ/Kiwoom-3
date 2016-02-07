@@ -23,17 +23,20 @@ class dbm2(mp.Process):
         _start = time.time()
         
 #         for tp in TimePerDict.keys():
-        for tp in list(TimePerDict):
+        for tp in TimePerDict.keys():
             try:
                 rtime = tp
-                if tp[0]==9:
+                if tp[0]==9 :
                     tp=tp[0:]+'0'+tp[:0]
                 rec=tp[:2]+tp[3:]
-                rec=int(rec)
+                if tp[0]!='c':
+                    rec=int(rec)
                 cursor.execute('update kosdaq set "'+str(rec)+'"="'+str(TimePerDict[rtime])+'" where StockCode='+str(code))
-            except OperationalError:
-                print("exception occured!!")
+            except OperationalError as err:
+#                 print("OperationalError exception occured!!"+str(sys.exc_info()))
                 continue
+            except Exception as er:
+                print("Exception1 "+str(sys.exc_info()))
         print(str(code)+' setting ['+str(time.time()-_start)+']')
         self.commit()
     
@@ -49,16 +52,30 @@ class dbm2(mp.Process):
         _start=time.time()
         all = len(self.codelist)
         i=0
-        
-        while True:
-            TimePerDict = self.WQueue.get()
-            if TimePerDict=='END':
-                print('success~ ['+(time.time()-_start)+']')
-                break
-            i+=1
-            for code in TimePerDict:
-                self.updateCode(code,TimePerDict[code],self.cursor)
-            print('=======================================================['+str(i)+'/'+str(all)+']')
+        time.sleep(1)
+        print(self.name+" is working")
+        while (True):
+            print('before get')
+            try:
+                TimePerDict = self.WQueue.get(timeout=5.0)
+                print(TimePerDict)
+#                 if len(TimePerDict):
+#                     print("hi")
+#                     time.sleep(1)
+#                     continue
+                if TimePerDict=='END':
+                    print('success~ ['+(time.time()-_start)+']')
+                    break
+                i+=1
+                print('before code')
+                
+                print('code = '+TimePerDict['code'])
+                self.updateCode(TimePerDict['code'],TimePerDict,self.cursor)
+                print('code end')
+                print('=======================================================['+str(i)+'/'+str(all)+']')
+            except Exception as er :
+                print("Exception = "+str(sys.exc_info()))
+                continue
 #         print('hi')
         
         
@@ -67,36 +84,43 @@ class dbm2(mp.Process):
         
     def commit(self):
         self.conn.commit()
+        
     def setWQueue(self,WQueue):
         self.WQueue=WQueue
 
 class multi(mp.Process):
     
-    def __init__(self,RQueue,WQueue,bts):
+    def __init__(self):
         super(multi, self).__init__()
-        self.WQueue=WQueue
-        self.RQueue=RQueue
-        self.bts=bts
+#         mp.Process.__init__(self)
+
     
     def run(self):
-        
-        codeandvalue={}
+        self.bts = bts.mbts()
         while(True):
-            print(self.name+" is working")
-            code = self.RQueue.get()
-            if code == 'END':
-                self.RQueue.put('END')
-                self.WQueue.put('END')
-                break
-            self.bts.IframeUrlWithCode(code)
-            tpd = self.bts.getTimePerDic()
-            codeandvalue[code] =tpd 
-            self.WQueue.put(codeandvalue)
-                        
+#             print(self.name+" is working")
+            try:
+                code = self.RQueue.get()
+                if code == 'END':
+                    self.RQueue.put('END')
+                    self.WQueue.put('END')
+                    break
 
+                self.bts.IframeUrlWithCode(code)
+                
+                tps=self.bts.getTimePerDic()
+                self.WQueue.put(tps)
+                
+            except:
+                print('put error :'+str(sys.exc_info()))
+                        
+    def setting(self,WQueue,RQueue):
+        self.WQueue=WQueue
+        self.RQueue=RQueue
+        
 if __name__ == '__main__':
 
-    sys.setrecursionlimit(2000) #에러방지위해 뎁스 기본값 세팅
+    sys.setrecursionlimit(1000000) #에러방지위해 뎁스 기본값 세팅
     
     readedExcel = ExcelMake.ExcelCode(setLayout=False)
     readedExcel.ExcelRead(fileName='D:\\Kiwoo\\ExcelData\\20160127\\20160127_yang_1.xlsx')
@@ -109,24 +133,29 @@ if __name__ == '__main__':
     
     dbm = dbm2()
     dbm.setDBName("D:\\OneDrive\\python\\sqlite3\\kosdaq.db")
-    bts = bts.mbts()
+
     
     
+    dbm.setCodelist(codelist)
     
     for code in codelist:
         RQueue.put(code)
     RQueue.put('END')
     
+    
+    
+    
     print('RQsetting ')
     process=[]
     for proc in range(5):
-        proc = multi(RQueue,WQueue,bts)
+        proc = multi()
+        proc.setting(WQueue, RQueue)
         process.append(proc)
+        proc.daemon= True
         proc.start()
-         
+    
 #     WQueue.put('END')
     dbm.setWQueue(WQueue)
-    dbm.setCodelist(codelist)
     dbm.start()
     dbm.join()
     dbm.commit()
