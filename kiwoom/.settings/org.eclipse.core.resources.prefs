@@ -8,4 +8,6 @@ encoding//src/ExcelParser.py=utf-8
 encoding//src/ExcelProcessParse.py=utf-8
 encoding//src/GetCoast.py=utf-8
 encoding//src/bts.py=utf-8
+encoding//src/btsForDashin.py=utf-8
 encoding//src/btsForReal.py=utf-8
+encoding//src/btsForRealNaver.py=utf-8
