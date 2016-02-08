@@ -15,17 +15,48 @@ class btsForReal:
         frame_src = 'http://www.daishin.co.kr/ctx_kr/sc_stock/sg_stock_info/svc_kosdaq_total/KosdaqKsSise.shtml'
 #         print(requests.get(frame_src).content)
         self.iframe_content=BeautifulSoup(requests.get(frame_src).content,"lxml")
-
-        self.td = self.iframe_content.find_all("td")
-        for a in self.td:
-            print(a)
-            
+#         print(self.iframe_content)
         
+        print(self.iframe_content)
+        self.td = self.iframe_content.find_all("td")
+#         self.td = self.iframe_content.find_all("td",class_="B")
+#         self.td = self.iframe_content.find_all("td",class_="R")
+#         self.td = self.iframe_content.find_all("td",class_="N")
+        
+        
+        self.codeNameCoast={}
+        for a in self.td:
+            if a.a is not None:
+                if str(a.find("a").contents[0]).startswith('A') ==True:
+                    self.inerNameCoast={}
+                    coast =a.a.parent.next_sibling.next_sibling.contents[0]
+                    change=a.a.parent.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.contents[0]
+                    changePercent=a.a.parent.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.contents[0]
+                    code = str(a.find("a").contents[0])[1:7]
+                    name = str(a.find("a").contents[0])[8:]
+                    
+                    self.inerNameCoast[name]=coast
+#                     print('['+name+'('+code+')] : '+str(coast)+'('+str(change)+') '+str(changePercent))
+                    self.codeNameCoast[code]=self.inerNameCoast
+                    del(self.inerNameCoast)
         self.total = 0
         self.dictions={}
         
+#         self.getCodeNameCoast()
         
         
+    def getCodeNameCoast(self):
+        
+        inde = 0
+#         print(self.codeNameCoast)
+        for a in self.codeNameCoast:
+            for b in self.codeNameCoast[a]:
+                inde+=1
+                print(self.codeNameCoast[a])
+                print(b)
+                print(self.codeNameCoast[a][b])
+                
+        print(inde)
         
     def setCodeNameDic(self):
         
