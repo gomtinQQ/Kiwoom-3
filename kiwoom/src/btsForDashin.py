@@ -27,6 +27,7 @@ class btsForReal:
                     coast =a.a.parent.next_sibling.next_sibling.contents[0]
                     change=a.a.parent.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.contents[0]
                     changePercent=a.a.parent.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.contents[0]
+                    
                     code = str(a.find("a").contents[0])[1:7]
                     name = str(a.find("a").contents[0])[8:]
                     
@@ -37,11 +38,12 @@ class btsForReal:
         self.total = 0
         self.dictions={}
         
-        self.getCodeNameCoast()
+#         self.printCodeNameCoast()
         
-    
-    
     def getCodeNameCoast(self):
+        return self.codeNameCoast
+    
+    def printCodeNameCoast(self):
         
         index = 0
 #         print(self.codeNameCoast)
@@ -49,7 +51,7 @@ class btsForReal:
             for b in self.codeNameCoast[a]:
                 index+=1
                 print('name '+str(b)+" coast: "+str(self.codeNameCoast[a][b]) + " code :"+str(a))
-        print(index)
+        print('all items ['+str(index)+']')
         
     def addZeroToStockCode(self,str):
         str=str.strip()

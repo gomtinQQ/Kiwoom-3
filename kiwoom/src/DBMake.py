@@ -43,14 +43,16 @@ class dbm2(mp.Process):
     
 
     def createTable(self,dbName):
+        '''형식에 맞는 테이블 생성.'''
         self.dbName=dbName
         self.conn = sqlite3.connect(self.dbName)
         self.cursor = self.conn.cursor()
         
         _start=time.time()    
         
-        self.cursor.execute('CREATE TABLE `kosdaq` (`StockCode`    INTEGER NOT NULL UNIQUE,`StockName`    INTEGER NOT NULL UNIQUE,PRIMARY KEY(StockCode,StockName));')
-        print('table created')
+        self.cursor.execute('CREATE TABLE `kosdaq` (`StockCode`    \
+        INTEGER NOT NULL UNIQUE,`StockName`    \
+        INTEGER NOT NULL UNIQUE,PRIMARY KEY(StockCode,StockName));')
         
         for i in range(9,15):
             for j in range(0,60):
@@ -61,10 +63,24 @@ class dbm2(mp.Process):
         print("table created ["+str(time.time()-_start)+"]")
         self.commit()
         
+    def updateCode(self,Code,Time,coast):
+        Time = str(Time)
+        if Time.index(":")>0:
+            Time=Time[:Time.index(":")]+Time[Time.index(":")+1:]
+        if len(Time)<4:
+            Time=Time[:2]+'0'+Time[2:]
+        Code=str(Code)
+        
+        self.cursor.execute('update kosdaq set "'+Time+'"="'+coast+'" where StockCode='+Code)
+        
     def dropTable(self,Table):
         
-        self.cursor.execute()
-    
+        self.cursor.execute('drop TABLE `kosdaq` ;')
+        
+    def setCode(self,code,name):
+        _start=time.time()
+        self.cursor.execute('Insert into kosdaq (StockCode,StockName) values("'+code+'","'+name+'")')
+        print('['+name+'] setting ['+str(time.time()-_start)+']')
     def setDBName(self,dbname):
         self.dbName=dbname
         
