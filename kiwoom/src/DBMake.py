@@ -17,7 +17,8 @@ class dbm2(mp.Process):
     def getConnection(self):
         return self.conn
         
-
+    def getCursor(self):
+        return self.cursor
         
     def updateCode(self,code,TimePerDict,cursor):
         _start = time.time()
@@ -41,6 +42,28 @@ class dbm2(mp.Process):
         self.commit()
     
 
+    def createTable(self,dbName):
+        self.dbName=dbName
+        self.conn = sqlite3.connect(self.dbName)
+        self.cursor = self.conn.cursor()
+        
+        _start=time.time()    
+        
+        self.cursor.execute('CREATE TABLE `kosdaq` (`StockCode`    INTEGER NOT NULL UNIQUE,`StockName`    INTEGER NOT NULL UNIQUE,PRIMARY KEY(StockCode,StockName));')
+        print('table created')
+        
+        for i in range(9,15):
+            for j in range(0,60):
+                if j<10:
+                    j=str(j)
+                    j=j[:0]+str('0')+j[0:]
+                self.cursor.execute("alter table kosdaq add '"+str(i)+str(j)+"' REAL")
+        print("table created ["+str(time.time()-_start)+"]")
+        self.commit()
+        
+    def dropTable(self,Table):
+        
+        self.cursor.execute()
     
     def setDBName(self,dbname):
         self.dbName=dbname

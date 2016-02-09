@@ -6,22 +6,17 @@ import requests
 import time
 
 import ExcelMake
+import DBMake
 
 class btsForReal:
 
     def  UrlParsing(self):
 
-#         _start=time.time()
         frame_src = 'http://www.daishin.co.kr/ctx_kr/sc_stock/sg_stock_info/svc_kosdaq_total/KosdaqKsSise.shtml'
-#         print(requests.get(frame_src).content)
+
         self.iframe_content=BeautifulSoup(requests.get(frame_src).content,"lxml")
-#         print(self.iframe_content)
-        
-        print(self.iframe_content)
+
         self.td = self.iframe_content.find_all("td")
-#         self.td = self.iframe_content.find_all("td",class_="B")
-#         self.td = self.iframe_content.find_all("td",class_="R")
-#         self.td = self.iframe_content.find_all("td",class_="N")
         
         
         self.codeNameCoast={}
@@ -42,34 +37,19 @@ class btsForReal:
         self.total = 0
         self.dictions={}
         
-#         self.getCodeNameCoast()
+        self.getCodeNameCoast()
         
-        
+    
+    
     def getCodeNameCoast(self):
         
-        inde = 0
+        index = 0
 #         print(self.codeNameCoast)
         for a in self.codeNameCoast:
             for b in self.codeNameCoast[a]:
-                inde+=1
-                print(self.codeNameCoast[a])
-                print(b)
-                print(self.codeNameCoast[a][b])
-                
-        print(inde)
-        
-    def setCodeNameDic(self):
-        
-        for a in self.td :
-            if a.find("a") !=None :
-                if str(a.find("a").contents[0]).startswith('A') ==True:
-                    self.total+=1
-                    code = str(a.find("a").contents[0])[1:7]
-                    name = str(a.find("a").contents[0])[8:]
-                    self.dictions[code]=name
-                    print(code+':'+name)
-        
-        print(len(self.dictions))
+                index+=1
+                print('name '+str(b)+" coast: "+str(self.codeNameCoast[a][b]) + " code :"+str(a))
+        print(index)
         
     def addZeroToStockCode(self,str):
         str=str.strip()
@@ -84,4 +64,7 @@ if __name__=="__main__":
 
     bfd = btsForReal()
     bfd.UrlParsing()
+    
+#     dbm = DBMake.dbm2()
+#     dbm.createTable("D:\\OneDrive\\python\\sqlite3\\kosdaqDashin_0210.db")
     
