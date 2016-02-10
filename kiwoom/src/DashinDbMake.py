@@ -19,6 +19,11 @@ if __name__=="__main__":
 #         print(len(str))
 #     print(str)
 
+    now = time.localtime()
+    Hour = now.tm_hour
+    Minute=now.tm_min
+    print(str(Hour) +':'+ str(Minute))
+    
     dbm = DBMake.dbm2()
     bfd = btsForDashin.btsForReal()
     bfd.UrlParsing()
@@ -28,17 +33,15 @@ if __name__=="__main__":
     try:
         dbm.createTable("D:\\OneDrive\\python\\sqlite3\\kosdaqDashin_0210.db")
     except OperationalError :
-         
+           
         print(str(sys.exc_info()))
-         
+           
     for code in codeNameCoast:
         for name in codeNameCoast[code]:
 #             dbm.setCode(code,name)
-            dbm.updateCode(code,'10:01',codeNameCoast[code][name])
-#     now = time.localtime()
-#     Hour = now.tm_hour
-#     Minute=now.tm_min
-#     print(str(Hour) +':'+ str(Minute))
+            dbm.updateCode(code,'9:52',codeNameCoast[code][name])
+
+    
 
     
     dbm.commit()

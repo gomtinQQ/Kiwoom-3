@@ -65,10 +65,15 @@ class dbm2(mp.Process):
         
     def updateCode(self,Code,Time,coast):
         Time = str(Time)
-        if Time.index(":")>0:
+        try:
             Time=Time[:Time.index(":")]+Time[Time.index(":")+1:]
-        if len(Time)<4:
-            Time=Time[:2]+'0'+Time[2:]
+        except ValueError:
+            print(sys.exc_info())
+        
+
+        if int(Time[0])>=10:
+            if len(Time)<4:
+                Time=Time[:2]+'0'+Time[2:]
         Code=str(Code)
         
         self.cursor.execute('update kosdaq set "'+Time+'"="'+coast+'" where StockCode='+Code)
