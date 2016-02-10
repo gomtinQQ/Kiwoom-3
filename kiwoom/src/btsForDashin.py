@@ -11,7 +11,7 @@ import DBMake
 class btsForReal:
 
     def  UrlParsing(self):
-
+        _start=time.time()
         frame_src = 'http://www.daishin.co.kr/ctx_kr/sc_stock/sg_stock_info/svc_kosdaq_total/KosdaqKsSise.shtml'
 
         self.iframe_content=BeautifulSoup(requests.get(frame_src).content,"lxml")
@@ -32,12 +32,10 @@ class btsForReal:
                     name = str(a.find("a").contents[0])[8:]
                     
                     self.inerNameCoast[name]=coast
-#                     print('['+name+'('+code+')] : '+str(coast)+'('+str(change)+') '+str(changePercent))
                     self.codeNameCoast[code]=self.inerNameCoast
                     del(self.inerNameCoast)
-        self.total = 0
-        self.dictions={}
         
+        print('daeshin Parsed ['+str(time.time()-_start)+']')
 #         self.printCodeNameCoast()
         
     def getCodeNameCoast(self):
@@ -66,7 +64,3 @@ if __name__=="__main__":
 
     bfd = btsForReal()
     bfd.UrlParsing()
-    
-#     dbm = DBMake.dbm2()
-#     dbm.createTable("D:\\OneDrive\\python\\sqlite3\\kosdaqDashin_0210.db")
-    
