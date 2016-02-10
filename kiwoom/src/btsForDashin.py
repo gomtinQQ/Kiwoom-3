@@ -22,6 +22,7 @@ class btsForReal:
         self.codeNameCoast={}
         for a in self.td:
             if a.a is not None:
+                
                 if str(a.find("a").contents[0]).startswith('A') ==True:
                     self.inerNameCoast={}
                     coast =a.a.parent.next_sibling.next_sibling.contents[0]

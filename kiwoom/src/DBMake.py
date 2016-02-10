@@ -5,6 +5,8 @@ import ExcelMake
 import bts
 import time
 import multiprocessing as mp
+import DBMake
+import btsForDashin 
 from _sqlite3 import OperationalError
 import sys
 
@@ -12,7 +14,6 @@ class dbm2(mp.Process):
     
     def __init__(self,dbname=""):
         super(dbm2, self).__init__()
-
         
     def getConnection(self):
         return self.conn
@@ -22,8 +23,7 @@ class dbm2(mp.Process):
         
     def updateCode(self,code,TimePerDict,cursor):
         _start = time.time()
-        
-#         for tp in TimePerDict.keys():
+
         for tp in TimePerDict.keys():
             try:
                 rtime = tp
@@ -34,10 +34,10 @@ class dbm2(mp.Process):
                     rec=int(rec)
                 cursor.execute('update kosdaq set "'+str(rec)+'"="'+str(TimePerDict[rtime])+'" where StockCode='+str(code))
             except OperationalError as err:
-#                 print("OperationalError exception occured!!"+str(sys.exc_info()))
                 continue
             except Exception as er:
-                print("Exception1 "+str(sys.exc_info()))
+                print("Exception ! "+str(sys.exc_info()))
+                continue
         print(str(code)+' setting ['+str(time.time()-_start)+']')
         self.commit()
     
@@ -63,6 +63,13 @@ class dbm2(mp.Process):
         print("table created ["+str(time.time()-_start)+"]")
         self.commit()
         
+    def setDBProperties(self,dbName):
+        self.dbName=dbName
+        self.conn = sqlite3.connect(self.dbName)
+        self.cursor = self.conn.cursor()
+        
+        
+        
     def updateCode(self,Code,Time,coast):
         Time = str(Time)
         try:
@@ -80,14 +87,48 @@ class dbm2(mp.Process):
         
     def dropTable(self,Table):
         
-        self.cursor.execute('drop TABLE `kosdaq` ;')
+        self.cursor.execute('drop TABLE `kosdaq`')
         
     def setCode(self,code,name):
         _start=time.time()
         self.cursor.execute('Insert into kosdaq (StockCode,StockName) values("'+code+'","'+name+'")')
         print('['+name+'] setting ['+str(time.time()-_start)+']')
+        
     def setDBName(self,dbname):
         self.dbName=dbname
+        
+    def getDay(self):
+        now = time.localtime()
+        mon = now.tm_mon
+        day = now.tm_mday
+        
+        if int(mon) <10:
+            mon = '0'+str(mon)
+            mon=str(mon)
+        if int(day)<10:
+            day = '0'+str(day)
+            day = str(day)
+        monday = str(mon)+str(day)
+        print(monday)
+        return monday
+    def getTime(self):
+        
+        Time = self.getTimeSource()
+        Time = Time[:2]+':'+Time[2:]
+        
+        return Time
+        
+    
+    def getTimeSource(self):
+        now = time.localtime()
+        Hour = now.tm_hour
+        Minute=now.tm_min
+        if int(Hour)<10:
+            Hour='0'+str(Hour)
+        if int(Minute)<10:
+            Minute='0'+str(Minute)
+        Time = str(Hour)+str(Minute)
+        return Time
         
     def run(self):
         self.conn= sqlite3.connect(self.dbName)
@@ -131,6 +172,33 @@ class dbm2(mp.Process):
         
     def setWQueue(self,WQueue):
         self.WQueue=WQueue
+        
+    def initParse(self):
+        print('parse start')
+        self.dbm = DBMake.dbm2()
+        bfd = btsForDashin.btsForReal()
+        bfd.UrlParsing()
+        self.codeNameCoast = bfd.getCodeNameCoast()
+        print('parse end')
+    
+    def updateName(self):
+        print('updateName Start')
+        _start=time.time()
+        
+        for code in self.codeNameCoast:
+            for name in self.codeNameCoast[code]:
+                self.cursor.execute('update kosdaq set StockName="'+str(name)+'" where StockCode="'+str(code)+'"')
+                print('success')
+        self.commit()
+    
+    def setCodeNameCoast(self,Time):
+        if self.codeNameCoast == None:
+            self.initParse()
+        
+        for code in self.codeNameCoast:
+            for name in self.codeNameCoast[code]:
+                self.updateCode(code,Time,self.codeNameCoast[code][name])
+                
 
 class multi(mp.Process):
     
@@ -162,6 +230,8 @@ class multi(mp.Process):
         self.WQueue=WQueue
         self.RQueue=RQueue
         
+        
+    
 if __name__ == '__main__':
 
     sys.setrecursionlimit(1000000) #에러방지위해 뎁스 기본값 세팅
