@@ -2,7 +2,7 @@
 
 import btsForDashin
 import DBMake
-import sys
+import sys,os
 import time
 from _sqlite3 import OperationalError
 import multiprocessing as mp
@@ -11,8 +11,16 @@ import multiprocessing as mp
 class DashinDbMake(DBMake.dbm2):
 
     def setDBName(self,day):
-        self.dbName="D:\\OneDrive\\python\\sqlite3\\kosdaqDashin_"+str(day)+".db"
-
+#         self.dbName="D:\\OneDrive\\python\\sqlite3\\kosdaqDashin_"+str(day)+".db"
+        if os.path.exists("../Sqlite3")==False:
+            os.mkdir("../Sqlite3")
+        if os.path.exists("../Sqlite3\\DAESHIN\\")==False:
+            os.mkdir("../Sqlite3\\DAESHIN\\")
+        if os.path.exists("../Sqlite3\\DAESHIN\\"+str(day))==False:
+            os.mkdir("../Sqlite3\\DAESHIN\\"+str(day))
+        
+        self.dbName="../Sqlite3\\DAESHIN\\"+str(day)+"\\kosdaqDashin_"+str(day)+".db"
+        
     def setDBProperties(self):
         super().setDBProperties(self.dbName)
 
