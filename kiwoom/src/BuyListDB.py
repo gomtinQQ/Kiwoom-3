@@ -64,6 +64,7 @@ class BuyListDB(DBMake.dbm2):
     
     def selectQueryUpdate(self,count,Time):
         
+        '''update where절 쿼리를 가져온다.'''
         if self.tocount==count:
             self.tocount=0
             print('end')
@@ -71,7 +72,6 @@ class BuyListDB(DBMake.dbm2):
             return self.whereQuery
         
         else:
-            
             Time=Time-1
             self.whereQuery =self.whereQuery+' and "'+str(Time-1)+'"<"'+str(Time)+'"'
 
@@ -85,7 +85,8 @@ if __name__ == '__main__':
 #     dbmake.setInsertDBName()
 #     dbmake.insertQueryUpdate('000660','901','하이')
     dbmake.getSelectDB()
-#     dbmake.initParse()
+    dbmake.initParse()
+
 #     dbmake.setInsertDBName()
 #     dbmake.setCodeNameCoast('9:02')
 #     dbmake.createTable(dbmake.getDBName())

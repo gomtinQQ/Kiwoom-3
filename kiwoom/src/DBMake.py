@@ -21,46 +21,47 @@ class dbm2(mp.Process):
     def getCursor(self):
         return self.cursor
         
-    def updateCode(self,code,TimePerDict,cursor):
-        _start = time.time()
+#     def updateCode(self,code,TimePerDict,cursor):
+#         _start = time.time()
+# 
+#         for tp in TimePerDict.keys():
+#             try:
+#                 rtime = tp
+#                 if tp[0]==9 :
+#                     tp=tp[0:]+'0'+tp[:0]
+#                 rec=tp[:2]+tp[3:]
+#                 if tp[0]!='c':
+#                     rec=int(rec)
+#                 cursor.execute('update kosdaq set "'+str(rec)+'"="'+str(TimePerDict[rtime])+'" where StockCode='+str(code))
+#             except OperationalError as err:
+#                 continue
+#             except Exception as er:
+#                 print("Exception ! "+str(sys.exc_info()))
+#                 continue
+#         print(str(code)+' setting ['+str(time.time()-_start)+']')
+#         self.commit()
 
-        for tp in TimePerDict.keys():
-            try:
-                rtime = tp
-                if tp[0]==9 :
-                    tp=tp[0:]+'0'+tp[:0]
-                rec=tp[:2]+tp[3:]
-                if tp[0]!='c':
-                    rec=int(rec)
-                cursor.execute('update kosdaq set "'+str(rec)+'"="'+str(TimePerDict[rtime])+'" where StockCode='+str(code))
-            except OperationalError as err:
-                continue
-            except Exception as er:
-                print("Exception ! "+str(sys.exc_info()))
-                continue
-        print(str(code)+' setting ['+str(time.time()-_start)+']')
-        self.commit()
-    
-
-    def createTable(self,dbName):
+    def createTable(self):
         '''형식에 맞는 테이블 생성.'''
-        self.dbName=dbName
-        self.conn = sqlite3.connect(self.dbName)
-        self.cursor = self.conn.cursor()
+#         self.dbName=dbName
+#         self.conn = sqlite3.connect(self.dbName)
+#         self.cursor = self.conn.cursor()
         
         _start=time.time()    
-        
-        self.cursor.execute('CREATE TABLE `kosdaq` (`StockCode`    \
-        INTEGER NOT NULL UNIQUE,`StockName`    \
-        INTEGER NOT NULL UNIQUE,PRIMARY KEY(StockCode,StockName));')
-        
-        for i in range(9,15):
-            for j in range(0,60):
-                if j<10:
-                    j=str(j)
-                    j=j[:0]+str('0')+j[0:]
-                self.cursor.execute("alter table kosdaq add '"+str(i)+str(j)+"' REAL")
-        print("table created ["+str(time.time()-_start)+"]")
+        try:
+            self.cursor.execute('CREATE TABLE `kosdaq` (`StockCode`    \
+            INTEGER NOT NULL UNIQUE,`StockName`    \
+            INTEGER NOT NULL UNIQUE,PRIMARY KEY(StockCode,StockName));')
+            
+            for i in range(9,15):
+                for j in range(0,60):
+                    if j<10:
+                        j=str(j)
+                        j=j[:0]+str('0')+j[0:]
+                    self.cursor.execute("alter table kosdaq add '"+str(i)+str(j)+"' REAL")
+            print("table created ["+str(time.time()-_start)+"]")
+        except OperationalError:
+            print(sys.exc_info())
         self.commit()
         
     def setDBProperties(self,dbName):
@@ -71,19 +72,19 @@ class dbm2(mp.Process):
         
         
     def updateCode(self,Code,Time,coast):
+        
+        '''코드,시간,가격적으면 DB에 update'''
         Time = str(Time)
-        try:
-            Time=Time[:Time.index(":")]+Time[Time.index(":")+1:]
-        except ValueError:
-            print(sys.exc_info())
+#         try:
+#             Time=Time[:Time.index(":")]+Time[Time.index(":")+1:]
+#         except ValueError:
+#             print(sys.exc_info())
         
-
-        if int(Time[0])>=10:
-            if len(Time)<4:
-                Time=Time[:2]+'0'+Time[2:]
+            
+        print('###'+Time)
         Code=str(Code)
-        
         self.cursor.execute('update kosdaq set "'+Time+'"="'+coast+'" where StockCode='+Code)
+        
         
     def dropTable(self,Table):
         
@@ -91,7 +92,11 @@ class dbm2(mp.Process):
         
     def setCode(self,code,name):
         _start=time.time()
-        self.cursor.execute('Insert into kosdaq (StockCode,StockName) values("'+code+'","'+name+'")')
+        try:
+            self.cursor.execute('Insert into kosdaq (StockCode,StockName) values("'+code+'","'+name+'")')
+        except :
+            print(sys.exc_info())
+        
         print('['+name+'] setting ['+str(time.time()-_start)+']')
         
     def setDBName(self,dbname):
@@ -123,8 +128,7 @@ class dbm2(mp.Process):
         now = time.localtime()
         Hour = now.tm_hour
         Minute=now.tm_min
-        if int(Hour)<10:
-            Hour='0'+str(Hour)
+        
         if int(Minute)<10:
             Minute='0'+str(Minute)
         Time = str(Hour)+str(Minute)
@@ -174,11 +178,12 @@ class dbm2(mp.Process):
         self.WQueue=WQueue
         
     def initParse(self):
+        '''대신증권 홈페이지에서 값들을 가져온후 Diction으로 저장'''
         print('parse start')
         self.dbm = DBMake.dbm2()
         bfd = btsForDashin.btsForReal()
-        bfd.UrlParsing()
-        self.codeNameCoast = bfd.getCodeNameCoast()
+        self.codeNameCoast = bfd.UrlParsing()
+        
         print('parse end')
     
     def updateName(self):
@@ -193,6 +198,7 @@ class dbm2(mp.Process):
     
     def setCodeNameCoast(self,Time):
         if self.codeNameCoast == None:
+            print('파싱안되서 새로만듦')
             self.initParse()
         
         for code in self.codeNameCoast:

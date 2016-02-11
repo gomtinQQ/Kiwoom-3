@@ -38,6 +38,7 @@ class btsForReal:
         
         print('daeshin Parsed ['+str(time.time()-_start)+']')
 #         self.printCodeNameCoast()
+        return self.codeNameCoast
         
     def getCodeNameCoast(self):
         return self.codeNameCoast
