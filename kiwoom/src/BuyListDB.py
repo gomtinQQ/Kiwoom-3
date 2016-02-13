@@ -82,7 +82,7 @@ class BuyListDB(DBMake.dbm2):
             print(self.whereQuery)
             return self.whereQuery
 
-        else:
+        else:  
             Time = Time - 1
             self.whereQuery = self.whereQuery + ' and "' + \
                 str(Time - 1) + '"<"' + str(Time) + '"'
