@@ -12,17 +12,12 @@ class DashinDbMake(DBMake.dbm2):
 
     def setDBName(self,day):
 #         self.dbName="D:\\OneDrive\\python\\sqlite3\\kosdaqDashin_"+str(day)+".db"
-        if os.path.exists("../Sqlite3")==False:
-            os.mkdir("../Sqlite3")
-        if os.path.exists("../Sqlite3\\DAESHIN\\")==False:
-            os.mkdir("../Sqlite3\\DAESHIN\\")
-        if os.path.exists("../Sqlite3\\DAESHIN\\"+str(day))==False:
-            os.mkdir("../Sqlite3\\DAESHIN\\"+str(day))
         
-        self.dbName="../Sqlite3\\DAESHIN\\"+str(day)+"\\kosdaqDashin_"+str(day)+".db"
-        
-    def setDBProperties(self):
-        super().setDBProperties(self.dbName)
+
+        self.dbName="kosdaqDashin_"+str(day)
+
+        super().setDBName(self.dbName)
+
 
     def createTable(self):
         super().createTable()
@@ -31,7 +26,7 @@ class DashinDbMake(DBMake.dbm2):
             self.codeNameCoast
         except AttributeError:
             self.initParse()
-        
+        '''set Stock Code and Name'''
         for code in self.codeNameCoast:
             for name in self.codeNameCoast[code]:
                 self.setCode(code,name)
@@ -48,7 +43,7 @@ class DashinDbMake(DBMake.dbm2):
                 self.initParse()
                 _start = time.time()
                 Time=self.getTimeSource()
-                
+#                 Time='1302'
                 for code in self.codeNameCoast:
                     for name in self.codeNameCoast[code]:
                         self.updateCode(code,Time,self.codeNameCoast[code][name])
@@ -57,17 +52,15 @@ class DashinDbMake(DBMake.dbm2):
                 self.commit()
                 time.sleep(60)
             except : 
-                print(str(sys.exc_info()))
+                # print(sys.exc_info())
+                print('h')
+                print(sys.gettrace())
                 continue
 
-if __name__=="__main__":
-    
-    
+if __name__ == '__main__':
     dsm = DashinDbMake()
     dsm.setDBName(dsm.getDay())
-    dsm.setDBProperties()
     dsm.createTable()
 
     proc = mp.process(target=dsm.doWork())
     proc.start()
-    

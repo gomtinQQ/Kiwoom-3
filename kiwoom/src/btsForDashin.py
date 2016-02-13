@@ -17,8 +17,8 @@ class btsForReal:
         self.iframe_content=BeautifulSoup(requests.get(frame_src).content,"lxml")
 
         self.td = self.iframe_content.find_all("td")
-        
-        
+
+
         self.codeNameCoast={}
         for a in self.td:
             if a.a is not None:

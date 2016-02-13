@@ -8,7 +8,7 @@ import multiprocessing as mp
 import DBMake
 import btsForDashin 
 from _sqlite3 import OperationalError
-import sys
+import sys,os
 
 class dbm2(mp.Process):
     
@@ -65,11 +65,33 @@ class dbm2(mp.Process):
         self.commit()
         
     def setDBProperties(self,dbName):
+        
+        if not os.path.exists("../Sqlite3"):
+            os.mkdir("../Sqlite3")
+        if not os.path.exists("../Sqlite3\\DAESHIN\\"):
+            os.mkdir("../Sqlite3\\DAESHIN\\")
+        if not os.path.exists("../Sqlite3\\DAESHIN\\"+str(self.getDay())):
+            os.mkdir("../Sqlite3\\DAESHIN\\"+str(self.getDay()))
+            
         self.dbName=dbName
         self.conn = sqlite3.connect(self.dbName)
         self.cursor = self.conn.cursor()
+
+        return self.conn
+
+    def setDBName(self,dbName):
+        '''make Each Folder and Makde Database File'''
+        '''Auto Set DBProperties'''
         
+        path="../Sqlite3\\DAESHIN\\"+str(self.getDay())+"\\"
+        dbName=dbName+".db"
+        self.dbName=path+dbName
+        conn = self.setDBProperties(self.dbName)
+        return conn
         
+    def getSelectDB(self,dbName):
+        
+        return 
         
     def updateCode(self,Code,Time,coast):
         
@@ -98,15 +120,20 @@ class dbm2(mp.Process):
             print(sys.exc_info())
         
         print('['+name+'] setting ['+str(time.time()-_start)+']')
-        
-    def setDBName(self,dbname):
-        self.dbName=dbname
-        
+
+
+
     def getDay(self):
+        '''
+        get today
+        month,day
+        ex)0204
+        '''
+
         now = time.localtime()
         mon = now.tm_mon
         day = now.tm_mday
-        
+
         if int(mon) <10:
             mon = '0'+str(mon)
             mon=str(mon)
@@ -114,8 +141,8 @@ class dbm2(mp.Process):
             day = '0'+str(day)
             day = str(day)
         monday = str(mon)+str(day)
-        print(monday)
         return monday
+
     def getTime(self):
         
         Time = self.getTimeSource()
@@ -125,6 +152,11 @@ class dbm2(mp.Process):
         
     
     def getTimeSource(self):
+
+        '''
+        get Time
+        ex)903 , 1003, 1102, ...
+        '''
         now = time.localtime()
         Hour = now.tm_hour
         Minute=now.tm_min
@@ -249,8 +281,7 @@ if __name__ == '__main__':
     codelist = readedExcel.getCodeList()
     RQueue = mp.Queue()
     WQueue = mp.Queue()
-    
-    
+
     dbm = dbm2()
     dbm.setDBName("D:\\OneDrive\\python\\sqlite3\\kosdaq.db")
 
