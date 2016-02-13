@@ -15,7 +15,6 @@ class ExcelCode:
         
         if setLayout==True:
             self.setLayout()
-        
     def setLayout(self):
         '''Layout init'''
          
@@ -70,7 +69,7 @@ class ExcelCode:
         return str
     
     def ExcelRead(self,fileName=''):
-        
+        '''if fileName set, get The specified Excel'''
         if fileName =='':
             fileName = 'D:\\Kiwoo\\ExcelData\\yang_1'
             

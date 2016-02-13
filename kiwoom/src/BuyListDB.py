@@ -5,75 +5,86 @@ import DBMake
 
 class BuyListDB(DBMake.dbm2):
 
-    def setBuyListDB(self,day):
+    def setBuyListDB(self,dbName=""):
 
-        self.BuydbName="kosdaqDashin_List_"+str(day)
-
+        if dbName=="":
+            self.BuydbName="kosdaqDashin_List_"
+        else :
+            self.BuydbName=dbName
 
 
         self.BuydbName = self.setDBName(self.BuydbName)
-        self.BuydbName_cursor = self.BuydbName.cursor()
-
+        self.Buydb_cursor = self.BuydbName.cursor()
+        self.createTable()
         query = 'alter table kosdaq add BuySell TEXT NOT NULL DEFAULT "N"'
 
         try:
-            self.BuydbName_cursor.execute(query)
+            self.Buydb_cursor.execute(query)
         except :
-            print(sys.exc_info())
+            self.PrintException()
 
-    def getSelectDB(self):
-        day = self.getDay()
-        self.setDBProperties("D:\\OneDrive\\python\\sqlite3\\kosdaq.db")
-        self.selectDB = self.getConnection()
-
-    def selectQuery(self):
-
+    def getSelectDB(self,dbName=""):
+        if dbName=="":
+            selectDB="kosdaqDashin_"
+        else:
+            selectDB="dbName"
+        selectDB=super().getSelectDB(selectDB)
+        
+        return selectDB
+    
+    def selectQuery(self,Time=""):
+        '''set SimulatorTime if not,get the current Time'''
+        
         count = 5
         self.tocount = 1
-
-        Time = int(self.getTimeSource())
-#         Time = int('920')
+        Time=int(Time)
+        
+        if Time=="":
+            Time = int(self.getTimeSource())
+            
+        
         self.whereQuery = 'select StockCode,StockName from kosdaq where "' + \
             str(Time - 1) + '"<"' + str(Time) + '"'
         self.selectQueryUpdate(count, Time)
-#         print(self.whereQuery)
-        self.BuydbName_cursor.execute(self.whereQuery)
 
-#         print(self.selectDB_cursor.fetchall())
-        self.buylist = self.BuydbName_cursor.fetchall()
+        self.getSelectDB().cursor().execute(self.whereQuery)
+
+
+        self.buylist = self.getSelectDB().cursor().fetchall()
         self.whereQuery = ""
 
         self.printBuyList()
         
 
     def printBuyList(self):
+        
         for code in self.buylist:
             print(code[0], code[1])
-
+        print('end')
 
 
     def insertQueryUpdate(self, code, Time, name):
 
-        self.InsertDB_cursor = self.InsertDB.cursor()
-        print(self.InsertDB_cursor)
+        self.Buydb_cursor = self.BuydbName.cursor()
+        print(self.Buydb_cursor)
         try:
-            InsertQuery = 'insert into kosdaq (StockCode,StockName,"' + str(
-                Time) + '",BuySell) values(' + str(code) + ',"' + str(name) + '",302,"Y")'
+            InsertQuery = 'insert into kosdaq (StockCode,StockName,"' + \
+            str(Time) + '",BuySell) values(' + str(code) + ',"' + str(name) + '",302,"Y")'
             self.InsertDB_cursor.execute(InsertQuery)
-            print('insert')
+            print('inserted')
         except:
             InsertQuery = 'update kosdaq set "' + \
                 str(Time) + '"="BUY", BuySell="Y" where StockCode ="' + \
                 str(code) + '"'
-            self.InsertDB_cursor.execute(InsertQuery)
-            print('update')
+            self.Buydb_cursor.execute(InsertQuery)
+            print('updated')
 
-        self.InsertDB.commit()
+        self.BuydbName.commit()
 
 
     def selectQueryUpdate(self, count, Time):
         '''
-        update where절 쿼리를 가져온다.
+        get the update query set
         '''
 
         if self.tocount == count:
@@ -88,22 +99,13 @@ class BuyListDB(DBMake.dbm2):
                 str(Time - 1) + '"<"' + str(Time) + '"'
 
             self.tocount += 1
-            print(self.tocount, count)
             self.selectQueryUpdate(count, Time)
 
 if __name__ == '__main__':
 
     dbmake = BuyListDB()
-#     dbmake.setInsertDBName()
-#     dbmake.insertQueryUpdate('000660','901','하이')
-    dbmake.setBuyListDB(dbmake.getDay())
-    dbmake.createTable()
-    # dbmake.getSelectDB()
-    # dbmake.initParse()
+    
+    dbmake.setBuyListDB()
+    
 
-#     dbmake.setInsertDBName()
-#     dbmake.setCodeNameCoast('9:02')
-#     dbmake.createTable(dbmake.getDBName())
-
-#     dbmake.updateName()
-    dbmake.selectQuery()
+    dbmake.selectQuery(902)

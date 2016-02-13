@@ -10,11 +10,14 @@ import multiprocessing as mp
 
 class DashinDbMake(DBMake.dbm2):
 
-    def setDBName(self,day):
-#         self.dbName="D:\\OneDrive\\python\\sqlite3\\kosdaqDashin_"+str(day)+".db"
-        
+    def setDBName(self,dbName=""):
 
-        self.dbName="kosdaqDashin_"+str(day)
+        
+        if dbName=="":
+            self.dbName="kosdaqDashin_"
+        else: 
+            self.dbName=dbName
+            
 
         super().setDBName(self.dbName)
 
@@ -37,9 +40,6 @@ class DashinDbMake(DBMake.dbm2):
         print('work start')
         while True:
             try:
-#                 bfd = btsForDashin.btsForReal()
-#                 bfd.UrlParsing()
-#                 self.codeNameCoast = bfd.getCodeNameCoast()
                 self.initParse()
                 _start = time.time()
                 Time=self.getTimeSource()
@@ -52,15 +52,13 @@ class DashinDbMake(DBMake.dbm2):
                 self.commit()
                 time.sleep(60)
             except : 
-                # print(sys.exc_info())
-                print('h')
-                print(sys.gettrace())
+                self.PrintException()
                 continue
 
 if __name__ == '__main__':
     dsm = DashinDbMake()
-    dsm.setDBName(dsm.getDay())
+    dsm.setDBName()
     dsm.createTable()
 
-    proc = mp.process(target=dsm.doWork())
-    proc.start()
+#     proc = mp.process(target=dsm.doWork())
+#     proc.start()

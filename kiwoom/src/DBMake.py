@@ -6,6 +6,7 @@ import bts
 import time
 import multiprocessing as mp
 import DBMake
+import linecache
 import btsForDashin 
 from _sqlite3 import OperationalError
 import sys,os
@@ -14,6 +15,16 @@ class dbm2(mp.Process):
     
     def __init__(self,dbname=""):
         super(dbm2, self).__init__()
+        
+    def PrintException(self):
+        exc_type, exc_obj, tb = sys.exc_info()
+        f = tb.tb_frame
+        lineno = tb.tb_lineno
+        filename = f.f_code.co_filename
+        linecache.checkcache(filename)
+        line = linecache.getline(filename, lineno, f.f_globals)
+        print ('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+
         
     def getConnection(self):
         return self.conn
@@ -60,8 +71,8 @@ class dbm2(mp.Process):
                         j=j[:0]+str('0')+j[0:]
                     self.cursor.execute("alter table kosdaq add '"+str(i)+str(j)+"' REAL")
             print("table created ["+str(time.time()-_start)+"]")
-        except OperationalError:
-            print(sys.exc_info())
+        except :
+            self.PrintException()
         self.commit()
         
     def setDBProperties(self,dbName):
@@ -84,14 +95,23 @@ class dbm2(mp.Process):
         '''Auto Set DBProperties'''
         
         path="../Sqlite3\\DAESHIN\\"+str(self.getDay())+"\\"
-        dbName=dbName+".db"
+        dbName=dbName+str(self.getDay())+".db"
         self.dbName=path+dbName
         conn = self.setDBProperties(self.dbName)
         return conn
         
     def getSelectDB(self,dbName):
         
-        return 
+        '''return Connection'''
+        
+        path="../Sqlite3\\DAESHIN\\"+str(self.getDay())+"\\"
+        dbName=dbName+str(self.getDay())+".db"
+        dbName=path+dbName
+        
+        if os.path.exists(dbName):
+            return sqlite3.connect(dbName)
+        else:
+            raise RuntimeError('db is not exists make DB!')
         
     def updateCode(self,Code,Time,coast):
         
@@ -117,7 +137,7 @@ class dbm2(mp.Process):
         try:
             self.cursor.execute('Insert into kosdaq (StockCode,StockName) values("'+code+'","'+name+'")')
         except :
-            print(sys.exc_info())
+            self.PrintException()
         
         print('['+name+'] setting ['+str(time.time()-_start)+']')
 
