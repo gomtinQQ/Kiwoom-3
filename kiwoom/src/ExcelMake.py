@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import win32com.client
-import bts  
+import bts
 import time
 import os
 import shutil
@@ -18,7 +18,7 @@ class ExcelCode:
         
     def setLayout(self):
         '''Layout init'''
-         
+        
         self.wb = self.excel.Workbooks.Add()
         self.ws = self.wb.Worksheets("Sheet1")
         self.ws.Cells(1,1).Value ="StockCode"
@@ -142,8 +142,8 @@ class ExcelCode:
         
         code=int(code)
         i = self.dictCodeList[code]
-        j=3 
-        _start_time = time.time() 
+        j=3
+        _start_time = time.time()
         while(int(self.ws.Cells(1,j).Value != 1451)):
             try:
                 timeVal= str(int(self.ws.Cells(1,j).Value))
