@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import ExcelMake
+import DBMake
 
 class ExcelToSqlite3(ExcelMake.ExcelCode):
     
@@ -17,8 +18,6 @@ if __name__ == '__main__':
     indexCode=e2s.getIndexCode()
     
     
-    print(len(indexCode))
-    print(type(indexCode))
     i=1
     totalMinute=3
     codeNameCoast={}
@@ -26,18 +25,23 @@ if __name__ == '__main__':
         code = ws.Cells(i,1).Value
         name = ws.Cells(i,2).Value
         innerNameCoast={}
-        coastList=[]
         try:
             
             for Hour in range(9,15):
                 for Min in range(0,60):
                     coast = ws.Cells(i,totalMinute).Value
-                    coastList.append(coast)
+                    Time = ws.Cells(1,totalMinute).Value
+                    
+                    coast=str(coast)
+                    Time=int(Time)
+                    innerNameCoast[Time]=coast
                     totalMinute+=1
             print(str(i)+'/'+str(len(indexCode)))
-            innerNameCoast[name]=coastList
             codeNameCoast[code]=innerNameCoast
             totalMinute=3
             i+=1
         except :
             print('exception')
+            
+            
+            
