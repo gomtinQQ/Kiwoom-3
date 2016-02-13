@@ -116,15 +116,9 @@ class dbm2(mp.Process):
     def updateCode(self,Code,Time,coast):
         
         '''코드,시간,가격적으면 DB에 update'''
-        Time = str(Time)
-#         try:
-#             Time=Time[:Time.index(":")]+Time[Time.index(":")+1:]
-#         except ValueError:
-#             print(sys.exc_info())
-        
-            
-        print('###'+Time)
+        Time=str(Time)    
         Code=str(Code)
+        coast=str(coast)
         self.cursor.execute('update kosdaq set "'+Time+'"="'+coast+'" where StockCode='+Code)
         
         

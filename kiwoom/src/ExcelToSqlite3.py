@@ -19,15 +19,25 @@ if __name__ == '__main__':
     
     print(len(indexCode))
     print(type(indexCode))
-#     i=1
-#     totalMinute=3
-#     while(ws.Cells(i,1).Value is not None):
-#         try:
-#             for Hour in range(9,15):
-#                 for Min in range(0,60):
-#                     print(ws.Cells(i,totalMinute).Value)
-#                     totalMinute+=1
-#             totalMinute=3
-#             i+=1
-#         except :
-#             print('exception')
+    i=1
+    totalMinute=3
+    codeNameCoast={}
+    while(ws.Cells(i,1).Value is not None):
+        code = ws.Cells(i,1).Value
+        name = ws.Cells(i,2).Value
+        innerNameCoast={}
+        coastList=[]
+        try:
+            
+            for Hour in range(9,15):
+                for Min in range(0,60):
+                    coast = ws.Cells(i,totalMinute).Value
+                    coastList.append(coast)
+                    totalMinute+=1
+            print(str(i)+'/'+str(len(indexCode)))
+            innerNameCoast[name]=coastList
+            codeNameCoast[code]=innerNameCoast
+            totalMinute=3
+            i+=1
+        except :
+            print('exception')
