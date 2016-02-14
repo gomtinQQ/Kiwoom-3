@@ -47,14 +47,20 @@ class BuyListDB(DBMake.dbm2):
             str(Time - 1) + '"<"' + str(Time) + '"'
         self.selectQueryUpdate(count, Time)
 
-        self.getSelectDB().cursor().execute(self.whereQuery)
-
-
-        self.buylist = self.getSelectDB().cursor().fetchall()
-        self.whereQuery = ""
-
-        self.printBuyList()
         
+        
+
+        return self.whereQuery
+
+
+        
+
+
+    def excuteQuery(self,query):
+        self.getSelectDB().cursor().execute(self.whereQuery)
+        
+        self.buylist = self.getSelectDB().cursor().fetchall()
+        return  self.buylist 
 
     def printBuyList(self):
         
@@ -86,7 +92,7 @@ class BuyListDB(DBMake.dbm2):
         '''
         get the update query set
         '''
-
+        print(Time)
         if self.tocount == count:
             self.tocount = 0
             print('end')
@@ -94,18 +100,33 @@ class BuyListDB(DBMake.dbm2):
             return self.whereQuery
 
         else:  
+            Time=str(Time)
+            if int(Time[0])<10:
+                if int(Time[1:])>=60:
+                    Hour=int(Time[0])+1
+                    Min='00'
+                    Time=str(Hour)+Min
+            else:
+#                 print('hi')
+                if int(Time[2:])>60:
+                    Hour=int(Time[:1])+1
+                    Min ='00'
+                    Time = str(Hour)+Min
+            
+            Time=int(Time)
             Time = Time - 1
             self.whereQuery = self.whereQuery + ' and "' + \
                 str(Time - 1) + '"<"' + str(Time) + '"'
 
             self.tocount += 1
+#             print(Time)
             self.selectQueryUpdate(count, Time)
 
 if __name__ == '__main__':
 
     dbmake = BuyListDB()
     
-    dbmake.setBuyListDB()
+#     dbmake.setBuyListDB()
     
 
-    dbmake.selectQuery(902)
+    dbmake.selectQuery(1000)

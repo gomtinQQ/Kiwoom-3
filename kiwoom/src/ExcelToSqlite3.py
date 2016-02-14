@@ -2,6 +2,7 @@
 
 import ExcelMake
 import DBMake
+import time
 
 class ExcelToSqlite3(ExcelMake.ExcelCode):
     
@@ -11,17 +12,22 @@ class ExcelToSqlite3(ExcelMake.ExcelCode):
 
 if __name__ == '__main__':
     
+    _start=time.time()
     e2s = ExcelToSqlite3(False)
-    e2s.ExcelRead("D:\\OneDrive\\python\\ExcelData\\20160204\\20160204_yang_1")
+    e2s.ExcelRead("D:\\Kiwoo\\ExcelData\\20160129\\20160129_yang_1")
     wb = e2s.getWorkBook();
     ws = e2s.getWorkSheet();
     indexCode=e2s.getIndexCode()
     
+    dbm = DBMake.dbm2()
     
-    i=1
+    dbm.setDBName("FromExcel_0129_")
+    dbm.createTable()
+    i=2
     totalMinute=3
     codeNameCoast={}
     while(ws.Cells(i,1).Value is not None):
+#     while(i!=10):
         code = ws.Cells(i,1).Value
         name = ws.Cells(i,2).Value
         innerNameCoast={}
@@ -42,6 +48,13 @@ if __name__ == '__main__':
             i+=1
         except :
             print('exception')
+            dbm.PrintException()
+    
+    for code in codeNameCoast:
+        for Time in codeNameCoast[code]:
+            dbTime = str(Time)
+            coast  = codeNameCoast[code][Time]
+            dbm.updateCode(code,dbTime,coast)
             
-            
-            
+    dbm.commit()
+    print(time.time()-_start)

@@ -52,7 +52,7 @@ class dbm2(mp.Process):
 #         print(str(code)+' setting ['+str(time.time()-_start)+']')
 #         self.commit()
 
-    def createTable(self):
+    def createTable(self,setCodeName=""):
         '''형식에 맞는 테이블 생성.'''
 #         self.dbName=dbName
 #         self.conn = sqlite3.connect(self.dbName)
@@ -73,7 +73,17 @@ class dbm2(mp.Process):
             print("table created ["+str(time.time()-_start)+"]")
         except :
             self.PrintException()
-        self.commit()
+        try:
+            self.codeNameCoast
+        except AttributeError:
+            self.initParse()
+        '''set Stock Code and Name'''
+            
+        if setCodeName==True:
+            for code in self.codeNameCoast:
+                for name in self.codeNameCoast[code]:
+                    self.setCode(code,name)
+            self.commit()
         
     def setDBProperties(self,dbName):
         
@@ -97,8 +107,8 @@ class dbm2(mp.Process):
         path="../Sqlite3\\DAESHIN\\"+str(self.getDay())+"\\"
         dbName=dbName+str(self.getDay())+".db"
         self.dbName=path+dbName
-        conn = self.setDBProperties(self.dbName)
-        return conn
+        self.conn = self.setDBProperties(self.dbName)
+        return self.conn
         
     def getSelectDB(self,dbName):
         
