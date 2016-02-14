@@ -141,9 +141,9 @@ if __name__ == '__main__':
 
     dbmake = BuyListDB()
     
-    dbmake.setBuyListDB()
+#     dbmake.setBuyListDB()
 #     dbmake.getSelectQuery('1003')
     dbmake.getSelectDB()
-    dbmake.printInfo()
-    dd = dbmake.excuteQuery(dbmake.getSelectQuery('1003'))
+#     dbmake.printInfo()
+    dd = dbmake.excuteQuery(dbmake.getSelectQuery('1414'))
     print(dd)
