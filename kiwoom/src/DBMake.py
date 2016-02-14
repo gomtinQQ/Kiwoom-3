@@ -73,6 +73,8 @@ class dbm2(mp.Process):
             print("table created ["+str(time.time()-_start)+"]")
         except :
             self.PrintException()
+            
+            
         try:
             self.codeNameCoast
         except AttributeError:
@@ -236,7 +238,6 @@ class dbm2(mp.Process):
     def initParse(self):
         '''대신증권 홈페이지에서 값들을 가져온후 Diction으로 저장'''
         print('parse start')
-        self.dbm = DBMake.dbm2()
         bfd = btsForDashin.btsForReal()
         self.codeNameCoast = bfd.UrlParsing()
         

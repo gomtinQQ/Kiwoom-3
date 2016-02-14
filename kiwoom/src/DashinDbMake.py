@@ -23,22 +23,13 @@ class DashinDbMake(DBMake.dbm2):
 
 
     def createTable(self):
-        super().createTable()
+        super().createTable(True)
         
-        try:
-            self.codeNameCoast
-        except AttributeError:
-            self.initParse()
-        '''set Stock Code and Name'''
-        for code in self.codeNameCoast:
-            for name in self.codeNameCoast[code]:
-                self.setCode(code,name)
-        self.commit()
 
         
     def doWork(self):
         print('work start')
-        while True:
+        while self.getTimeSource() != "1459":
             try:
                 self.initParse()
                 _start = time.time()
@@ -60,5 +51,5 @@ if __name__ == '__main__':
     dsm.setDBName()
     dsm.createTable()
 
-#     proc = mp.process(target=dsm.doWork())
-#     proc.start()
+    proc = mp.process(target=dsm.doWork())
+    proc.start()
