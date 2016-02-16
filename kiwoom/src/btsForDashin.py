@@ -25,14 +25,15 @@ class btsForReal:
                 
                 if str(a.find("a").contents[0]).startswith('A') ==True:
                     self.inerNameCoast={}
-                    coast =a.a.parent.next_sibling.next_sibling.contents[0]
-                    change=a.a.parent.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.contents[0]
-                    changePercent=a.a.parent.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.contents[0]
+                    coast =a.a.parent.next_sibling.next_sibling.contents[0] #가격 
+                    change=a.a.parent.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.contents[0] #변화량
+                    changePercent = a.a.parent.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.contents[0] #변화퍼센트
+                    changePercent = changePercent[0:changePercent.index('%')]
                     
                     code = str(a.find("a").contents[0])[1:7]
                     name = str(a.find("a").contents[0])[8:]
                     
-                    self.inerNameCoast[name]=coast
+                    self.inerNameCoast[name]=changePercent
                     self.codeNameCoast[code]=self.inerNameCoast
                     del(self.inerNameCoast)
         
@@ -65,4 +66,7 @@ class btsForReal:
 if __name__=="__main__":
 
     bfd = btsForReal()
-    bfd.UrlParsing()
+    codeNameCoast = bfd.UrlParsing()
+    for code in codeNameCoast:
+        for Name in codeNameCoast[code]:
+            print('code = '+str(code)+' name = '+str(Name)+' coast = '+ str(codeNameCoast[code][Name]))
