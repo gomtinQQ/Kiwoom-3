@@ -29,7 +29,7 @@ class DashinDbMake(DBMake.dbm2):
         
     def doWork(self):
         print('work start')
-        while self.getTimeSource() != "1459":
+        while self.getTimeSource() != "1500":
             try:
                 self.initParse()
                 _start = time.time()
@@ -40,6 +40,7 @@ class DashinDbMake(DBMake.dbm2):
                         self.updateCode(code,Time,self.codeNameCoast[code][name])
                         
                 print('code inserted['+str(time.time()-_start)+']')
+                print('현재시간  [ '+str(self.getTime())+']')
                 self.commit()
                 time.sleep(60)
             except : 
@@ -50,7 +51,13 @@ if __name__ == '__main__':
     dsm = DashinDbMake()
     dsm.setDBName()
     dsm.createTable()
-
-    proc = mp.process(target=dsm.doWork())
     
-    proc.start()
+
+
+    proc = mp.Process(target=dsm.doWork)
+    while True:
+        if dsm.getTimeSource()=='900':
+            proc.start()
+            break
+        else :
+            time.sleep(1)

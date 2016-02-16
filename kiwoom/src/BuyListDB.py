@@ -2,6 +2,7 @@
 import sqlite3
 import sys
 import DBMake
+import datetime
 
 class BuyListDB(DBMake.dbm2):
 
@@ -32,13 +33,17 @@ class BuyListDB(DBMake.dbm2):
         
         return self.selectDB
     
-    def getSelectQuery(self,Time="",count=""):
+    def getSelectQuery(self,Time="",count="",interval=""):
         '''set SimulatorTime if not,get the current Time'''
         
         
         if count=="":
             count=5
         count=int(count)
+        
+        if interval=="":
+            interval=1
+        interval=int(interval)
             
         self.tocount = 1
         
@@ -47,13 +52,13 @@ class BuyListDB(DBMake.dbm2):
             
         Time=int(Time)
         currTime = self.TimeFormat(Time)
-        beforeTime = self.TimeFormat(currTime-1)
+        beforeTime = self.TimeFormat(currTime)-interval
         
         
         self.whereQuery = 'select StockCode,StockName from kosdaq where "' + \
             str(beforeTime) + '"<"' + str(currTime) + '"'
             
-        self.getSelectQuery_proc(count, beforeTime)
+        self.getSelectQuery_proc(count, beforeTime ,interval)
 
         
         
@@ -97,28 +102,27 @@ class BuyListDB(DBMake.dbm2):
         self.BuydbName.commit()
 
 
-    def getSelectQuery_proc(self, count, Time):
+    def getSelectQuery_proc(self, count, Time,interval):
         '''
         get the update query set
         '''
 
         if self.tocount == count:
             self.tocount = 0
-            print('end')
             print(self.whereQuery)
             return self.whereQuery
 
         else:  
-            
+            print('be '+str(Time))
             Time=self.TimeFormat(Time)
             currTime = self.TimeFormat(Time)
-            beforeTime = self.TimeFormat(currTime-1)
+            beforeTime = self.TimeFormat(currTime)-(interval)
  
             self.whereQuery = self.whereQuery + ' and "' + \
                 str(beforeTime) + '"<"' + str(currTime) + '"'
 
             self.tocount += 1
-            self.getSelectQuery_proc(count, beforeTime)
+            self.getSelectQuery_proc(count, beforeTime,interval)
             
     def TimeFormat(self,Time):
         Time=str(Time)
@@ -128,12 +132,23 @@ class BuyListDB(DBMake.dbm2):
         elif len(Time)==4:
             Hour = Time[:2]
             Min = Time[2:]
-            
-        if int(Min)>=60:
-            Hour = int(Hour)
-            Min ='59'
-                
-        Time = str(Hour)+Min
+             
+#         if int(Min)>=60:
+#             Hour = int(Hour)
+#             Min ='59'
+#                 
+#         Time = str(Hour)+Min
+#         Time=int(Time)
+        
+        print(Time)
+        Time = datetime.time(int(Hour),int(Min))
+        
+        minute = Time.minute
+        if Time.minute <10:
+            minute=str(Time.minute)
+            minute='0'+minute
+        Time = str(Time.hour)+str(minute) 
+        
         Time=int(Time)
         return Time
     
@@ -145,11 +160,18 @@ if __name__ == '__main__':
 
     dbmake = BuyListDB()
     
-#     dbmake.setBuyListDB()
-#     dbmake.getSelectQuery('1003')
     dbmake.getSelectDB()
-#     dbmake.printInfo()
-    dd = dbmake.excuteQuery(dbmake.getSelectQuery('1112','2'))
-    for code in dd:
-        print(code)
-    print('total : '+str(len(dd)))
+    
+#     for Time in range(900,1459):
+#         Time = dbmake.TimeFormat(Time)
+#         dd = dbmake.excuteQuery(dbmake.getSelectQuery(str(Time),'10',5))
+#         if ( len(dd) > 0 ):
+#             for code in dd:
+#                 print(str(code)+' '+str(Time))
+        
+    dd = dbmake.excuteQuery(dbmake.getSelectQuery('1202','5',5))
+    
+    
+#     for code in dd:
+#         print(code)
+#     print('total : '+str(len(dd)))

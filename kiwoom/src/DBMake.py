@@ -7,7 +7,8 @@ import time
 import multiprocessing as mp
 import DBMake
 import linecache
-import btsForDashin 
+import btsForDashin
+import datetime 
 from _sqlite3 import OperationalError
 import sys,os
 
@@ -172,7 +173,7 @@ class dbm2(mp.Process):
     def getTime(self):
         
         Time = self.getTimeSource()
-        Time = Time[:2]+':'+Time[2:]
+        Time = datetime.datetime.now()
         
         return Time
         
