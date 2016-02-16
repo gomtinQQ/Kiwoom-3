@@ -29,7 +29,7 @@ class DashinDbMake(DBMake.dbm2):
         
     def doWork(self):
         print('work start')
-        while self.getTimeSource() == "1459":
+        while self.getTimeSource() != "1459":
             try:
                 self.initParse()
                 _start = time.time()
