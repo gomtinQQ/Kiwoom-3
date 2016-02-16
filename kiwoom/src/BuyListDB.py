@@ -35,7 +35,7 @@ class BuyListDB(DBMake.dbm2):
     def getSelectQuery(self,Time=""):
         '''set SimulatorTime if not,get the current Time'''
         
-        count = 5
+        count = 1
         self.tocount = 1
         
         if Time=="":
@@ -145,5 +145,5 @@ if __name__ == '__main__':
 #     dbmake.getSelectQuery('1003')
     dbmake.getSelectDB()
 #     dbmake.printInfo()
-    dd = dbmake.excuteQuery(dbmake.getSelectQuery('1414'))
+    dd = dbmake.excuteQuery(dbmake.getSelectQuery('1113'))
     print(dd)
