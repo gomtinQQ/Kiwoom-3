@@ -52,7 +52,7 @@ class BuyListDB(DBMake.dbm2):
             
         Time=int(Time)
         currTime = self.TimeFormat(Time)
-        beforeTime = self.TimeFormat(currTime)-interval
+        beforeTime = self.calTime(currTime,interval)
         
         
         self.whereQuery = 'select StockCode,StockName from kosdaq where "' + \
@@ -116,7 +116,7 @@ class BuyListDB(DBMake.dbm2):
             print('be '+str(Time))
             Time=self.TimeFormat(Time)
             currTime = self.TimeFormat(Time)
-            beforeTime = self.TimeFormat(currTime)-(interval)
+            beforeTime =self.calTime(currTime, interval)
  
             self.whereQuery = self.whereQuery + ' and "' + \
                 str(beforeTime) + '"<"' + str(currTime) + '"'
@@ -152,6 +152,34 @@ class BuyListDB(DBMake.dbm2):
         Time=int(Time)
         return Time
     
+    def calTime(self,Time,Interval):
+        
+        Time=str(Time)
+        if len(Time)<4:
+            Hour = Time[:1]
+            Min = Time[1:]
+        elif len(Time)==4:
+            Hour = Time[:2]
+            Min = Time[2:]
+        
+        t1= datetime.timedelta(hours=int(Hour),minutes=int(Min))
+        t2= datetime.timedelta(minutes=Interval)
+        Time = t1-t2
+        Time=str(Time)
+        tt= Time.split(":")
+        hour = tt[0]
+        min = tt[1]
+        seconds = tt[2]
+        
+        print(hour)
+        print(Min)
+        Time = str(hour)+str(Min)
+#         if len(Time)<4:
+#             Time =Time[0]+Time[2:4]
+#         else :
+#             Time=Time[:2]+Time[3:5]
+        return Time
+    
     def printInfo(self):
         print('buylist DB : '+str(self.BuydbName))
         print('select DB : '+ str(self.selectDB))
@@ -162,14 +190,15 @@ if __name__ == '__main__':
     
     dbmake.getSelectDB()
     
-#     for Time in range(900,1459):
-#         Time = dbmake.TimeFormat(Time)
-#         dd = dbmake.excuteQuery(dbmake.getSelectQuery(str(Time),'10',5))
-#         if ( len(dd) > 0 ):
-#             for code in dd:
-#                 print(str(code)+' '+str(Time))
-        
-    dd = dbmake.excuteQuery(dbmake.getSelectQuery('1202','5',5))
+    for Time in range(900,1459):
+        Time = dbmake.TimeFormat(Time)
+        dd = dbmake.excuteQuery(dbmake.getSelectQuery(str(Time),'10',5))
+        if ( len(dd) > 0 ):
+            for code in dd:
+                print(str(code)+' '+str(Time))
+#     dd = dbmake.getSelectQuery('1005','5','5')
+#     print(dd)
+#     dd = dbmake.excuteQuery(dbmake.getSelectQuery('1202','5',5))
     
     
 #     for code in dd:
