@@ -39,10 +39,9 @@ class DashinDbMake(DBMake.dbm2):
                     for name in self.codeNameCoast[code]:
                         self.updateCode(code,Time,self.codeNameCoast[code][name])
                         
-                print('code inserted['+str(time.time()-_start)+']')
-                print('현재시간  [ '+str(self.getTime())+']')
+                print('code inserted['+str(time.time()-_start)+'] 시간 ['+str(self.getTime())+']')
                 self.commit()
-                time.sleep(60)
+                time.sleep(58)
             except : 
                 self.PrintException()
                 continue
@@ -54,10 +53,10 @@ if __name__ == '__main__':
     
 
 
-    proc = mp.Process(target=dsm.doWork)
-    while True:
-        if dsm.getTimeSource()=='900':
-            proc.start()
-            break
-        else :
-            time.sleep(1)
+    proc = mp.process(target=dsm.doWork())
+#     while True:
+#         if dsm.getTimeSource()=='900':
+    proc.start()
+#             break
+#         else :
+#             time.sleep(1)
