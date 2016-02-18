@@ -27,7 +27,7 @@ class DashinDbMake(DBMake.dbm2):
         
 
         
-    def run(self):
+    def doWork(self):
         print('work start')
         while self.getTimeSource() != "1500":
             try:
@@ -51,12 +51,16 @@ if __name__ == '__main__':
     dsm.setDBName()
     dsm.createTable()
     
-
-    dsm.start()
-#     proc = mp.process(target=dsm.doWork())
 #     while True:
 #         if dsm.getTimeSource()=='900':
-#     proc.start()
+            
+#     dsm.start()
+#         else:
+#             time.sleep(1)
+    proc = mp.process(target=dsm.doWork())
+#     while True:
+#         if dsm.getTimeSource()=='900':
+    proc.start()
 #             break
 #         else :
 #             time.sleep(1)
