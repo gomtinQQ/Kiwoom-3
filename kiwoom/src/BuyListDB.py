@@ -194,7 +194,7 @@ if __name__ == '__main__':
                 j=str(j)
                 j=j[:0]+str('0')+j[0:]
             Time=str(i)+str(j)
-            dd = dbmake.excuteQuery(dbmake.getSelectQuery(str(Time),'5',5))
+            dd = dbmake.excuteQuery(dbmake.getSelectQuery(str(Time),'10',3))
             if ( len(dd) > 0 ):
                 for code in dd:
                     print(str(code)+' '+str(Time))

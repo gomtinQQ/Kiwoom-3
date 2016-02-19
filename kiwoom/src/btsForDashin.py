@@ -37,7 +37,7 @@ class btsForReal:
                     self.codeNameCoast[code]=self.inerNameCoast
                     del(self.inerNameCoast)
         
-        print('daeshin Parsed ['+str(time.time()-_start)+']')
+        print('DAHSIN PARSING ['+str(time.time()-_start)+']')
 #         self.printCodeNameCoast()
         return self.codeNameCoast
         

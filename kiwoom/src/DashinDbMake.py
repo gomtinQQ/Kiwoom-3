@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import btsForDashin
-import DBMake
+from DBMake import dbm2
 import sys,os
 import time
 from _sqlite3 import OperationalError
 import multiprocessing as mp
 
 
-class DashinDbMake(DBMake.dbm2):
+class DashinDbMake(dbm2):
 
     def setDBName(self,dbName=""):
 
@@ -20,15 +20,24 @@ class DashinDbMake(DBMake.dbm2):
             
 
         super().setDBName(self.dbName)
-
+        
 
     def createTable(self):
         super().createTable(True)
         
-
+    def updateCode_r(self,Code,Time,coast):
         
-    def doWork(self):
+        try:
+            Cursor = self.getCursor()
+            query=super().updateCode(Code,Time,coast,Cursor)
+            Cursor.execute(query)
+        except:
+            self.PrintException()
+        
+    def run(self):
         print('work start')
+        self.setDBName()
+        self.createTable()
         while self.getTimeSource() != "1500":
             try:
                 self.initParse()
@@ -37,7 +46,7 @@ class DashinDbMake(DBMake.dbm2):
 #                 Time='1302'
                 for code in self.codeNameCoast:
                     for name in self.codeNameCoast[code]:
-                        self.updateCode(code,Time,self.codeNameCoast[code][name])
+                        self.updateCode_r(code,Time,self.codeNameCoast[code][name])
                         
                 print('code inserted['+str(time.time()-_start)+'] 시간 ['+str(self.getTime())+']')
                 self.commit()
@@ -47,20 +56,14 @@ class DashinDbMake(DBMake.dbm2):
                 continue
 
 if __name__ == '__main__':
-    dsm = DashinDbMake()
-    dsm.setDBName()
-    dsm.createTable()
     
-#     while True:
-#         if dsm.getTimeSource()=='900':
-            
-#     dsm.start()
-#         else:
-#             time.sleep(1)
-    proc = mp.process(target=dsm.doWork())
-#     while True:
-#         if dsm.getTimeSource()=='900':
-    proc.start()
-#             break
-#         else :
-#             time.sleep(1)
+    dsm = DashinDbMake()
+#     dsm.setDBName()
+#     dsm.createTable()
+    
+    while True:
+        if dsm.getTimeSource()=='900':
+                
+            dsm.start()
+        else:
+            time.sleep(1)

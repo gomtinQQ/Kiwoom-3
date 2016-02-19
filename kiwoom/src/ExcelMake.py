@@ -226,7 +226,11 @@ class ExcelCode:
             
         end_time=time.time()
         print('total items ['+str(all)+']'+' time ['+str(end_time-start_time)+']  success!!')
-        
+    
+    def run(self):
+        self.ExcelRead()
+        self.setAllValue()
+        self.ExcelExitWithSave()
         
 if __name__ == '__main__':
     tt = ExcelCode(setLayout=False)

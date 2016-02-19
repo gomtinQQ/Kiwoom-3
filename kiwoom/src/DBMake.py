@@ -102,6 +102,9 @@ class dbm2(mp.Process):
         self.cursor = self.conn.cursor()
 
         return self.conn
+    
+    def getConnection(self):
+        return self.conn
 
     def setDBName(self,dbName):
         '''make Each Folder and Makde Database File'''
@@ -126,13 +129,18 @@ class dbm2(mp.Process):
         else:
             raise RuntimeError('db is not exists make DB!')
         
-    def updateCode(self,Code,Time,coast):
+    def updateCode(self,Code,Time,coast,cursor):
         
         '''코드,시간,가격적으면 DB에 update'''
         Time=str(Time)    
         Code=str(Code)
         coast=str(coast)
-        self.cursor.execute('update kosdaq set "'+Time+'"="'+coast+'" where StockCode='+Code)
+        query='update kosdaq set "'+Time+'"="'+coast+'" where StockCode='+Code
+        try:
+#             cursor.execute(query)
+            return query
+        except:
+            self.PrintException()
         
         
     def dropTable(self,Table):
@@ -196,7 +204,7 @@ class dbm2(mp.Process):
     def run(self):
         self.conn= sqlite3.connect(self.dbName)
         self.cursor = self.conn.cursor()
-        
+         
         _start=time.time()
         all = len(self.codelist)
         i=0
@@ -216,7 +224,7 @@ class dbm2(mp.Process):
                     break
                 i+=1
                 print('before code')
-                
+                 
                 print('code = '+TimePerDict['code'])
                 self.updateCode(TimePerDict['code'],TimePerDict,self.cursor)
                 print('code end')
@@ -224,7 +232,7 @@ class dbm2(mp.Process):
             except Exception as er :
                 print("Exception = "+str(sys.exc_info()))
                 continue
-#         print('hi')
+        print('hi')
         
         
     def setCodelist(self,codelist):
@@ -238,7 +246,6 @@ class dbm2(mp.Process):
         
     def initParse(self):
         '''대신증권 홈페이지에서 값들을 가져온후 Diction으로 저장'''
-        print('parse start')
         bfd = btsForDashin.btsForReal()
         self.codeNameCoast = bfd.UrlParsing()
         
