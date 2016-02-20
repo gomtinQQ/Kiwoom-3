@@ -11,13 +11,13 @@ def main():
      
      
  
-    while True:
-        if dd.getTimeSource()>='900' and dd.getTimeSource()<='1500':
-            dd.start()
-            break
-        else: 
-            print(dd.getTime())
-            time.sleep(1)
+#     while True:
+#         if dd.getTimeSource()>='900' and dd.getTimeSource()<='1500':
+    dd.start()
+#             break
+#         else: 
+#             print(dd.getTime())
+#             time.sleep(1)
     dd.join()
     
 

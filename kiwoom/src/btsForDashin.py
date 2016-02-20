@@ -9,10 +9,15 @@ import ExcelMake
 import DBMake
 
 class btsForReal:
-
+    
+    def source(self):
+        frame_src = 'http://www.daishin.co.kr/ctx_kr/sc_stock/sg_stock_info/svc_kosdaq_total/KosdaqKsSise.shtml'
+        return frame_src
+        
     def  UrlParsing(self):
         _start=time.time()
-        frame_src = 'http://www.daishin.co.kr/ctx_kr/sc_stock/sg_stock_info/svc_kosdaq_total/KosdaqKsSise.shtml'
+#         frame_src = 'http://www.daishin.co.kr/ctx_kr/sc_stock/sg_stock_info/svc_kosdaq_total/KosdaqKsSise.shtml'
+        frame_src = self.source()
 
         self.iframe_content=BeautifulSoup(requests.get(frame_src).content,"lxml")
 

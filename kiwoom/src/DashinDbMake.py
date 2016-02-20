@@ -38,7 +38,11 @@ class DashinDbMake(dbm2):
         print('work start')
         self.setDBName()
         self.createTable()
-        while self.getTimeSource() != "1500":
+#         while self.getTimeSource() != "1500":
+        print('start')
+        while self.getTimeSource()>='900' and self.getTimeSource()<='1500':
+            if self.getTimeSource()=='1500':
+                break
             try:
                 self.initParse()
                 _start = time.time()
