@@ -4,15 +4,16 @@ import bts
 import time
 import os
 import shutil
+import multiprocessing as mp
 
-class ExcelCode:
+class ExcelCode(mp.Process):
     
     
     def __init__(self,setLayout=True):
         '''엑셀 초기화 '''
+        
         self.excel = win32com.client.Dispatch("Excel.Application")
         self.bt = bts.mbts()
-        
         if setLayout==True:
             self.setLayout()
     def setLayout(self):
@@ -229,6 +230,7 @@ class ExcelCode:
     
     def run(self):
         self.ExcelRead()
+        print('시작')
         self.setAllValue()
         self.ExcelExitWithSave()
         

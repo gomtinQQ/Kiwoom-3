@@ -116,16 +116,18 @@ class mbts:
 if __name__ == "__main__":
     bttest = mbts()
     
-    bttest.IframeUrlWithCode('101400')
+    bttest.IframeUrlWithCode('000660')  #원하는 종목코드를 입력하시면 됩니다.
 #     bttest.showEachPercent()
     
     bttp = bttest.getTimePerDic()
+
+    print(bttp['10:00'])
     
 #     strr = bttp['10:34']
 #     str=str(strr)
 #     print(str.index('%'))
 #     str=str[0:str.index('%')]
-    print(bttp)
+    # print(bttp)
 #     print(str)
     
     
