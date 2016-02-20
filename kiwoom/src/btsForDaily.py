@@ -7,12 +7,18 @@ import datetime
 
 class daily(bts.mbts):
     
-    def source(self,page,code):
-        self.url = 'http://finance.daum.net/item/quote_yyyymmdd_sub.daum?page=1&code=035720&modify=1'   #한페이지에 30일치 나옴. 
+    def source(self,page="",code=""):
         
+
+        self.url = 'http://finance.daum.net/item/quote_yyyymmdd_sub.daum?page='+str(page)+'&code='+str(code)+'&modify=1'   #한페이지에 30일치 나옴. 
+
+        if page=="" or code=="":
+            self.url = 'http://finance.daum.net/item/quote_yyyymmdd_sub.daum?page=1&code=035720&modify=1'   #한페이지에 30일치 나옴. 
+            
+        print(self.url)
         
     def parse(self):
-        self.source('1','323')
+        self.source()
         
         self.dailyData = {}
         content = requests.get(self.url).text
@@ -40,7 +46,7 @@ class daily(bts.mbts):
             
             self.dailyData[str(year)+str(month)+str(day)]=end_price
 #             print(year,month,day,start_price,high_price,low_price,end_price)
-#         print(self.dailyData)
+        print(self.dailyData)
         return self.dailyData
         
 
