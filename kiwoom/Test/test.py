@@ -12,13 +12,13 @@ class GoogleFinanceAPI:
         content = u.text
         
         obj = json.loads(content[3:])
-        return obj[0]
+        return obj
         
         
 if __name__ == "__main__":
     c = GoogleFinanceAPI()
     
     while 1:
-        quote = c.get("MSFT","NASDAQ")
+        quote = c.get("126700","KOSDAQ")
         print(quote)
         time.sleep(30)
