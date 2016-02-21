@@ -7,6 +7,9 @@ import datetime
 
 class daily(bts.mbts):
     
+    def __init__(self):
+        pass
+    
     def source(self,page="",code=""):
         
 
@@ -30,7 +33,7 @@ class daily(bts.mbts):
             datePrice       =   datePrice.contents[0]
             year_month_day  =   datePrice.split('.')
             datePrice       =   datePrice.replace('.','-')
-            
+            datePrice       =   '20'+datePrice
             
             self.dateTime       =   self.getDate(datePrice)
             if self.start > self.dateTime:
@@ -50,9 +53,10 @@ class daily(bts.mbts):
             high_price      =   high_price.contents[0]
             low_price       =   low_price.contents[0]
             end_price       =   end_price.contents[0]
-
-
-            self.dailyData[self.index]=datePrice,end_price
+        
+            end_price=str(end_price).replace(',','')
+            
+            self.dailyData[self.index]=str(datePrice),str(end_price)
             self.index+=1
                 
     def getDataFromDaum(self,code,start,end=""):
@@ -108,4 +112,7 @@ if __name__=='__main__':
     dd = daily()
     data = dd.getDataFromDaum('021080','2010-2-12')
     for dd in data:
-        print(data[dd][0],data[dd][1])
+        date = data[dd][0]
+        price= data[dd][1]
+        index = dd
+        print(date,price,index)
