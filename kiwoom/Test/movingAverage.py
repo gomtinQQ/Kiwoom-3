@@ -12,7 +12,7 @@ import datetime
 def movingaverage(values,window):
     
     weights = np.repeat(1.0,window)/window
-    sma = np.convolve(values, weights, 'valid')
+    sma = np.convolve(values, weights, 'same')
     print(values,weights)
     return sma
 
@@ -33,7 +33,7 @@ x=[mdates.date2num(i) for i in dt_x]
 # x = [1,2,3,4,5,6,7,8,9,10]#x축
 # y = [3,5,2,4,9,1,7,5,9,1] #y축
 
-yMa = movingaverage(y,20)   #day ma
+yMa = movingaverage(y,15)   #day ma
 # print(yMa)
 
 # print(yMa)
