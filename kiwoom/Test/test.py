@@ -1,6 +1,7 @@
 import requests
 import json
 import time
+import numpy
 
 class GoogleFinanceAPI:
     def __init__(self):
@@ -17,7 +18,7 @@ class GoogleFinanceAPI:
         
 if __name__ == "__main__":
     c = GoogleFinanceAPI()
-    
+     
     while 1:
         quote = c.get("126700","KOSDAQ")
         print(quote)

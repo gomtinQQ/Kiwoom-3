@@ -84,7 +84,7 @@ class daily(bts.mbts):
         page=1
         self.Flag = True
         while self.Flag:       
-            self.parse(page,code,start)
+            self.parse(page,code,self.start)
             page+=1
         
         return self.dailyData
@@ -93,15 +93,23 @@ class daily(bts.mbts):
     def getDate(self,Date):
         '''String Format(2014-02-04) return datetime object'''
         
-        Date=str(Date)
-        Date_date = Date.split('-')
-        Date_date_year =int(Date_date[0]) 
-        if len(str(Date_date_year)) ==2:
-            Date_date_year = int('20'+str(Date_date_year))
-        Date_date_month = int(Date_date[1])
-        Date_date_day = int(Date_date[2])
+        dmt_Format='%Y-%m-%d'
         
-        return datetime.datetime(year=Date_date_year,month=Date_date_month,day =Date_date_day)
+        Date = str(Date)
+        
+        if not Date.startswith('20'):
+            Date = '20'+Date
+        
+        return datetime.datetime.strptime(str(Date),dmt_Format)
+#         Date=str(Date)
+#         Date_date = Date.split('-')
+#         Date_date_year =int(Date_date[0]) 
+#         if len(str(Date_date_year)) ==2:
+#             Date_date_year = int('20'+str(Date_date_year))
+#         Date_date_month = int(Date_date[1])
+#         Date_date_day = int(Date_date[2])
+#         
+#         return datetime.datetime(year=Date_date_year,month=Date_date_month,day =Date_date_day)
         
         
         
@@ -110,9 +118,11 @@ class daily(bts.mbts):
 if __name__=='__main__':
     
     dd = daily()
-    data = dd.getDataFromDaum('021080','2010-2-12')
-    for dd in data:
-        date = data[dd][0]
-        price= data[dd][1]
-        index = dd
-        print(date,price,index)
+    gd = dd.getDate('99-02-04')
+    print(gd)
+#     data = dd.getDataFromDaum('021080','2010-2-12')
+#     for dd in data:
+#         date = data[dd][0]
+#         price= data[dd][1]
+#         index = dd
+#         print(date,price,index)
