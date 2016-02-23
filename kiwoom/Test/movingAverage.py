@@ -14,7 +14,7 @@ def movingaverage(values,window):
     weights = np.repeat(1.0,window)/window
     sma = np.convolve(values, weights, 'valid')#mode = valid,same,full
     # sma = np.correlate(values, weights, 'full')
-    print(values,weights)
+#     print(values,weights)
     return sma
 
 
@@ -31,9 +31,12 @@ for time in Data:
     y.append(int(Data[time][1]))
 x=[mdates.date2num(i) for i in dt_x]
 
+
+for i in x:
+    print(type(i))
 # x = [1,2,3,4,5,6,7,8,9,10]#x축
 # y = [3,5,2,4,9,1,7,5,9,1] #y축
-
+# x=np.ndarray(x)
 yMa = movingaverage(y,5)   #day ma
 # print(yMa)
 
@@ -46,8 +49,7 @@ date_formatter = mdates.DateFormatter('%Y-%m-%d')
 
 ax.xaxis.set_major_formatter(date_formatter)
 fig.autofmt_xdate()
-print(len(x),len(yMa))
-plt.plot(x[len(x)-len(yMa):],yMa)
+plt.plot(x[(len(x)-len(yMa)):],yMa)
 
 plt.show()
 

@@ -34,14 +34,16 @@ print(yMa)
 
 fig,ax= plt.subplots()
 
-ax.plot_date(x,y,'r--')
+ax.plot_date(x[9:],y[9:],'r-')
+
+
+
 date_formatter = mdates.DateFormatter('%Y-%m-%d')
 
 ax.xaxis.set_major_formatter(date_formatter)
 fig.autofmt_xdate()
-# plt.plot(x[len(x)-len(yMa):],yMa)
 # print(len(x))
-plt.plot(x,yMa)
+plt.plot(x[9:],yMa[9:],'b-')
 plt.show()
 
 
