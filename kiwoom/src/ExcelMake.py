@@ -224,6 +224,7 @@ class ExcelCode(mp.Process):
             self.setPercent(int(code),self.codeParse(int(code)))
             print('['+name+']setting finish ['+str(int(all)-1)+'/'+str(len(self.dictCodeList))+']')
             all+=1
+        print('======================================================================')
         end_time=time.time()
         print('total items ['+str(all)+']'+' time ['+str(end_time-start_time)+']  success!!')
     
