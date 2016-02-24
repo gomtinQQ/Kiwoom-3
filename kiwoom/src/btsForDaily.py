@@ -89,6 +89,60 @@ class daily(bts.mbts):
         
         return self.dailyData
     
+    def getForeignerBuy(self,Code,Day=""):
+        src = 'http://finance.daum.net//item/foreign_yyyymmdd.daum?page=1&code='+str(Code)
+        content = requests.get(src).text
+        bs4     = BeautifulSoup(content,'lxml')
+        
+        volume  =  bs4.find_all("td",class_="datetime2")
+        
+        DAY=3
+        index = 0
+        
+        PureBuy={}
+        
+        if Day is not "":
+            DAY=int(Day)
+        
+        for Pure in volume:
+            
+            date    =   str(Pure.contents[0])
+            date    =   date.replace('.','-')
+            date    =   '20'+date
+            
+            date    =   self.getDate(date)
+            
+            ForeignPurBuy = Pure.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling
+            CompanyBuy  = ForeignPurBuy.next_sibling.next_sibling
+            
+            ForeignPurBuy =ForeignPurBuy.contents[0]
+            CompanyBuy  =CompanyBuy.contents[0]
+            
+            print(date,ForeignPurBuy,CompanyBuy)
+            index +=1
+            
+            PureBuy[index]=ForeignPurBuy,CompanyBuy
+            
+            if index == DAY:
+                break
+        print(PureBuy)
+        
+        
+    def getVolumn(self,Code,Date=""):
+        src = 'http://finance.naver.com/item/sise_day.nhn?code='+str(Code)+'&page=1'
+        
+        content = requests.get(src).text
+        bs4 = BeautifulSoup(content,'lxml')
+#         price = bs4.find_all("span",class_="tah p11")
+        price = bs4.find_all("td",class_="num")
+        
+        for i in price:
+            
+            close = i
+            open = close.next_sibling.next_sibling
+            print(close.contents[0].contents[0],open)
+        
+        
     
     def getDate(self,Date):
         '''String Format(2014-02-04) return datetime object'''
@@ -101,15 +155,6 @@ class daily(bts.mbts):
             Date = '20'+Date
         
         return datetime.datetime.strptime(str(Date),dmt_Format)
-#         Date=str(Date)
-#         Date_date = Date.split('-')
-#         Date_date_year =int(Date_date[0]) 
-#         if len(str(Date_date_year)) ==2:
-#             Date_date_year = int('20'+str(Date_date_year))
-#         Date_date_month = int(Date_date[1])
-#         Date_date_day = int(Date_date[2])
-#         
-#         return datetime.datetime(year=Date_date_year,month=Date_date_month,day =Date_date_day)
         
         
         
@@ -118,8 +163,10 @@ class daily(bts.mbts):
 if __name__=='__main__':
     
     dd = daily()
-    gd = dd.getDate('99-02-04')
-    print(gd)
+#     gd = dd.getDate('99-02-04')
+#     print(gd)
+#     dd.getForeignerBuy('126700','5')
+    dd.getVolumn('126700')
 #     data = dd.getDataFromDaum('021080','2010-2-12')
 #     for dd in data:
 #         date = data[dd][0]

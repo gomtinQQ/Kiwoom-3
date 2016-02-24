@@ -18,7 +18,7 @@ def movingaverage(values,window):
     return sma
 
 
-Data = btsForDaily.daily().getDataFromDaum('126700','2015-9-1')
+Data = btsForDaily.daily().getDataFromDaum('126700','2014-9-1')
 
 
 date_fmt = '%Y-%m-%d'
@@ -32,24 +32,23 @@ for time in Data:
 x=[mdates.date2num(i) for i in dt_x]
 
 
-for i in x:
-    print(type(i))
-# x = [1,2,3,4,5,6,7,8,9,10]#x축
-# y = [3,5,2,4,9,1,7,5,9,1] #y축
-# x=np.ndarray(x)
-yMa = movingaverage(y,5)   #day ma
-# print(yMa)
+yMa_20 = movingaverage(y,20)   #day ma
+yMa_10 = movingaverage(y,10)
+yMa_60 = movingaverage(y,60)
 
-# print(yMa)
 
 fig,ax= plt.subplots()
 
-ax.plot_date(x,y,'-')
+ax.plot_date(x,y,'r-')
 date_formatter = mdates.DateFormatter('%Y-%m-%d')
 
 ax.xaxis.set_major_formatter(date_formatter)
 fig.autofmt_xdate()
-plt.plot(x[(len(x)-len(yMa)):],yMa)
+
+# print(len(x),len(yMa))
+ax.plot(x[:-(len(x)-len(yMa_10))],yMa_10,'b-')
+ax.plot(x[:-(len(x)-len(yMa_20))],yMa_20)
+ax.plot(x[:-(len(x)-len(yMa_60))],yMa_60)
 
 plt.show()
 
