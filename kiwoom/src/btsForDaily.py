@@ -48,15 +48,24 @@ class daily(bts.mbts):
             high_price      =   start_price.next_sibling.next_sibling
             low_price       =   high_price.next_sibling.next_sibling
             end_price       =   low_price.next_sibling.next_sibling
+            volume          =   end_price.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling
             
             start_price     =   start_price.contents[0]
             high_price      =   high_price.contents[0]
             low_price       =   low_price.contents[0]
             end_price       =   end_price.contents[0]
+            volumn          =   volume.contents[0]
         
-            end_price=str(end_price).replace(',','')
+            start_price     =   str(start_price).replace(',','')
+            high_price      =   str(high_price).replace(',','')
+            low_price       =   str(low_price).replace(',','')
+            end_price       =   str(end_price).replace(',','')
+            volumn          =   str(volumn).replace(',', '')
             
-            self.dailyData[self.index]=str(datePrice),str(end_price)
+            appendLine = str(datePrice),start_price,high_price,low_price,end_price,volumn
+#             self.dailyData[self.index]=str(datePrice),str(end_price),str(volumn)
+            self.dailyData[self.index]=appendLine
+            
             self.index+=1
                 
     def getDataFromDaum(self,code,start,end=""):
@@ -89,7 +98,10 @@ class daily(bts.mbts):
         
         return self.dailyData
     
-    def getForeignerBuy(self,Code,Day=""):
+    def getForeignerBuyDaum(self,Code,Day=""):
+        '''Code = 기관코드
+            Day = 최근 몇일까지 가져올지. ex)Day = 3 오늘부터 3일전까지 가져옴.
+        '''
         src = 'http://finance.daum.net//item/foreign_yyyymmdd.daum?page=1&code='+str(Code)
         content = requests.get(src).text
         bs4     = BeautifulSoup(content,'lxml')
@@ -126,23 +138,6 @@ class daily(bts.mbts):
             if index == DAY:
                 break
         print(PureBuy)
-        
-        
-    def getVolumn(self,Code,Date=""):
-        src = 'http://finance.naver.com/item/sise_day.nhn?code='+str(Code)+'&page=1'
-        
-        content = requests.get(src).text
-        bs4 = BeautifulSoup(content,'lxml')
-#         price = bs4.find_all("span",class_="tah p11")
-        price = bs4.find_all("td",class_="num")
-        
-        for i in price:
-            
-            close = i
-            open = close.next_sibling.next_sibling
-            print(close.contents[0].contents[0],open)
-        
-        
     
     def getDate(self,Date):
         '''String Format(2014-02-04) return datetime object'''
@@ -166,10 +161,13 @@ if __name__=='__main__':
 #     gd = dd.getDate('99-02-04')
 #     print(gd)
 #     dd.getForeignerBuy('126700','5')
-    dd.getVolumn('126700')
-#     data = dd.getDataFromDaum('021080','2010-2-12')
-#     for dd in data:
-#         date = data[dd][0]
-#         price= data[dd][1]
-#         index = dd
-#         print(date,price,index)
+    data = dd.getDataFromDaum('126700','2015-2-12')
+    for dd in data:
+        date = data[dd][0]
+        price= data[dd][1]
+        highprice=data[dd][2]
+        lowprice=data[dd][3]
+        endprice =data[dd][4]
+        volume=data[dd][5]
+        index = dd
+        print(date,price,highprice,lowprice,endprice,volume,index)
