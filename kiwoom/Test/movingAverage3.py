@@ -2,17 +2,16 @@ import numpy as np
 from numpy import convolve
 import matplotlib.pyplot as plt
  
-def movingaverage (values, window):
-    weights = np.repeat(1.0, window)/window
-    sma = np.convolve(values, weights, 'valid')
-    return sma
- 
-x = [1,2,3,4,5,6,7,8,9,10]
-y = [3,5,2,4,9,1,7,5,9,1]
- 
-yMA = movingaverage(y,3)
+x, y = np.random.randn(2, 100)
+fig = plt.figure()
+ax1 = fig.add_subplot(211)
+ax1.xcorr(x, y, usevlines=True, maxlags=50, normed=True, lw=2)
+ax1.grid(True)
+ax1.axhline(0, color='black', lw=2)
 
-print(len(x),len(y),len(yMA))
-plt.plot(x[len(x)-len(yMA):],yMA)
-plt.plot(x,y)
+ax2 = fig.add_subplot(212, sharex=ax1)
+ax2.acorr(x, usevlines=True, normed=True, maxlags=50, lw=2)
+ax2.grid(True)
+ax2.axhline(0, color='black', lw=2)
+
 plt.show()

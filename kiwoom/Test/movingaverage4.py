@@ -120,7 +120,7 @@ def graphData(stock,MA1,MA2):
         ax1.plot(date[-SP:],Av2[-SP:],'#4ee6fd',label=Label2, linewidth=1.5)
         
         ax1.grid(True, color='w')
-        ax1.xaxis.set_major_locator(mticker.MaxNLocator(10))
+        ax1.xaxis.set_major_locator(mticker.MaxNLocator(10))    #set x locator interva 
         ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
         ax1.yaxis.label.set_color("w")
         ax1.spines['bottom'].set_color("#5998ff")
@@ -136,7 +136,7 @@ def graphData(stock,MA1,MA2):
                    fancybox=True, borderaxespad=0.)
         maLeg.get_frame().set_alpha(0.4)
         textEd = pylab.gca().get_legend().get_texts()
-        pylab.setp(textEd[0:5], color = 'w')
+        pylab.setp(textEd[0:5], color = 'w')        #label edit color
 
         volumeMin = 0
         
@@ -147,21 +147,21 @@ def graphData(stock,MA1,MA2):
         negCol = '#8f2020'
         
         ax0.plot(date[-SP:], rsi[-SP:], rsiCol, linewidth=1.5)
-        ax0.axhline(70, color=negCol)
+        ax0.axhline(70, color=negCol)    # draw line 
         ax0.axhline(30, color=posCol)
-        ax0.fill_between(date[-SP:], rsi[-SP:], 70, where=(rsi[-SP:]>=70), facecolor=negCol, edgecolor=negCol, alpha=0.5)
+        ax0.fill_between(date[-SP:], rsi[-SP:], 70, where=(rsi[-SP:]>=70), facecolor=negCol, edgecolor=negCol, alpha=0.5)   #make color
         ax0.fill_between(date[-SP:], rsi[-SP:], 30, where=(rsi[-SP:]<=30), facecolor=posCol, edgecolor=posCol, alpha=0.5)
         ax0.set_yticks([30,70])
         ax0.yaxis.label.set_color("w")
         ax0.spines['bottom'].set_color("#5998ff")
         ax0.spines['top'].set_color("#5998ff")
         ax0.spines['left'].set_color("#5998ff")
-        ax0.spines['right'].set_color("#5998ff")
+        ax0.spines['right'].set_color("#5998ff")    #borderline draw
         ax0.tick_params(axis='y', colors='w')
         ax0.tick_params(axis='x', colors='w')
         plt.ylabel('RSI')
 
-        ax1v = ax1.twinx()
+        ax1v = ax1.twinx()      #share x axis
         ax1v.fill_between(date[-SP:],volumeMin, volume[-SP:], facecolor='#00ffe8', alpha=.4)
         ax1v.axes.yaxis.set_ticklabels([])
         ax1v.grid(False)
