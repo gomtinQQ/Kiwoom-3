@@ -22,7 +22,7 @@ class daily(bts.mbts):
     def parse(self,page,code,start,end=""):
         self.source(page,code)
         
-        
+        '''시,고,저,종,거래량'''
         content = requests.get(self.url).text
         bs4     = BeautifulSoup(content,'lxml')
         price   = bs4.find_all("td",class_="datetime2")
@@ -170,4 +170,5 @@ if __name__=='__main__':
         endprice =data[dd][4]
         volume=data[dd][5]
         index = dd
-        print(date,price,highprice,lowprice,endprice,volume,index)
+        print('날짜',date,'시가',price,'고가',highprice,'저가',lowprice,'종가',endprice,'거래량',volume,'순번',index)
+        print(type(date))
