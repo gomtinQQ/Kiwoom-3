@@ -19,7 +19,7 @@ def movingaverage(values,window):
     return sma
 
 
-Data = btsForDaily.daily().getDataFromDaum('021080','2010-10-1') #시,고,저,종,거래량
+Data = btsForDaily.daily().getDataFromDaum('126700','2010-10-1') #시,고,저,종,거래량
 
 
 date_fmt = '%Y-%m-%d'

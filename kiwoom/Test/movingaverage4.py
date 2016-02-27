@@ -110,7 +110,7 @@ def graphData(stock,MA1,MA2):
         fig = plt.figure(facecolor='#07000d')
 
         ax1 = plt.subplot2grid((6,4), (1,0), rowspan=4, colspan=4, axisbg='#07000d')
-        candlestick_ohlc(ax1, newAr[-SP:], width=.6, colorup='#53c156', colordown='#ff1717')
+        candlestick_ohlc(ax1, newAr[-SP:], width=.6, colorup='red', colordown='blue')
 
         Label1 = str(MA1)+' SMA'
         Label2 = str(MA2)+' SMA'
@@ -118,6 +118,8 @@ def graphData(stock,MA1,MA2):
 #         print(len(date[-SP:]),len(Av1[-SP:]))
         ax1.plot(date[-SP:],Av1[-SP:],'#e1edf9',label=Label1, linewidth=1.5)
         ax1.plot(date[-SP:],Av2[-SP:],'#4ee6fd',label=Label2, linewidth=1.5)
+#         ax1.plot(date[-SP:],Av1[-SP:])
+#         ax1.plot(date[-SP:],Av2[-SP:])
         
         ax1.grid(True, color='w')
         ax1.xaxis.set_major_locator(mticker.MaxNLocator(10))    #set x locator interva 
@@ -163,7 +165,7 @@ def graphData(stock,MA1,MA2):
 
         ax1v = ax1.twinx()      #share x axis
         ax1v.fill_between(date[-SP:],volumeMin, volume[-SP:], facecolor='#00ffe8', alpha=.4)
-        ax1v.axes.yaxis.set_ticklabels([])
+        ax1v.axes.yaxis.set_ticklabels([]) #set text value
         ax1v.grid(False)
         ###Edit this to 3, so it's a bit larger
         ax1v.set_ylim(0, 3*volume.max())
