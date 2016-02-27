@@ -4,7 +4,9 @@ import numpy as np
 from numpy import convolve
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import matplotlib.ticker as mticker
 from matplotlib.finance import candlestick_ohlc
+import matplotlib.finance as fn
 import sys
 sys.path.append('../src')
 import btsForDaily
@@ -17,7 +19,7 @@ def movingaverage(values,window):
     return sma
 
 
-Data = btsForDaily.daily().getDataFromDaum('021080','2015-10-1') #시,고,저,종,거래량
+Data = btsForDaily.daily().getDataFromDaum('021080','2010-10-1') #시,고,저,종,거래량
 
 
 date_fmt = '%Y-%m-%d'
@@ -53,9 +55,10 @@ yMa_60 = movingaverage(y,60)
 yMa_120 = movingaverage(y,120)
 
 
-
 ax=plt.subplot2grid((6,4), (1,0), rowspan=4, colspan=4, axisbg='#07000d')
-print(len(newAr))
+
+ax.xaxis.set_major_locator(mticker.MaxNLocator(10))    #set x locator interva
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
 candlestick_ohlc(ax, newAr, width=.6, colorup='#53c156', colordown='#ff1717')
 
 
@@ -63,21 +66,9 @@ ax.plot_date(x,y,'r-')
 
 fig.autofmt_xdate()
 
-
 ax.plot(x[:-(len(x)-len(yMa_10))],yMa_10)
 ax.plot(x[:-(len(x)-len(yMa_20))],yMa_20)
 ax.plot(x[:-(len(x)-len(yMa_60))],yMa_60,'w-')
 ax.plot(x[:-(len(x)-len(yMa_120))],yMa_120)
 
 plt.show()
-
-# 
-# import pandas.io.data as web
-# import datetime
-# 
-# start = datetime.datetime(2016,1,1)
-# 
-# stock  = web.DataReader("126700.KQ","ff",start)
-#
-# print(stock)
-
