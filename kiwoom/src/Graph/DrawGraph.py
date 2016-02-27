@@ -81,24 +81,25 @@ def drawGraph(code,date):
     Label1='5 SMA'
     Label2='20 SMA'
     
-    label = ax.plot(x[:-4],yMa_5[4:],label=Label1,linewidth=1.5)
-    label2 =ax.plot(x[:-9],yMa_10[9:],label=Label2,linewidth=1.5)
+    label = ax.plot(x[:-4],yMa_5[4:],label=Label1,linewidth=1.)
+    label2 =ax.plot(x[:-19],yMa_20[19:],label=Label2,linewidth=1.)
     
-    plt.legend(loc=9,ncol=2,prop={'size':7},fancybox=True)
+    plt.legend(loc=9,ncol=2,prop={'size':10},fancybox=True)
     
-    ax.plot(x[:-19],yMa_20[19:])
+    ax.plot(x[:-9],yMa_10[9:])
     ax.plot(x[:-59],yMa_60[59:])
     ax.plot(x[:-119],yMa_120[119:])
     
     prev_key=prev_val=0
     
     for key,val in golden_20_5[1:].iteritems():
+        print(key,val)
         if val ==0:
             continue
         if val*prev_val < 0 and val > prev_val:
-            ax.annotate('GOLDEN',xy=(x[key],yMa_20[key]),xytext=(10,-30),textcoords='offset points',arrowprops=dict(facecolor='black', shrink=0.05))
+            ax.annotate('GOLDEN',xy=(x[key-21],y[key]),xytext=(10,-30),textcoords='offset points',arrowprops=dict(facecolor='red',arrowstyle="->"))
         if val*prev_val < 0 and val < prev_val:
-            ax.annotate('DEAD',xy=(x[key],yMa_20[key]),xytext=(10,30),textcoords='offset points',arrowprops=dict(facecolor='black', shrink=0.05))
+            ax.annotate('DEAD',xy=(x[key-21],y[key]),xytext=(10,30),textcoords='offset points',arrowprops=dict(facecolor='blue', arrowstyle="->"))
         prev_key,prev_val=key,val
     
     axv = ax.twinx()
