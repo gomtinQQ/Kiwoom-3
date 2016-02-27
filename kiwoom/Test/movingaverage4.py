@@ -115,11 +115,9 @@ def graphData(stock,MA1,MA2):
         Label1 = str(MA1)+' SMA'
         Label2 = str(MA2)+' SMA'
 
-#         print(len(date[-SP:]),len(Av1[-SP:]))
         ax1.plot(date[-SP:],Av1[-SP:],'#e1edf9',label=Label1, linewidth=1.5)
         ax1.plot(date[-SP:],Av2[-SP:],'#4ee6fd',label=Label2, linewidth=1.5)
-#         ax1.plot(date[-SP:],Av1[-SP:])
-#         ax1.plot(date[-SP:],Av2[-SP:])
+
         
         ax1.grid(True, color='w')
         ax1.xaxis.set_major_locator(mticker.MaxNLocator(10))    #set x locator interva 

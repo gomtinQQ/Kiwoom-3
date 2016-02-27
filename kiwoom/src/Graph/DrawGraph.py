@@ -34,9 +34,8 @@ def drawGraph(code,date):
     pdAr=[]
     volumeArr=[]
     
-    fig,ax = plt.subplots()
-    date_formatter = mdates.DateFormatter(date_fmt)
-    ax.xaxis.set_major_formatter(date_formatter)
+    
+#     date_formatter = mdates.DateFormatter(date_fmt)
     for price in Data:
         raw_x = datetime.datetime.strptime(str(Data[price][0]),date_fmt)
         
@@ -58,53 +57,50 @@ def drawGraph(code,date):
     
     volume=np.array(volumeArr)  #ndarray로 변형.
     
-    dd = pd.DataFrame(pdAr,columns=['Date','open','high','low','cloe','volume'])
+    dd = pd.DataFrame(pdAr,columns=['Date','open','high','low','close','volume'])
+    dd.reset_index(inplace = True)
+    dd.Date=mdates.date2num(dd.Date.dt.to_pydatetime())
     
-    x=[mdates.date2num(i) for i in dt_x]
-    yMa_5 = movingAverage(y, 5)
-    yMa_20 = movingAverage(y,20)   #day ma
-    yMa_10 = movingAverage(y,10)
-    yMa_60 = movingAverage(y,60)
-    yMa_120 = movingAverage(y,120)
-    golden_20_5    =   yMa_5-yMa_20
+    yMa_5 = movingAverage(dd['close'], 5)
+    yMa_20 = movingAverage(dd['close'],20)   #day ma
+    golden_20_5    =   yMa_20-yMa_5
     
-    
-    ax.xaxis.set_major_locator(mticker.MaxNLocator(10))    #set x locator interva
-    ax.xaxis.set_major_formatter(mdates.DateFormatter(date_fmt))
-    candlestick_ohlc(ax, newAr, width=.6, colorup='red', colordown='blue')
+    fig,ax = plt.subplots()
+#     ax.xaxis.set_major_locator(mticker.MaxNLocator(10))    #set x locator interva
 
-    ax.plot_date(x,y,'r-')
+    SP = len(dd.Date[19:])
+    ax.plot_date(dd['Date'][-SP:],dd['close'][-SP:],'-')
+
+    uu = [tuple(x) for x in dd[['Date', 'open', 'high', 'low', 'close']].to_records(index=False)]
+     
+    candlestick_ohlc(ax, uu[-SP:], width=.6, colorup='red', colordown='blue')
+    ax.xaxis.set_major_formatter(mdates.DateFormatter(date_fmt)) # 날짜포맷으로 바꿔줌.
+    fig.autofmt_xdate() #날짜포맷  이쁘게정렬됨.
     
-    
-    fig.autofmt_xdate()
     
     Label1='5 SMA'
     Label2='20 SMA'
     
-    label = ax.plot(x[:-4],yMa_5[4:],label=Label1,linewidth=1.)
-    label2 =ax.plot(x[:-19],yMa_20[19:],label=Label2,linewidth=1.)
+    ax.plot(dd['Date'][-SP:],yMa_5[-SP:],label=Label1,linewidth=1.)
+    ax.plot(dd['Date'][-SP:],yMa_20[-SP:],label=Label2,linewidth=1.)
+
+    plt.legend(loc='best')
     
-    plt.legend(loc=9,ncol=2,prop={'size':10},fancybox=True)
-    
-    ax.plot(x[:-9],yMa_10[9:])
-    ax.plot(x[:-59],yMa_60[59:])
-    ax.plot(x[:-119],yMa_120[119:])
     
     prev_key=prev_val=0
     
-    for key,val in golden_20_5[1:].iteritems():
-        print(key,val)
+    for key,val in golden_20_5.iteritems():
         if val ==0:
             continue
         if val*prev_val < 0 and val > prev_val:
-            ax.annotate('GOLDEN',xy=(x[key-21],y[key]),xytext=(10,-30),textcoords='offset points',arrowprops=dict(facecolor='red',arrowstyle="->"))
+            ax.annotate('GOLDEN',xy=(dd['Date'][-SP:][key],yMa_20[key]),xytext=(10,-30),textcoords='offset points',arrowprops=dict(facecolor='red',arrowstyle="->"))
         if val*prev_val < 0 and val < prev_val:
-            ax.annotate('DEAD',xy=(x[key-21],y[key]),xytext=(10,30),textcoords='offset points',arrowprops=dict(facecolor='blue', arrowstyle="->"))
+            ax.annotate('DEAD',xy=(dd['Date'][-SP:][key],yMa_20[key]),xytext=(10,30),textcoords='offset points',arrowprops=dict(facecolor='blue', arrowstyle="->"))
         prev_key,prev_val=key,val
     
     axv = ax.twinx()
     volumeMin=0
-    axv.fill_between(x,volumeMin,volume, facecolor='#00ffe8', alpha=.4)
+    axv.fill_between(dd['Date'][-SP:],volumeMin,volume[-SP:], facecolor='#00ffe8', alpha=.4)
     axv.axes.yaxis.set_ticklabels([]) #set text value
     
     ###Edit this to 3, so it's a bit larger
