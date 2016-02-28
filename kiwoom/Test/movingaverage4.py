@@ -100,10 +100,12 @@ def graphData(stock,MA1,MA2):
         while x < y:
             appendLine = date[x],openp[x],highp[x],lowp[x],closep[x],volume[x]
             newAr.append(appendLine)
+            print(appendLine)
             x+=1
-            
+        
         Av1 = movingaverage(closep, MA1)
         Av2 = movingaverage(closep, MA2)
+        print(Av1)
 
         SP = len(date[MA2-1:])
         
