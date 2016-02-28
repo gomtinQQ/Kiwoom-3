@@ -7,8 +7,8 @@ import datetime
 
 class daily(bts.mbts):
     
-    def __init__(self):
-        pass
+#     def __init__(self):
+#         pass
     
     def source(self,page="",code=""):
         
@@ -19,11 +19,18 @@ class daily(bts.mbts):
             self.url = 'http://finance.daum.net/item/quote_yyyymmdd_sub.daum?page=1&code=035720&modify=1' 
             
         
-    def parse(self,page,code,start,end=""):
+    def parse(self,page,code,start,Timeout,end=""):
         self.source(page,code)
         
         '''시,고,저,종,거래량'''
-        content = requests.get(self.url).text
+        readTimout  =Timeout
+        ConnectTimeout  =Timeout
+        try:
+            content = requests.get(self.url,timeout=(ConnectTimeout,readTimout)).text
+        except requests.exceptions.ConnectTimeout as e:
+            print('ConnectTimeout !!')
+        except requests.exceptions.ReadTimeout as e:
+            print ('ReadTimeout!!!')
         bs4     = BeautifulSoup(content,'lxml')
         price   = bs4.find_all("td",class_="datetime2")
         
@@ -68,7 +75,7 @@ class daily(bts.mbts):
             
             self.index+=1
                 
-    def getDataFromDaum(self,code,start,end=""):
+    def getDataFromDaum(self,code,start,Timeout,end=""):
         '''Format = 16-02-04'''
         '''end default = today'''
         self.dailyData = {}
@@ -92,8 +99,8 @@ class daily(bts.mbts):
         
         page=1
         self.Flag = True
-        while self.Flag:       
-            self.parse(page,code,self.start)
+        while self.Flag and page<=10:       
+            self.parse(page,code,self.start,Timeout)
             page+=1
         
         return self.dailyData

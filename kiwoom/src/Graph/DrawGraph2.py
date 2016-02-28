@@ -30,8 +30,12 @@ def checkGolden(ax,dd,SP):
             ax.annotate('DEAD',xy=(dd['Date'][-SP:][key],dd['Mv20'][key]),xytext=(10,30),textcoords='offset points',arrowprops=dict(facecolor='blue', arrowstyle="->"))
         prev_key,prev_val=key,val
         
-def getData(code,date,DATE_FMT=""):
-    Data = btsForDaily.daily().getDataFromDaum(str(code),str(date))
+def getData(code,date,TIMEOUT="",DATE_FMT=""):
+    TimeOut=5
+    if TimeOut !="":
+        Timeout=TIMEOUT
+        
+    Data = btsForDaily.daily().getDataFromDaum(str(code),str(date),TimeOut)
     date_fmt = '%Y-%m-%d'
     if DATE_FMT !="":
         date_fmt=DATE_FMT

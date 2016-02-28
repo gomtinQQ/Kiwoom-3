@@ -8,10 +8,8 @@ import btsForDashin
 
 
 
-def Search(Code,date,end):
-    print('start!')
-    Data = DrawGraph2.getData(Code,date)
-    
+def Search(Code,date,end,timeOut=""):
+    Data = DrawGraph2.getData(Code,date,timeOut)
     Data['ma5']=DrawGraph2.movingAverage(Data['close'],5)
     Data['ma20']=DrawGraph2.movingAverage(Data['close'],20)
     Data['ma60']=DrawGraph2.movingAverage(Data['close'],60)
@@ -43,17 +41,19 @@ def Search(Code,date,end):
         
         if end<dd:
             
-            print('GoldenCross~ Code',Code,' When: ',dd)
-        else:
-            print('Not happened!')
+            print('GoldenCross~ Code',Code,' When: ',dd ,end="")
+#         else:
+#             print('Not happened!')
     
     except Exception as a :
+#         print(a)
+        pass
         
-        print(a)
-    print('End!')
 bfd = btsForDashin.btsForReal()
 codeNameCoast = bfd.UrlParsing()
+i=0
 for code in codeNameCoast:
     for name in codeNameCoast[code]:
         Search(str(code),'2016-1-13','2016-02-15')
-        
+        i+=1
+        print(' ',i,len(codeNameCoast))
