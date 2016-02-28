@@ -14,7 +14,7 @@ class btsForReal:
         frame_src = 'http://www.daishin.co.kr/ctx_kr/sc_stock/sg_stock_info/svc_kosdaq_total/KosdaqKsSise.shtml'
         return frame_src
         
-    def  UrlParsing(self):
+    def UrlParsing(self):
         _start=time.time()
 #         frame_src = 'http://www.daishin.co.kr/ctx_kr/sc_stock/sg_stock_info/svc_kosdaq_total/KosdaqKsSise.shtml'
         frame_src = self.source()
