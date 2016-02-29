@@ -131,20 +131,23 @@ class daily(bts.mbts):
             
             date    =   self.getDate(date)
             
-            ForeignPurBuy = Pure.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling
+            ForeignPurBuy = Pure.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling
             CompanyBuy  = ForeignPurBuy.next_sibling.next_sibling
             
             ForeignPurBuy =ForeignPurBuy.contents[0]
             CompanyBuy  =CompanyBuy.contents[0]
             
-            print(date,ForeignPurBuy,CompanyBuy)
+            ForeignPurBuy=str(ForeignPurBuy).replace(',', '')
+            CompanyBuy = str(CompanyBuy).replace(',', '')
+            
+#             print(date,ForeignPurBuy,CompanyBuy)
             index +=1
             
-            PureBuy[index]=ForeignPurBuy,CompanyBuy
+            PureBuy[index]=date,ForeignPurBuy,CompanyBuy
             
             if index == DAY:
                 break
-        print(PureBuy)
+        return PureBuy
     
     def getDate(self,Date):
         '''String Format(2014-02-04) return datetime object'''
@@ -167,15 +170,17 @@ if __name__=='__main__':
     dd = daily()
 #     gd = dd.getDate('99-02-04')
 #     print(gd)
-#     dd.getForeignerBuy('126700','5')
-    data = dd.getDataFromDaum('126700','2015-2-12')
-    for dd in data:
-        date = data[dd][0]
-        price= data[dd][1]
-        highprice=data[dd][2]
-        lowprice=data[dd][3]
-        endprice =data[dd][4]
-        volume=data[dd][5]
-        index = dd
-        print('날짜',date,'시가',price,'고가',highprice,'저가',lowprice,'종가',endprice,'거래량',volume,'순번',index)
-        print(type(date))
+    print(dd.getForeignerBuyDaum('021080','5'))
+    
+#     print(dd)
+#     data = dd.getDataFromDaum('126700','2015-2-12')
+#     for dd in data:
+#         date = data[dd][0]
+#         price= data[dd][1]
+#         highprice=data[dd][2]
+#         lowprice=data[dd][3]
+#         endprice =data[dd][4]
+#         volume=data[dd][5]
+#         index = dd
+#         print('날짜',date,'시가',price,'고가',highprice,'저가',lowprice,'종가',endprice,'거래량',volume,'순번',index)
+#         print(type(date))

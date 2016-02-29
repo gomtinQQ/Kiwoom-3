@@ -6,10 +6,13 @@ import matplotlib.finance as fn
 import sys
 from matplotlib.dates import date2num
 sys.path.append('../')
+sys.path.append('../Data')
+import YGGetWebData
 import btsForDaily
 import datetime
 import time
 import pandas as pd
+
 
 def movingAverage(values,window):
     
@@ -31,33 +34,8 @@ def checkGolden(ax,dd,SP):
         prev_key,prev_val=key,val
         
 def getData(code,date,TIMEOUT="",DATE_FMT=""):
-    TimeOut=5
-    if TimeOut !="":
-        Timeout=TIMEOUT
-        
-    Data = btsForDaily.daily().getDataFromDaum(str(code),str(date),TimeOut)
-    date_fmt = '%Y-%m-%d'
-    if DATE_FMT !="":
-        date_fmt=DATE_FMT
     
-    yy = []
-    for index in Data:
-        raw_x = datetime.datetime.strptime(str(Data[index][0]),date_fmt)
-        Date=raw_x
-        open=Data[index][1]
-        high=Data[index][2]
-        low=Data[index][3]
-        close=Data[index][4]
-        volume=Data[index][5]
-        DateIndex = [Data[index][0]]
-        
-        PdArr =Date,open,high,low,close,volume,DateIndex
-        yy.append(PdArr)
-        
-    dd = pd.DataFrame(yy,columns=['Date','open','high','low','close','volume','DateIndex'])
-    dd = dd.iloc[::-1]  #reverse data frame
-    
-    return dd
+    return YGGetWebData.getStockPriceData(code,date,TIMEOUT,DATE_FMT)
 
 def drawGraph(code,date):
     date_fmt = '%Y-%m-%d'
