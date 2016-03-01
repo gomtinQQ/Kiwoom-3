@@ -63,7 +63,7 @@ class closePriceMake():
         bfd = btsForDashin.btsForReal()
         self.codeNameCoast = bfd.UrlParsing()
         
-        for code in self.codeNameCoast:
+        for index,code in enumerate(self.codeNameCoast):
             
             data = YGGetWebData.getStockPriceData(str(code),'2014-09-1')
             for index in range(len(data)):
@@ -79,6 +79,7 @@ class closePriceMake():
                     continue
                 
                 self.conn.commit()
+            print(code,index,len(self.codeNameCoast))
             
     def addDateColumn(self):
         self.dbName='../../Sqlite3/ClosePriceDB.db'

@@ -30,6 +30,7 @@ class daily(bts.mbts):
         for i in range(retry):    
             try:
                 content = requests.get(self.url,timeout=(ConnectTimeout,readTimout)).text
+                break
             except requests.exceptions.ConnectTimeout as e:
                 print('ConnectTimeout !! count : '+i)
                 
