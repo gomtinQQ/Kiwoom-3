@@ -25,12 +25,19 @@ class daily(bts.mbts):
         '''시,고,저,종,거래량'''
         readTimout  =Timeout
         ConnectTimeout  =Timeout
-        try:
-            content = requests.get(self.url,timeout=(ConnectTimeout,readTimout)).text
-        except requests.exceptions.ConnectTimeout as e:
-            print('ConnectTimeout !!')
-        except requests.exceptions.ReadTimeout as e:
-            print ('ReadTimeout!!!')
+        retry = 5
+        
+        for i in range(retry):    
+            try:
+                content = requests.get(self.url,timeout=(ConnectTimeout,readTimout)).text
+            except requests.exceptions.ConnectTimeout as e:
+                print('ConnectTimeout !! count : '+i)
+                
+                continue
+            except requests.exceptions.ReadTimeout as e:
+                print ('ReadTimeout!!! count : ' +i)
+                continue
+                
         bs4     = BeautifulSoup(content,'lxml')
         price   = bs4.find_all("td",class_="datetime2")
         

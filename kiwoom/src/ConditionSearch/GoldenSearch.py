@@ -77,7 +77,7 @@ def VolumeCheck(Data,standard,condition):
     
 def Search(Code,date,end,timeOut=""):
     Data = YGGetWebData.getStockPriceData(Code,date,timeOut)
-    if len(Data) <20: #거래일이 10일미만인건 걍 보내주자.
+    if len(Data) <20: #거래일이 20일미만인건 걍 보내주자.
         return
     
     Data['ma5']=DrawGraph2.movingAverage(Data['close'],5)

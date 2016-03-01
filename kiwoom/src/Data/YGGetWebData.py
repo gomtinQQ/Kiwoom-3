@@ -28,7 +28,7 @@ def getForeignerAndCompanyPureBuy(code,day=""):
 
 
 def getStockPriceData(code,date,TIMEOUT="",DATE_FMT=""):
-    '''date 이후부터 값을가져옴'''
+    '''date 이후값을 가져옴'''
     '''TIMEOUT default = 5, DATE_FORMAT default = %Y-%m-%d'''
     '''return Date,open,high,low,close,volume,DataIndex'''
     TimeOut=5
@@ -63,5 +63,10 @@ def getStockPriceAndFCInfo(code,date):
     
 if __name__ == '__main__':
     
-    print(getForeignerAndCompanyPureBuy('126700'))
-    print(getStockPriceData('126700', '2014-09-1'))
+#     print(getForeignerAndCompanyPureBuy('126700'))
+#     print(getStockPriceData('126700', '2014-09-1'))
+    dd = getStockPriceData('021080','2010-10-10')
+    print(dd)
+    
+    for index in range(len(dd)):
+        print(dd['DateIndex'][index])
