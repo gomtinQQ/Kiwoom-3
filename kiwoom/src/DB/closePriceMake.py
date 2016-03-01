@@ -42,6 +42,8 @@ class closePriceMake():
         self.conn.commit()
     
     def addCodeNameData(self):
+        '''테이블 생성후 코드와,이름 삽입'''
+        
         self.dbName='../../Sqlite3/ClosePriceDB.db'
         self.conn = sqlite3.connect(self.dbName)
         self.cursor = self.conn.cursor()
@@ -57,6 +59,8 @@ class closePriceMake():
         self.conn.commit()
     
     def addDatePrice(self):
+        '''날짜에 맞게  종가를 대입한다.'''
+        
         self.dbName='../../Sqlite3/ClosePriceDB.db'
         self.conn = sqlite3.connect(self.dbName)
         self.cursor = self.conn.cursor()
@@ -82,6 +86,8 @@ class closePriceMake():
             print(code,index,len(self.codeNameCoast))
             
     def addDateColumn(self):
+        
+        '''날짜칼럼 삽입.'''
         self.dbName='../../Sqlite3/ClosePriceDB.db'
         self.conn = sqlite3.connect(self.dbName)
         self.cursor = self.conn.cursor()
