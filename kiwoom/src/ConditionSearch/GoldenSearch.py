@@ -8,9 +8,34 @@ import btsForDashin
 import YGGetWebData
 import DrawGraph2
 
-def keepBuying(code,day=""):
-    dd =YGGetWebData.getForeignerAndCompanyPureBuy(code,day)
-    return dd
+def keepBuying(code,DAY="",FOREIGNER=True,COMPANY=True):
+    '''DAY일동안 순매수하면 true, 기관,외국인 모두 알아볼려면 둘다 TRUE'''
+    dd =YGGetWebData.getForeignerAndCompanyPureBuy(code,DAY)
+    day =5
+    if DAY!="":
+        day=int(DAY)
+    
+    FB=True
+    CB=True
+    for index in range(day):
+        Foreign = int(dd['Foreign'][index])
+        Company = int(dd['Company'][index])
+        
+        if Foreign <=0:
+            FB=False
+        if Company <=0:
+            CB=False
+            
+    if FOREIGNER and COMPANY:
+        if FB and CB :
+            return True
+        else:
+            return False
+        
+    if FOREIGNER :
+        return FB
+    elif COMPANY : 
+        return CB 
 
 def Golden(Data):
     prev_key,prev_val=0,0
@@ -62,15 +87,14 @@ def Search(Code,date,end,timeOut=""):
     Data['Golden_20_5']=Data['ma5']-Data['ma20']
     
     Gold = Golden(Data)
-    if VolumeCheck(Data,3,10):
-        print('거래량 증가!! ')
+    
     try:
         dd =Gold.to_datetime()
         
         date_fmt='%Y-%m-%d'
         end =datetime.datetime.strptime(end,date_fmt)
         
-        if end<dd:
+        if end<dd and VolumeCheck(Data, 3, 7) and keepBuying(code,2) :
             print('GoldenCross~ Code',Code,' When: ',dd ,end="")
     except Exception as a :
         pass
@@ -79,13 +103,15 @@ def Search(Code,date,end,timeOut=""):
 
 if __name__ == '__main__':
     
-#     keepBuying(126700)
-    Search(115180,'2016-1-13','2016-02-25')
-#     bfd = btsForDashin.btsForReal()
-#     codeNameCoast = bfd.UrlParsing()
-#     i=0
-#     for code in codeNameCoast:
-#         for name in codeNameCoast[code]:
-#             Search(str(code),'2016-1-13','2016-02-25')
-#             i+=1
-#             print(' ',i,len(codeNameCoast))
+#     print(keepBuying(126700,30))
+#     Search(115180,'2016-1-13','2016-02-25')
+    bfd = btsForDashin.btsForReal()
+    codeNameCoast = bfd.UrlParsing()
+    i=0
+    for code in codeNameCoast:
+        for name in codeNameCoast[code]:
+            Search(str(code),'2016-1-13','2016-02-25')
+#             if keepBuying(code):
+#                 print(code)
+            i+=1
+            print(' ',i,len(codeNameCoast))
