@@ -97,6 +97,7 @@ def Search(Code,date,end,timeOut=""):
         if end<dd and VolumeCheck(Data, 3, 7) and keepBuying(code,2) :
             print('GoldenCross~ Code',Code,' When: ',dd ,end="")
     except Exception as a :
+        print(Exception,a)
         pass
 
 
