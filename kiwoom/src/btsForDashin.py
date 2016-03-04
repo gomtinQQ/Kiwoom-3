@@ -5,9 +5,6 @@ import urllib
 import requests
 import time
 
-import ExcelMake
-import DBMake
-
 class btsForReal:
     
     def source(self):
@@ -74,4 +71,4 @@ if __name__=="__main__":
     codeNameCoast = bfd.UrlParsing()
     for code in codeNameCoast:
         for Name in codeNameCoast[code]:
-            print('code = '+str(code)+' name = '+str(Name)+' coast = '+ str(codeNameCoast[code][Name]))
+            print('code [ '+str(code)+'] name [ '+str(Name)+' ] 가격  [ '+ str(codeNameCoast[code][Name])+']')

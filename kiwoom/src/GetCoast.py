@@ -37,13 +37,9 @@ class Ui_Form(QAxWidget):
         self.connect(self, SIGNAL("OnReceiveMsg(QString, QString, QString, QString)"), self.OnReceiveMsg)
         self.connect(self, SIGNAL("OnReceiveTrData(QString, QString, QString, QString, QString, int, QString, QString, QString)"), self.OnReceiveTrData)
         self.connect(self, SIGNAL("OnReceiveChejanData(QString, int, QString)"),self.OnReceiveChejanData)
-#         self.ExcelList = list
-#         self.excel = ExcelMake.ExcelCode()
 
 
-    def btn_login(self):
-#         self.excel.addToExcel(self.codelist)
-        
+    def btn_login(self):        
         ret = self.dynamicCall("CommConnect()")
         
         
@@ -58,9 +54,6 @@ class Ui_Form(QAxWidget):
         
     def getExcel(self):
         self.btn_login()
-        
-        
-        
         print("success")
         
 
@@ -189,11 +182,6 @@ class Ui_Form(QAxWidget):
         if self.getConnectState()!=1:
             print('cannot connect')
             return
-            
-        
-        
-                
-        
 
 
         
