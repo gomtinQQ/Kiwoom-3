@@ -47,7 +47,6 @@ class Ui_Form(QAxWidget):
     def btn_login(self):        
         ret = self.dynamicCall("CommConnect()")
         
-        
     
     def getConnectState(self):
         ret = self.dynamicCall('GetConnectState()')
@@ -69,26 +68,28 @@ class Ui_Form(QAxWidget):
              
             
     def OnReceiveTrData(self, sScrNo, sRQName, sTrCode, sRecordName, sPreNext, nDataLength, sErrorCode, sMessage, sSPlmMsg):
-        if sScrNo == "10001":
-#             cnt = self.dynamicCall('GetRepeatCnt(QString, QString)', sTrCode, sRQName)
+        
+        print(sScrNo, sRQName, sTrCode, sRecordName, sPreNext, nDataLength, sErrorCode, sMessage, sSPlmMsg)
+        if sTrCode == "opt10001":
             ItemName = self.dynamicCall('CommGetData(QString, QString, QString, int, QString)', sTrCode, "", sRQName, 0, "종목명")
             CurrCoast = self.dynamicCall('CommGetData(QString, QString, QString, int, QString)', sTrCode, "", sRQName, 0, "현재가")
             print(ItemName,CurrCoast)
             
     
     def get10001Info(self):
+        
+        
         ret = self.dynamicCall('SetInputValue(QString,QString)', "종목코드"    ,126700)
         ret = self.dynamicCall('CommRqData(QString,QString,int,QString)', "RQName"    ,  "opt10001"    ,  0   ,  "화면번호")
-        print(str(ret)+'dd')
-
+        self.connect(self, SIGNAL("OnReceiveTrData(QString, QString, QString, QString, QString, int, QString, QString, QString)"), self.OnReceiveTrData)
+    
 
 if __name__ == "__main__":
     import sys
     app = QtGui.QApplication(sys.argv)
     Form = QtGui.QWidget()
     ui = Ui_Form()
-    
-#     ui.get10001Info()
+    ui.get10001Info()
 #     Form.show()
     sys.exit(app.exec_())
 
