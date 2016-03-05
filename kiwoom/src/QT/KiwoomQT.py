@@ -89,7 +89,7 @@ if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     Form = QtGui.QWidget()
     ui = Ui_Form()
-    ui.get10001Info()
+#     ui.get10001Info()
 #     Form.show()
     sys.exit(app.exec_())
 

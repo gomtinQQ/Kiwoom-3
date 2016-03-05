@@ -32,11 +32,11 @@ class daily(bts.mbts):
                 content = requests.get(self.url,timeout=(ConnectTimeout,readTimout)).text
                 break
             except requests.exceptions.ConnectTimeout as e:
-                print('ConnectTimeout !! count : '+i)
+                print('ConnectTimeout !! count : ',i)
                 
                 continue
             except requests.exceptions.ReadTimeout as e:
-                print ('ReadTimeout!!! count : ' +i)
+                print ('ReadTimeout!!! count : ' ,i)
                 continue
                 
         bs4     = BeautifulSoup(content,'lxml')
@@ -178,17 +178,17 @@ if __name__=='__main__':
     dd = daily()
 #     gd = dd.getDate('99-02-04')
 #     print(gd)
-    print(dd.getForeignerBuyDaum('021080','5'))
+#     print(dd.getForeignerBuyDaum('021080','5'))
     
 #     print(dd)
-#     data = dd.getDataFromDaum('126700','2015-2-12')
-#     for dd in data:
-#         date = data[dd][0]
-#         price= data[dd][1]
-#         highprice=data[dd][2]
-#         lowprice=data[dd][3]
-#         endprice =data[dd][4]
-#         volume=data[dd][5]
-#         index = dd
-#         print('날짜',date,'시가',price,'고가',highprice,'저가',lowprice,'종가',endprice,'거래량',volume,'순번',index)
-#         print(type(date))
+    data = dd.getDataFromDaum('126700','2015-2-12',5)
+    for dd in data:
+        date = data[dd][0]
+        price= data[dd][1]
+        highprice=data[dd][2]
+        lowprice=data[dd][3]
+        endprice =data[dd][4]
+        volume=data[dd][5]
+        index = dd
+        print('날짜',date,'시가',price,'고가',highprice,'저가',lowprice,'종가',endprice,'거래량',volume,'순번',index)
+        print(type(date))

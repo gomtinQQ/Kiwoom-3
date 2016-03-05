@@ -4,9 +4,11 @@ import sys
 sys.path.append('../')
 sys.path.append('../Graph')
 sys.path.append('../Data')
+sys.path.append('../DB')
 import btsForDashin
 import YGGetWebData
 import DrawGraph2
+import BuyListDb
 
 def keepBuying(code,DAY="",FOREIGNER=True,COMPANY=True):
     '''DAY일동안 순매수하면 true, 기관,외국인 모두 알아볼려면 둘다 TRUE'''
@@ -86,7 +88,10 @@ def Search(Code,date,end,timeOut=""):
     
     Data['Golden_20_5']=Data['ma5']-Data['ma20']
     
+    
+#     print(Data['Date'])
     Gold = Golden(Data)
+
     
     try:
         dd =Gold.to_datetime()
@@ -96,6 +101,11 @@ def Search(Code,date,end,timeOut=""):
         
         if end<dd and VolumeCheck(Data, 3, 7) and keepBuying(code,2) :
             print('GoldenCross~ Code',Code,' When: ',dd ,end="")
+            bld = BuyListDb.BuyListDB()
+            bld.setProperties()
+            bld.insertGold(str(Code))
+            
+
     except Exception as a :
         print(Exception,a)
         pass
