@@ -25,7 +25,7 @@ class BuyListDB(MakeDB.DBMake):
     def createDatabase(self,dbName,table):
         super().createDatabase(dbName,table)
         sql = "alter table "+self.tableName+" add BUYSELL TEXT default N;";
-        try:            
+        try:
             for i in range(9,15):
                 for j in range(0,60):
                     if j<10:
@@ -37,8 +37,6 @@ class BuyListDB(MakeDB.DBMake):
         except :
             self.PrintException()
             
-        
-        
     def insertGold(self,code):
         
         sql = 'insert into '+self.tableName+' (StockCode) values("'+str(code)+'");'
@@ -47,8 +45,8 @@ class BuyListDB(MakeDB.DBMake):
         
     def togleCode(self,code):
         sesql = 'select BUYSELL from '+self.tableName+' where StockCode = '+code
-        
-        GUBUN = str(self.cursor.execute(sesql).fetchall()[0][0])
+        dd = self.cursor.execute(sesql)
+        GUBUN = str(self.cursor.fetchall()[0][0])
         if GUBUN=='N':
             GUBUN='Y'
         elif GUBUN=='Y':
@@ -62,4 +60,4 @@ if __name__ == '__main__':
 #     bld.createDatabase('../../Sqlite3/BuyList.db','BuyList')
 #     bld.insertGold()
     bld.setProperties()
-    bld.togleCode('126700')
+    bld.togleCode('127710')

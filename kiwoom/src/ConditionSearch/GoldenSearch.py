@@ -9,6 +9,7 @@ import btsForDashin
 import YGGetWebData
 import DrawGraph2
 import BuyListDb
+import MakeDB
 
 def keepBuying(code,DAY="",FOREIGNER=True,COMPANY=True):
     '''DAY일동안 순매수하면 true, 기관,외국인 모두 알아볼려면 둘다 TRUE'''
@@ -54,7 +55,7 @@ def Golden(Data):
     except UnboundLocalError :
         return None
     except Exception as a:
-        pass
+        MakeDB.DBMake().PrintException()
         
 def VolumeCheck(Data,standard,condition):
     '''가장 최근일을 기준으로 몇일동안 거래량증가했는지 day로 나타냄'''
@@ -107,8 +108,7 @@ def Search(Code,date,end,timeOut=""):
             
 
     except Exception as a :
-        print(Exception,a)
-        pass
+        MakeDB.DBMake().PrintException()
 
 
 

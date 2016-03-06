@@ -36,16 +36,15 @@ class Ui_Form(QAxWidget):
         self.connect(self, SIGNAL("OnEventConnect(int)"), self.OnEventConnect)
         self.connect(self, SIGNAL("OnReceiveMsg(QString, QString, QString, QString)"), self.OnReceiveMsg)
         self.connect(self, SIGNAL("OnReceiveTrData(QString, QString, QString, QString, QString, int, QString, QString, QString)"), self.OnReceiveTrData)
+        
         self.connect(self, SIGNAL("OnReceiveChejanData(QString, int, QString)"),self.OnReceiveChejanData)
+        
+        self.connect(self, SIGNAL("OnReceiveRealData(QString, QString, QString)"),self.OnReceiveRealData)
+        
         self.btn_login()
         
-        
-        
-#         print(code)
-#         self.action_New.triggered.connect(self.get10001Info())
-
     def btn_login(self):        
-        ret = self.dynamicCall("CommConnect()")
+        ret = self.dynamicCall("CommConnect()") 
         
     
     def getConnectState(self):
@@ -63,6 +62,7 @@ class Ui_Form(QAxWidget):
 #             code = self.kiwoom.connect(self.kiwoom, SIGNAL("OnEventConnect(int)"), self.OnEventConnect())
             self.get10001Info()
 #             print(code)
+            self.setReal()
         else:
             print("서버 연결에 실패 했습니다...")
              
@@ -73,9 +73,18 @@ class Ui_Form(QAxWidget):
         if sTrCode == "opt10001":
             ItemName = self.dynamicCall('CommGetData(QString, QString, QString, int, QString)', sTrCode, "", sRQName, 0, "종목명")
             CurrCoast = self.dynamicCall('CommGetData(QString, QString, QString, int, QString)', sTrCode, "", sRQName, 0, "현재가")
-            print(ItemName,CurrCoast)
+            volume = self.dynamicCall('CommGetData(QString, QString, QString, int, QString)', sTrCode, "", sRQName, 0, "거래량")
             
-    
+            print(ItemName,CurrCoast,volume)
+            
+    def OnReceiveRealData(self,sJongmokCode,sRealType,sRealData):
+        print(sJongmokCode,sRealType,sRealData)
+        
+    def setReal(self):
+        ret = self.dynamicCall('SetRealReg(QString,QString,QString,QString)', "0001"    ,  "126700"    ,  "10",  "0")
+        ret = self.connect(self, SIGNAL("OnReceiveRealData(QString, QString, QString)"), self.OnReceiveRealData)
+        print(ret)
+        
     def get10001Info(self):
         
         
@@ -89,7 +98,5 @@ if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     Form = QtGui.QWidget()
     ui = Ui_Form()
-#     ui.get10001Info()
-#     Form.show()
     sys.exit(app.exec_())
 
