@@ -171,6 +171,7 @@ class Ui_Form(QAxWidget):
         ACC_NO = self.dynamicCall('GetLoginInfo("ACCNO")')
         print(ACC_NO)
         ACCNO = re.sub(';','', ACC_NO)
+        print(ACCOUNT_CNT)
         self.textEdit.append("보유 계좌수: "+ACCOUNT_CNT + " " + "계좌번호: "+ACCNO)
         self.lineEdit_2.setText(ACCNO)
         print(ACCNO)
