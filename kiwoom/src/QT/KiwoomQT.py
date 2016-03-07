@@ -46,6 +46,10 @@ class Ui_Form(QAxWidget):
     def btn_login(self):        
         ret = self.dynamicCall("CommConnect()") 
         
+    def OnReceiveMsg(self, sScrNo, sRQName, sTrCode, sMsg):
+        
+        print('===========OnReceiveMSG called===========')
+        print('sScrNo[',sScrNo,'] sRQName[', sRQName,'] sTrCode[', sTrCode,'] sMsg[', sMsg,']')
     
     def getConnectState(self):
         ret = self.dynamicCall('GetConnectState()')
@@ -61,15 +65,16 @@ class Ui_Form(QAxWidget):
             print("서버에 연결 되었습니다...")
 #             code = self.kiwoom.connect(self.kiwoom, SIGNAL("OnEventConnect(int)"), self.OnEventConnect())
 #             self.get10001Info()
-            self.setReal()
-#             self.sendOrder()
+#             self.setReal()
+            self.sendOrder()
         else:
             print("서버 연결에 실패 했습니다...")
              
             
     def OnReceiveTrData(self, sScrNo, sRQName, sTrCode, sRecordName, sPreNext, nDataLength, sErrorCode, sMessage, sSPlmMsg):
         
-        print(sScrNo, sRQName, sTrCode, sRecordName, sPreNext, nDataLength, sErrorCode, sMessage, sSPlmMsg)
+        print('===========TRData called===========')
+        print('sScrNo[',sScrNo,'] sRQName[' ,sRQName,'] sTrCode[', sTrCode,'] sRecordName[', sRecordName,'] sPreNext[', sPreNext,'] nDataLength[', nDataLength,'] sErrorCode[', sErrorCode,'] sMessage[', sMessage,'] sSPlmMsg[', sSPlmMsg,']')
         if sTrCode == "opt10001":
             ItemName = self.dynamicCall('CommGetData(QString, QString, QString, int, QString)', sTrCode, "", sRQName, 0, "종목명")
             CurrCoast = self.dynamicCall('CommGetData(QString, QString, QString, int, QString)', sTrCode, "", sRQName, 0, "현재가")
@@ -78,17 +83,18 @@ class Ui_Form(QAxWidget):
             print(ItemName,CurrCoast,volume)
             
     def OnReceiveRealData(self,sJongmokCode,sRealType,sRealData):
-        print(sJongmokCode,sRealType,sRealData)
+        print('===========RealData called===========')
+        print('sJongmokCode[',sJongmokCode,'] sRealType[',sRealType,'] sRealData[',sRealData,']')
     
     def OnReceiveChejanData(self, sGubun, nItemCnt, sFidList):
         
-        print('wef')
-        print(sGubun,nItemCnt,sFidList)
+        print('===========ChejanData called===========')
+        print('sGubun[',sGubun,'] nItemCnt[',nItemCnt,'] sFidList[',sFidList,']')
         print(self.GetChjanData(9203),self.GetChjanData(9203),self.GetChjanData(302),self.GetChjanData(900),self.GetChjanData(901))
         
     def setReal(self):
         ret = self.dynamicCall('SetRealReg(QString,QString,QString,QString)', "0001"    ,  "126700"    ,  "10",  "0")
-        ret = self.connect(self, SIGNAL("OnReceiveRealData(QString, QString, QString)"), self.OnReceiveRealData)
+#         ret = self.connect(self, SIGNAL("OnReceiveRealData(QString, QString, QString)"), self.OnReceiveRealData)
         print(ret)
         
     def get10001Info(self):
@@ -99,13 +105,12 @@ class Ui_Form(QAxWidget):
     def sendOrder (self):
         ACCOUNT_CNT = self.dynamicCall('GetLoginInfo("ACCOUNT_CNT")')
         ACC_NO = self.dynamicCall('GetLoginInfo("ACCNO")')
-        print(ACCOUNT_CNT)
-        print(ACC_NO)
+#         print(ACCOUNT_CNT)
+#         print(ACC_NO)
         ACCNO=ACC_NO.replace(';','')
-        Order = self.dynamicCall('SendOrder(QString, QString, QString, int, QString, int, int, QString, QString)', ["주식주문", "0107", ACCNO, 1, "126700", "1",0, "3",""])
-        self.connect(self, SIGNAL("OnReceiveChejanData(QString, int, QString)"), self.OnReceiveChejanData)
-        print('Order',Order)
-        #시장가 매수 - openApi.SendOrder(“RQ_1”, “0101”, “5015123410”, 1, “000660”, 10, 0, “3”, “”); 
+        Order = self.dynamicCall('SendOrder(QString, QString, QString, int, QString, int, int, QString, QString)', ["주식주문", "0107", ACCNO, 1, 126700, 1,10,"00",""])
+#         self.connect(self, SIGNAL("OnReceiveChejanData(QString, int, QString)"), self.OnReceiveChejanData)
+#         print('Order',Order) 
     
 
 if __name__ == "__main__":

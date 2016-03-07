@@ -91,9 +91,11 @@ class Ui_Form(QAxWidget):
 
         else:
             print(sMsg)
+            print(sScrNo,sRQName,sTrCode,sMsg)
             self.textEdit.append(sMsg)
 
     def OnReceiveChejanData(self, sGubun, nItemCnt, sFidList):
+        print(sGubun,nItemCnt,sFidList)
         self.lineEdit_6.setText(self.GetChjanData(9203))
         
         self.textEdit.append("주문번호: "+self.GetChjanData(9203))
@@ -252,6 +254,7 @@ class Ui_Form(QAxWidget):
         Price = int(self.lineEdit_5.text().strip())
         OrgNo = self.lineEdit_6.text().strip()
         ACCNO = self.lineEdit_2.text().strip()
+        print( ACCNO, Type, Code, Qty, Price, HogaGb, OrgNo)
         Order = self.dynamicCall('SendOrder(QString, QString, QString, int, QString, int, int, QString, QString)', ["주식주문", "0107", ACCNO, Type, Code, Qty, Price, HogaGb, OrgNo])
 
         
