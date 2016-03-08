@@ -8,9 +8,12 @@ from PyQt4.QtCore import QVariant
 import re
 from bs4 import BeautifulSoup
 import time
+import datetime
 import sys
 sys.path.append('../')
+sys.path.append('../Data')
 import ExcelMake
+import YGBuyListDB
 from win32ras import GetConnectStatus
 
 
@@ -38,9 +41,7 @@ class Ui_Form(QAxWidget):
         self.connect(self, SIGNAL("OnReceiveTrData(QString, QString, QString, QString, QString, int, QString, QString, QString)"), self.OnReceiveTrData)
         
         self.connect(self, SIGNAL("OnReceiveChejanData(QString, int, QString)"),self.OnReceiveChejanData)
-        
-        self.connect(self, SIGNAL("OnReceiveRealData(QString, QString, QString)"),self.OnReceiveRealData)
-        
+        self.connect(self, SIGNAL("OnReceiveRealData(QString, QString, QString)"),self.OnReceiveRealData)        
         self.btn_login()
         
     def btn_login(self):        
@@ -65,8 +66,8 @@ class Ui_Form(QAxWidget):
             print("서버에 연결 되었습니다...")
 #             code = self.kiwoom.connect(self.kiwoom, SIGNAL("OnEventConnect(int)"), self.OnEventConnect())
 #             self.get10001Info()
-#             self.setReal()
-            self.sendOrder()
+            self.setReal()
+#             self.sendOrder()
         else:
             print("서버 연결에 실패 했습니다...")
              
@@ -83,19 +84,30 @@ class Ui_Form(QAxWidget):
             print(ItemName,CurrCoast,volume)
             
     def OnReceiveRealData(self,sJongmokCode,sRealType,sRealData):
-        print('===========RealData called===========')
+        print('===========RealData called===========[',datetime.datetime.now(),']')
         print('sJongmokCode[',sJongmokCode,'] sRealType[',sRealType,'] sRealData[',sRealData,']')
+        
+        
     
     def OnReceiveChejanData(self, sGubun, nItemCnt, sFidList):
         
         print('===========ChejanData called===========')
         print('sGubun[',sGubun,'] nItemCnt[',nItemCnt,'] sFidList[',sFidList,']')
-        print(self.GetChjanData(9203),self.GetChjanData(9203),self.GetChjanData(302),self.GetChjanData(900),self.GetChjanData(901))
+        chjang = self.dynamicCall('GetChejanData(QString)',9203)
+        chjang1 = self.dynamicCall('GetChejanData(QString)',302)
+        chjang2 = self.dynamicCall('GetChejanData(QString)',900)
+        chjang3 = self.dynamicCall('GetChejanData(QString)',901)
+        print(chjang,chjang1,chjang2,chjang3)
         
     def setReal(self):
-        ret = self.dynamicCall('SetRealReg(QString,QString,QString,QString)', "0001"    ,  "126700"    ,  "10",  "0")
-#         ret = self.connect(self, SIGNAL("OnReceiveRealData(QString, QString, QString)"), self.OnReceiveRealData)
-        print(ret)
+        
+        strScreenNo = "0001" #실시간 등록할 화면 번호 
+        strCodeList  = "126700;000660;021080" #실시간 등록할 종목코드(복수종목가능 – “종목1;종목2;종목3;….”) 
+        strFidList = 10 #실시간 등록할 FID(“FID1;FID2;FID3;…..”) EX) 10:현재가 11:전일대비 12:등락율 13:누적거래량 29:거래대금증감 32:거래비용
+        strRealType ="0" #“0”, “1” 타입 
+        
+        ret = self.dynamicCall('SetRealReg(QString,QString,QString,QString)', strScreenNo,strCodeList,strFidList,strRealType)
+        print('리얼타입 등록 :',ret)
         
     def get10001Info(self):
         ret = self.dynamicCall('SetInputValue(QString,QString)', "종목코드"    ,126700)
@@ -105,12 +117,21 @@ class Ui_Form(QAxWidget):
     def sendOrder (self):
         ACCOUNT_CNT = self.dynamicCall('GetLoginInfo("ACCOUNT_CNT")')
         ACC_NO = self.dynamicCall('GetLoginInfo("ACCNO")')
-#         print(ACCOUNT_CNT)
-#         print(ACC_NO)
-        ACCNO=ACC_NO.replace(';','')
-        Order = self.dynamicCall('SendOrder(QString, QString, QString, int, QString, int, int, QString, QString)', ["주식주문", "0107", ACCNO, 1, 126700, 1,10,"00",""])
-#         self.connect(self, SIGNAL("OnReceiveChejanData(QString, int, QString)"), self.OnReceiveChejanData)
-#         print('Order',Order) 
+        sRQName  = "주식주문" # 사용자 구분 요청 명 
+        sScreenNo = "0107" #화면번호[4]
+        ACCNO=ACC_NO.replace(';','')    #계좌번호
+        nOrderType = 1      #1신규매수 2신규매도 3매수취소 4매도취소 5매수정정 6매도정정
+        sCode = 126700      #주식코드
+        nQty  = 10          #주문수량
+        nPrice  = 0         #주문단가
+        sHogaGb  = "03"   #0:지정가, 3:시장가, 5:조건부지정가, 6:최유리지정가, 7:최우선지정가, 10:지정가 IOC, 13:시장가IOC, 16:최유리IOC, 20:지정가FOK, 23:시장가FOK, 26:최유리FOK, 61:시간외 단일가매매, 81:시간외종가
+        sOrgOrderNo  = "" #원주문번호
+        Order = self.dynamicCall('SendOrder(QString, QString, QString, int, QString, int, int, QString, QString)', [sRQName,sScreenNo , ACCNO, nOrderType, sCode, nQty,nPrice,sHogaGb,sOrgOrderNo])
+
+        '''지정가 매수 - openApi.SendOrder(“RQ_1”, “0101”, “5015123410”, 1, “000660”, 10, 48500, “0”, “”);     '''
+        '''시장가 매수 - openApi.SendOrder(“RQ_1”, “0101”, “5015123410”, 1, “000660”, 10, 0, “3”, “”);         '''
+        '''매수 정정 -  openApi.SendOrder(“RQ_1”,“0101”, “5015123410”, 5, “000660”, 10, 49500, “0”, “1”);      '''
+        '''매수 취소 -  openApi.SendOrder(“RQ_1”, “0101”, “5015123410”, 3, “000660”, 10, “0”, “2”);            '''
     
 
 if __name__ == "__main__":
@@ -119,4 +140,3 @@ if __name__ == "__main__":
     Form = QtGui.QWidget()
     ui = Ui_Form()
     sys.exit(app.exec_())
-

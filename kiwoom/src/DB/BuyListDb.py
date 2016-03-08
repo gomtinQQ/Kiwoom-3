@@ -2,6 +2,7 @@
 
 import sqlite3
 import sys,os
+from _sqlite3 import OperationalError
 # sys.path.append('../')
 sys.path.append('../Data')
 import YGGetWebData
@@ -40,8 +41,15 @@ class BuyListDB(MakeDB.DBMake):
     def insertGold(self,code):
         
         sql = 'insert into '+self.tableName+' (StockCode) values("'+str(code)+'");'
-        self.cursor.execute(sql)
-        self.conn.commit()
+        try:
+            self.cursor.execute(sql)
+            self.conn.commit()
+            
+        except OperationalError:
+            
+            self.createDatabase('../../Sqlite3/BuyList.db','BuyList')
+            self.cursor.execute(sql)
+            self.conn.commit()
         
     def togleCode(self,code):
         sesql = 'select BUYSELL from '+self.tableName+' where StockCode = '+code
@@ -58,6 +66,7 @@ class BuyListDB(MakeDB.DBMake):
 if __name__ == '__main__':
     bld = BuyListDB()
 #     bld.createDatabase('../../Sqlite3/BuyList.db','BuyList')
-#     bld.insertGold()
     bld.setProperties()
-    bld.togleCode('127710')
+    bld.insertGold('041140')
+#     041140
+#     bld.togleCode('127710')
