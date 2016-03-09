@@ -101,10 +101,10 @@ class Ui_Form(QAxWidget):
         
     def setReal(self):
         
-        strScreenNo = "0001" #실시간 등록할 화면 번호 
+        strScreenNo = "0002" #실시간 등록할 화면 번호 
         strCodeList  = "126700;000660;021080" #실시간 등록할 종목코드(복수종목가능 – “종목1;종목2;종목3;….”) 
-        strFidList = 10 #실시간 등록할 FID(“FID1;FID2;FID3;…..”) EX) 10:현재가 11:전일대비 12:등락율 13:누적거래량 29:거래대금증감 32:거래비용
-        strRealType ="0" #“0”, “1” 타입 
+        strFidList = "10" #실시간 등록할 FID(“FID1;FID2;FID3;…..”) EX) 10:현재가 11:전일대비 12:등락율 13:누적거래량 29:거래대금증감 32:거래비용
+        strRealType ="1" #“0”, “1” 타입 
         
         ret = self.dynamicCall('SetRealReg(QString,QString,QString,QString)', strScreenNo,strCodeList,strFidList,strRealType)
         print('리얼타입 등록 :',ret)

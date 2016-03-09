@@ -109,6 +109,6 @@ class closePriceMake():
 if __name__ == '__main__':
     cp =closePriceMake()
     cp.createDatabase('../../Sqlite3/ClosePriceDB.db')
-#     cp.addCodeNameData()
+    cp.addCodeNameData()
+    cp.addDateColumn()
     cp.addDatePrice()
-#     cp.addDateColumn()
