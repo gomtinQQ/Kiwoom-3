@@ -63,5 +63,5 @@ def drawGraph(code,date):
     plt.show()
     
 if __name__ == '__main__':
-    
-    drawGraph('60720','2014-09-1')
+    '''설정된 시간 제대로 못가져오는 버그가있음 ( 전체 날짜데이터 다가져옴 )'''
+    drawGraph('21080','2015-07-1')

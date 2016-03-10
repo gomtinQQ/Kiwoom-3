@@ -66,7 +66,7 @@ class DBMake():
             
         for code in self.codeNameCoast:
             for Name in self.codeNameCoast[code]:
-                query = 'Insert into '+self.tableName+'\
+                query = 'Insert into '+self.tableName+' \
                 (StockCode,StockName) \
                 values ("'+str(code)+'","'+str(Name)+'");'
                 self.cursor.execute(query)
@@ -116,11 +116,14 @@ class DBMake():
         
         for index in range(len(self.codeNameCoast)):
             try:
+                print(index)
+                print(data['DateIndex'][index])
                 Date = str(data['DateIndex'][index]).replace("'","")
-                print(Date)
+#                 print(Date)
                 query1 = "alter table "+self.tableName+" add "+str(Date)+" INTEGER;";
                 self.cursor.execute(query1)
             except Exception:
+                self.PrintException()
                 continue
         self.conn.commit
     
@@ -149,7 +152,7 @@ class DBMake():
                 self.conn.commit()
             print(code,index,len(self.codeNameCoast))
     
-    def addForeignAndCompany(self):
+    def addForeign(self):
         
         if self.codeNameCoast ==None:
             self.setCodeNameCoast()
@@ -159,13 +162,40 @@ class DBMake():
         
         for index,code in enumerate(self.codeNameCoast):
             
-            data = YGGetWebData.getForeignerAndCompanyPureBuy(str(code),'2014-09-1')
+            data = YGGetWebData.getForeignerAndCompanyPureBuy(str(code),298)
             for index in range(len(data)):
                 try:
-                    Date = str(data['DateIndex'][index]).replace("'","")
-                    volume= data['volume'][index]
+                    Date = str(data['DateTime'][index]).split(' ')
+                    Date = Date[0]
+                    Foreign= data['Foreign'][index]
                     
-                    query = "update "+self.tableName+" set "+Date+" = "+str(volume)+" where StockCode='"+str(code)+"';"
+                    query = "update "+self.tableName+" set '"+Date+"' = "+str(Foreign)+" where StockCode='"+str(code)+"';"
+                    self.cursor.execute(query)
+                except Exception : 
+                    self.PrintException()
+                    continue
+                
+                self.conn.commit()
+            print(code,index,len(self.codeNameCoast))
+    
+    def addCompany(self):
+        
+        if self.codeNameCoast ==None:
+            self.setCodeNameCoast()
+            
+        if self.tableName ==None:
+            raise ("Table Name not Assigned")
+        
+        for index,code in enumerate(self.codeNameCoast):
+            
+            data = YGGetWebData.getForeignerAndCompanyPureBuy(str(code),298)
+            for index in range(len(data)):
+                try:
+                    Date = str(data['DateTime'][index]).split(' ')
+                    Date = Date[0]
+                    Company= data['Company'][index]
+                    
+                    query = "update "+self.tableName+" set '"+Date+"' = "+str(Company)+" where StockCode='"+str(code)+"';"
                     self.cursor.execute(query)
                 except Exception : 
                     self.PrintException()
