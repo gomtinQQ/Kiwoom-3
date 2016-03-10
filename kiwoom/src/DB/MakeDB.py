@@ -60,6 +60,7 @@ class DBMake():
         
         if self.codeNameCoast ==None:
             self.setCodeNameCoast()
+            
         if self.tableName ==None:
             raise ("Table Name not Assigned")
             
@@ -102,13 +103,15 @@ class DBMake():
     def addDateColumn(self):
         
         '''날짜칼럼 삽입.'''
-        if self.codeNameCoast ==None:
+        try:
+            self.codeNameCoast
+        except AttributeError:
             self.setCodeNameCoast()
             
         if self.tableName ==None:
             raise ("Table Name not Assigned")
         
-        code='126700'
+        code='126700'   #126700의 데이터를갖고 날짜를 가져온다.
         data = YGGetWebData.getStockPriceData(str(code),'2014-09-1')
         
         for index in range(len(self.codeNameCoast)):
@@ -120,7 +123,57 @@ class DBMake():
             except Exception:
                 continue
         self.conn.commit
-
+    
+    def addDateVolume(self):
+        
+        if self.codeNameCoast ==None:
+            self.setCodeNameCoast()
+            
+        if self.tableName ==None:
+            raise ("Table Name not Assigned")
+        
+        for index,code in enumerate(self.codeNameCoast):
+            
+            data = YGGetWebData.getStockPriceData(str(code),'2014-09-1')
+            for index in range(len(data)):
+                try:
+                    Date = str(data['DateIndex'][index]).replace("'","")
+                    volume= data['volume'][index]
+                    
+                    query = "update "+self.tableName+" set "+Date+" = "+str(volume)+" where StockCode='"+str(code)+"';"
+                    self.cursor.execute(query)
+                except Exception : 
+                    self.PrintException()
+                    continue
+                
+                self.conn.commit()
+            print(code,index,len(self.codeNameCoast))
+    
+    def addForeignAndCompany(self):
+        
+        if self.codeNameCoast ==None:
+            self.setCodeNameCoast()
+            
+        if self.tableName ==None:
+            raise ("Table Name not Assigned")
+        
+        for index,code in enumerate(self.codeNameCoast):
+            
+            data = YGGetWebData.getForeignerAndCompanyPureBuy(str(code),'2014-09-1')
+            for index in range(len(data)):
+                try:
+                    Date = str(data['DateIndex'][index]).replace("'","")
+                    volume= data['volume'][index]
+                    
+                    query = "update "+self.tableName+" set "+Date+" = "+str(volume)+" where StockCode='"+str(code)+"';"
+                    self.cursor.execute(query)
+                except Exception : 
+                    self.PrintException()
+                    continue
+                
+                self.conn.commit()
+            print(code,index,len(self.codeNameCoast))
+    
         
 if __name__ == '__main__':
     cp =closePriceMake()

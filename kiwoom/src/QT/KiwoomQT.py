@@ -66,7 +66,8 @@ class Ui_Form(QAxWidget):
             print("서버에 연결 되었습니다...")
 #             code = self.kiwoom.connect(self.kiwoom, SIGNAL("OnEventConnect(int)"), self.OnEventConnect())
 #             self.get10001Info()
-            self.setReal()
+            self.checkSendAndRealReg()
+#             self.setReal()
 #             self.sendOrder()
         else:
             print("서버 연결에 실패 했습니다...")
@@ -85,7 +86,13 @@ class Ui_Form(QAxWidget):
             
     def OnReceiveRealData(self,sJongmokCode,sRealType,sRealData):
         print('===========RealData called===========[',datetime.datetime.now(),']')
-        print('sJongmokCode[',sJongmokCode,'] sRealType[',sRealType,'] sRealData[',sRealData,']')
+        sRealData = str(sRealData)
+        dd = sRealData.split(' ')
+        df = str(dd[0]).split('    ')
+#         print('sJongmokCode[',sJongmokCode,'] sRealType[',sRealType,'] sRealData[',sRealData,']')
+        
+        for index in range(len(df)):
+            print(index,df[index])
         
         
     
@@ -114,25 +121,46 @@ class Ui_Form(QAxWidget):
         ret = self.dynamicCall('CommRqData(QString,QString,int,QString)', "RQName"    ,  "opt10001"    ,  0   ,  "화면번호")
         self.connect(self, SIGNAL("OnReceiveTrData(QString, QString, QString, QString, QString, int, QString, QString, QString)"), self.OnReceiveTrData)
 
-    def sendOrder (self):
+    def sendOrder (self,code):
+        
+        print('SendOrder Called!')
         ACCOUNT_CNT = self.dynamicCall('GetLoginInfo("ACCOUNT_CNT")')
         ACC_NO = self.dynamicCall('GetLoginInfo("ACCNO")')
         sRQName  = "주식주문" # 사용자 구분 요청 명 
         sScreenNo = "0107" #화면번호[4]
         ACCNO=ACC_NO.replace(';','')    #계좌번호
         nOrderType = 1      #1신규매수 2신규매도 3매수취소 4매도취소 5매수정정 6매도정정
-        sCode = 126700      #주식코드
+        sCode = str(code)      #주식코드
         nQty  = 10          #주문수량
         nPrice  = 0         #주문단가
         sHogaGb  = "03"   #0:지정가, 3:시장가, 5:조건부지정가, 6:최유리지정가, 7:최우선지정가, 10:지정가 IOC, 13:시장가IOC, 16:최유리IOC, 20:지정가FOK, 23:시장가FOK, 26:최유리FOK, 61:시간외 단일가매매, 81:시간외종가
         sOrgOrderNo  = "" #원주문번호
         Order = self.dynamicCall('SendOrder(QString, QString, QString, int, QString, int, int, QString, QString)', [sRQName,sScreenNo , ACCNO, nOrderType, sCode, nQty,nPrice,sHogaGb,sOrgOrderNo])
-
+        print('End!! ',sCode)
+        
         '''지정가 매수 - openApi.SendOrder(“RQ_1”, “0101”, “5015123410”, 1, “000660”, 10, 48500, “0”, “”);     '''
         '''시장가 매수 - openApi.SendOrder(“RQ_1”, “0101”, “5015123410”, 1, “000660”, 10, 0, “3”, “”);         '''
         '''매수 정정 -  openApi.SendOrder(“RQ_1”,“0101”, “5015123410”, 5, “000660”, 10, 49500, “0”, “1”);      '''
         '''매수 취소 -  openApi.SendOrder(“RQ_1”, “0101”, “5015123410”, 3, “000660”, 10, “0”, “2”);            '''
-    
+    def checkSendAndRealReg(self):
+        
+        YG = YGBuyListDB.YGGetDbData()
+        YG.setProperties('../../Sqlite3/BuyList.db','BuyList')
+        code = YG.getCodeNameForReaReg()
+        try:
+            while(True):
+            
+                for index in range(len(code)):
+                    rCode=str(code['Code'][index])
+                    rCode = '0'+rCode
+                    buySell = YG.getBuySell(rCode)
+                    if buySell=="N":
+                        self.sendOrder(rCode)
+                        YG.buyStock(rCode,901,12000)                
+                time.sleep(1)
+                
+        except Exception:
+            print(Exception)
 
 if __name__ == "__main__":
     import sys

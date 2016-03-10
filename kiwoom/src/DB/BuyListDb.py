@@ -62,11 +62,14 @@ class BuyListDB(MakeDB.DBMake):
         sql = 'update '+self.tableName+' set BUYSELL ="'+GUBUN+'" where StockCode = "'+code+'";'
         self.cursor.execute(sql)
         self.conn.commit()
+        
+    
 
 if __name__ == '__main__':
     bld = BuyListDB()
 #     bld.createDatabase('../../Sqlite3/BuyList.db','BuyList')
     bld.setProperties()
-    bld.insertGold('041140')
-#     041140
+#     bld.insertGold('041140')
 #     bld.togleCode('127710')
+    dd = bld.getCode()
+    

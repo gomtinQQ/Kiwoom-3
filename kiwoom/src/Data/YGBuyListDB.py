@@ -10,7 +10,7 @@ import pandas as pd
 
 class YGGetDbData(MakeDB.DBMake):
     
-    def getCodeName(self):
+    def getCodeNameForReaReg(self):
         '''초기 실시간데이터받기용 쿼리'''
         query = 'select StockCode,BUYSELL from '+self.tableName
         self.cursor.execute(query)
@@ -48,11 +48,19 @@ class YGGetDbData(MakeDB.DBMake):
             yy.append(code)
         return pd.DataFrame(yy,columns=['Code'])
     
+    def getBuySell(self,code):
+        query = 'select BUYSELL from '+self.tableName+' where StockCode = "'+code+'"'
+        self.cursor.execute(query)
+        dd = self.cursor.fetchall()
+        return dd[0][0]
+    
 if __name__ == '__main__':
     cp =YGGetDbData()
     cp.setProperties('../../Sqlite3/BuyList.db','BuyList')
-    yy = cp.getCodeName()
-    print(yy['BuySell'])
+    yy = cp.getCodeNameForReaReg()
+#     print(yy['BuySell'])
 #     cp.buyStock(19210, 900,12000)
-#     cp.sellStock(19210, 930,12000)
-    print(cp.getEndCode())
+    cp.sellStock(19210, 930,12000)
+#     print(cp.getEndCode())
+#     print(yy['Code'][0])
+    print(cp.getBuySell('19210'))
