@@ -9,8 +9,9 @@ import time
 import btsForDashin
 import linecache
 import MakeDB
+import multiprocessing as mp
 
-class VolumeMake(MakeDB.DBMake):
+class VolumeForeiCompany(MakeDB.DBMake):
         
 
     def createDatabase(self,DBName,tableName):
@@ -21,7 +22,7 @@ class VolumeMake(MakeDB.DBMake):
         self.createDatabase('../../Sqlite3/VolumeForeignCompany.db','Volume')
         self.addDateColumn()
         self.addCodeNameData()
-        self.addDateVolume()
+        self.addVolume()
         
     def initAndCreateForeign(self):
         self.createDatabase('../../Sqlite3/VolumeForeignCompany.db','Foreigner')
@@ -33,10 +34,21 @@ class VolumeMake(MakeDB.DBMake):
         self.createDatabase('../../Sqlite3/VolumeForeignCompany.db','Company')
         self.addDateColumn()
         self.addCodeNameData()
-        self.addDateVolume()
+        self.addCompany()
         
         
         
 if __name__ == '__main__':
-    cp =VolumeMake()
-    cp.initAndCreateForeign()
+    cp =VolumeForeiCompany()
+    
+    wor11 = mp.Process(name="Company",target=cp.initAndCreateCompany)
+    wor12 = mp.Process(name="Foreign",target=cp.initAndCreateForeign)
+    wor13 = mp.Process(name="Volume",target=cp.initAndCreateVolume)
+
+    wor11.start()
+    wor12.start()
+    wor13.start()
+    
+#     cp.initAndCreateForeign()
+#     cp.initAndCreateVolume()
+#     cp.initAndCreateCompany()

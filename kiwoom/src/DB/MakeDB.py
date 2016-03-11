@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import multiprocessing as mp
 import sqlite3
 import sys,os
 sys.path.append('../')
@@ -10,7 +10,10 @@ import btsForDashin
 import linecache
 
 class DBMake():
-        
+    
+    
+    lock = mp.Lock()
+    querylock = mp.Lock()
     def PrintException(self):
         exc_type, exc_obj, tb = sys.exc_info()
         f = tb.tb_frame
@@ -33,6 +36,11 @@ class DBMake():
         self.conn = sqlite3.connect(self.dbName)
         self.cursor = self.conn.cursor()
         self.setTable(table)
+    def commit(self):
+        
+        self.lock.acquire()
+        self.conn.commit()
+        self.lock.release()
         
     def createDatabase(self,DBName,table):
         '''형식에 맞는 테이블 생성.'''
@@ -53,7 +61,8 @@ class DBMake():
             print("table created ["+str(time.time()-_start)+"]")
         except :
             self.PrintException()
-        self.conn.commit()
+        
+        self.commit()
     
     def addCodeNameData(self):
         '''테이블 생성후 코드와,이름 삽입'''
@@ -70,7 +79,7 @@ class DBMake():
                 (StockCode,StockName) \
                 values ("'+str(code)+'","'+str(Name)+'");'
                 self.cursor.execute(query)
-        self.conn.commit()
+        self.commit()
     
     def addDatePrice(self):
         '''날짜에 맞게  종가를 대입한다.'''
@@ -95,7 +104,7 @@ class DBMake():
                     self.PrintException()
                     continue
                 
-                self.conn.commit()
+                self.commit()
             print(code,index,len(self.codeNameCoast))
 
         
@@ -113,11 +122,11 @@ class DBMake():
         
         code='126700'   #126700의 데이터를갖고 날짜를 가져온다.
         data = YGGetWebData.getStockPriceData(str(code),'2014-09-1')
-        
-        for index in range(len(self.codeNameCoast)):
+#         print(len(self.codeNameCoast),len(data['DateIndex']))
+        for index in range(len(data['DateIndex'])):
             try:
-                print(index)
-                print(data['DateIndex'][index])
+#                 print(index)
+#                 print(data['DateIndex'][index])
                 Date = str(data['DateIndex'][index]).replace("'","")
 #                 print(Date)
                 query1 = "alter table "+self.tableName+" add "+str(Date)+" INTEGER;";
@@ -125,9 +134,9 @@ class DBMake():
             except Exception:
                 self.PrintException()
                 continue
-        self.conn.commit
+        self.commit()
     
-    def addDateVolume(self):
+    def addVolume(self):
         
         if self.codeNameCoast ==None:
             self.setCodeNameCoast()
@@ -135,11 +144,13 @@ class DBMake():
         if self.tableName ==None:
             raise ("Table Name not Assigned")
         
+        i=0
         for index,code in enumerate(self.codeNameCoast):
             
             data = YGGetWebData.getStockPriceData(str(code),'2014-09-1')
             for index in range(len(data)):
                 try:
+#                     print(str(data['DateIndex'][index]))
                     Date = str(data['DateIndex'][index]).replace("'","")
                     volume= data['volume'][index]
                     
@@ -149,8 +160,9 @@ class DBMake():
                     self.PrintException()
                     continue
                 
-                self.conn.commit()
-            print(code,index,len(self.codeNameCoast))
+                self.commit()
+            i+=1
+            print('Code[',code,']','Total[',index,'] [',i,'/',len(self.codeNameCoast),'] (Volume)')
     
     def addForeign(self):
         
@@ -160,9 +172,10 @@ class DBMake():
         if self.tableName ==None:
             raise ("Table Name not Assigned")
         
+        i=0
         for index,code in enumerate(self.codeNameCoast):
             
-            data = YGGetWebData.getForeignerAndCompanyPureBuy(str(code),298)
+            data = YGGetWebData.getForeignerAndCompanyPureBuy(str(code),'2014-09-1')
             for index in range(len(data)):
                 try:
                     Date = str(data['DateTime'][index]).split(' ')
@@ -175,8 +188,9 @@ class DBMake():
                     self.PrintException()
                     continue
                 
-                self.conn.commit()
-            print(code,index,len(self.codeNameCoast))
+                self.commit()
+            i+=1
+            print('Code[',code,']','Total[',index,'] [',i,'/',len(self.codeNameCoast),'] (Foreign)')
     
     def addCompany(self):
         
@@ -186,9 +200,10 @@ class DBMake():
         if self.tableName ==None:
             raise ("Table Name not Assigned")
         
+        i=0
         for index,code in enumerate(self.codeNameCoast):
             
-            data = YGGetWebData.getForeignerAndCompanyPureBuy(str(code),298)
+            data = YGGetWebData.getForeignerAndCompanyPureBuy(str(code),'2014-09-1')
             for index in range(len(data)):
                 try:
                     Date = str(data['DateTime'][index]).split(' ')
@@ -201,8 +216,9 @@ class DBMake():
                     self.PrintException()
                     continue
                 
-                self.conn.commit()
-            print(code,index,len(self.codeNameCoast))
+                self.commit()
+            i+=1
+            print('Code[',code,']','Total[',index,'] [',i,'/',len(self.codeNameCoast),'] (Company) ')
     
         
 if __name__ == '__main__':

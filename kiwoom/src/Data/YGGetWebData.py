@@ -6,25 +6,30 @@ import datetime
 import pandas as pd
 
 
-def getForeignerAndCompanyPureBuy(code,day=""):
+def getForeignerAndCompanyPureBuy(code,date,TIMEOUT="",DATE_FMT=""):
     '''외국인,기관 데이타 가져옴.'''
-    '''day 는 최대 30일치까지밖에못가져옴. 추후수정예정'''
-    
-    date_fmt='%Y-%m-%d'
-    Data = btsForDaily.daily().getForeignerBuyDaum(code,day)
-    yy = []
-    for index in Data:
-        DateTime= Data[index][0]
-        Foreign = Data[index][1]
-        Company = Data[index][2]
+#     '''day 는 최대 30일치까지밖에못가져옴. 추후수정예정'''
+    try:
+        date_fmt='%Y-%m-%d'
+        TimeOut=5
+        if TIMEOUT !="":
+            Timeout=TIMEOUT
+        Data = btsForDaily.daily().getForeignerBuyDaum(str(code),str(date),TimeOut)
+        yy = []
+        for index in Data:
+            DateTime= Data[index][0]
+            Foreign = Data[index][1]
+            Company = Data[index][2]
+            
+            PdArr = DateTime,Foreign,Company
+            yy.append(PdArr)
         
-        PdArr = DateTime,Foreign,Company
-        yy.append(PdArr)
-    
-    dd = pd.DataFrame(yy,columns=['DateTime','Foreign','Company'])
-    dd = dd.iloc[::-1]
-    
-    return dd
+        dd = pd.DataFrame(yy,columns=['DateTime','Foreign','Company'])
+        dd = dd.iloc[::-1]
+        
+        return dd
+    except Exception as e : 
+        print(e)
 
 
 def getStockPriceData(code,date,TIMEOUT="",DATE_FMT=""):
@@ -32,7 +37,7 @@ def getStockPriceData(code,date,TIMEOUT="",DATE_FMT=""):
     '''TIMEOUT default = 5, DATE_FORMAT default = %Y-%m-%d'''
     '''return Date,open,high,low,close,volume,DataIndex'''
     TimeOut=5
-    if TimeOut !="":
+    if TIMEOUT !="":
         Timeout=TIMEOUT
         
     Data = btsForDaily.daily().getDataFromDaum(str(code),str(date),TimeOut)

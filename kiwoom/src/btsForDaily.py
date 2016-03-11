@@ -18,6 +18,12 @@ class daily(bts.mbts):
         if page=="" or code=="":
             self.url = 'http://finance.daum.net/item/quote_yyyymmdd_sub.daum?page=1&code=035720&modify=1' 
             
+    def sourceForForeignAndCompany(self,page="",code=""):
+        
+        self.urlForFAndC = 'http://finance.daum.net//item/foreign_yyyymmdd.daum?page='+str(page)+'&code='+str(code) 
+
+        if page=="" or code=="":
+            self.urlForFAndC = 'http://finance.daum.net//item/foreign_yyyymmdd.daum?page=1&code=035720'         
         
     def parse(self,page,code,start,Timeout,end=""):
         self.source(page,code)
@@ -113,23 +119,51 @@ class daily(bts.mbts):
         
         return self.dailyData
     
-    def getForeignerBuyDaum(self,Code,Day=""):
+    def getForeignerBuyDaum(self,code,start,Timeout,end=""):
         '''Code = 기관코드
-            Day = 최근 몇일까지 가져올지. ex)Day = 3 오늘부터 3일전까지 가져옴.
+            startDate부터 enddate까지. end는 기본 오늘날짜로 설정.
         '''
-        src = 'http://finance.daum.net//item/foreign_yyyymmdd.daum?page=1&code='+str(Code)
-        content = requests.get(src).text
+        
+        self.dailyDataForFAndC = {}
+        self.indexForFAndC = 1
+        self.endForFAndC=datetime.datetime.today()
+        
+        if end != "":
+            self.endForFAndC = self.getDate(end)
+            
+        self.startForFAndC=self.getDate(start)    
+        
+        
+        page =1
+        self.FlagForFAndC=True
+        
+        while self.FlagForFAndC and page<=10:
+            self.parseForForeignAndCompany(page,code,self.startForFAndC,Timeout)
+            page+=1
+        
+        return self.dailyDataForFAndC
+    
+    def parseForForeignAndCompany(self,page,code,start,Timeout,end=""):
+        self.sourceForForeignAndCompany(page, code)
+        
+        readTimout = Timeout
+        ConnectTimeout = Timeout
+        retry = 5
+        
+        for i in range(retry):
+            try:
+                content = requests.get(self.urlForFAndC,timeout=(ConnectTimeout,readTimout)).text
+                break
+            except requests.exceptions.ConnectTimeout as e:
+                print('ConnectTimeout !! count : ',i)
+                
+                continue
+            except requests.exceptions.ReadTimeout as e:
+                print ('ReadTimeout!!! count : ' ,i)
+                continue
+            
         bs4     = BeautifulSoup(content,'lxml')
-        
         volume  =  bs4.find_all("td",class_="datetime2")
-        
-        DAY=3
-        index = 0
-        
-        PureBuy={}
-        
-        if Day is not "":
-            DAY=int(Day)
         
         for Pure in volume:
             
@@ -137,7 +171,11 @@ class daily(bts.mbts):
             date    =   date.replace('.','-')
             date    =   '20'+date
             
-            date    =   self.getDate(date)
+            self.dateTimeForFAndC =   self.getDate(date)
+            if self.startForFAndC > self.dateTimeForFAndC:
+                self.FlagForFAndC = False
+                break
+            
             
             ForeignPurBuy = Pure.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling
             CompanyBuy  = ForeignPurBuy.next_sibling.next_sibling
@@ -148,14 +186,10 @@ class daily(bts.mbts):
             ForeignPurBuy=str(ForeignPurBuy).replace(',', '')
             CompanyBuy = str(CompanyBuy).replace(',', '')
             
-#             print(date,ForeignPurBuy,CompanyBuy)
-            index +=1
+            appendLine = date,ForeignPurBuy,CompanyBuy
             
-            PureBuy[index]=date,ForeignPurBuy,CompanyBuy
-            
-            if index == DAY:
-                break
-        return PureBuy
+            self.dailyDataForFAndC[self.indexForFAndC]=appendLine            
+            self.indexForFAndC +=1
     
     def getDate(self,Date):
         '''String Format(2014-02-04) return datetime object'''
@@ -181,14 +215,16 @@ if __name__=='__main__':
 #     print(dd.getForeignerBuyDaum('021080','5'))
     
 #     print(dd)
-    data = dd.getDataFromDaum('126700','2015-2-12',5)
+    data = dd.getForeignerBuyDaum('126700','2015-2-12',5)
+#     data = dd.getDataFromDaum('126700','2015-2-12',5)
     for dd in data:
         date = data[dd][0]
         price= data[dd][1]
         highprice=data[dd][2]
-        lowprice=data[dd][3]
-        endprice =data[dd][4]
-        volume=data[dd][5]
+#         lowprice=data[dd][3]
+#         endprice =data[dd][4]
+#         volume=data[dd][5]
         index = dd
-        print('날짜',date,'시가',price,'고가',highprice,'저가',lowprice,'종가',endprice,'거래량',volume,'순번',index)
-        print(type(date))
+#         print('날짜',date,'시가',price,'고가',highprice,'저가',lowprice,'종가',endprice,'거래량',volume,'순번',index)
+        print('date',date,'Foreign',price,'Company',highprice)
+#         print(type(date))
