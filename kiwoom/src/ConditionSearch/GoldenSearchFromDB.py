@@ -14,14 +14,21 @@ import MakeDB
 
 def keepBuying(code,DAY="",FOREIGNER=True,COMPANY=True):
     '''DAY일동안 순매수하면 true, 기관,외국인 모두 알아볼려면 둘다 TRUE'''
-    dd =YGGetWebData.getForeignerAndCompanyPureBuy(code,DAY)
+    today = datetime.datetime.today()
+    
+    start = datetime.timedelta(DAY)
+    
+    length = datetime.datetime.date(today-start)
+    
+    dd =YGGetWebData.getForeignerAndCompanyPureBuy(code,length)
+    
     day =5
     if DAY!="":
         day=int(DAY)
     
     FB=True
     CB=True
-    for index in range(day):
+    for index in range(dd):
         Foreign = int(dd['Foreign'][index])
         Company = int(dd['Company'][index])
         

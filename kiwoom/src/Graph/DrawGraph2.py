@@ -62,4 +62,4 @@ def drawGraph(code,date):
     
 if __name__ == '__main__':
     
-    drawGraph('126700','2014-09-1')
+    drawGraph('021080','2015-06-1')

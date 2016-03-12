@@ -79,8 +79,33 @@ class YGGetCloseDB(MakeDB.DBMake):
             pData = close,date,DateIndex
             yArr.append(pData)
         dd = pd.DataFrame(yArr,columns=['close','Date','DateIndex'])
-        dd = dd.iloc[::-1]
+        dd = dd.iloc[::-1] #리버스시킴
         return dd
+    
+    def getVolumeAndForeignAndCompany(self,code):
+        Volumesql = "select * from "+self.VolumeTable+" where StockCode = "+code
+        Companysql = "select * from "+self.CompanyTable+" where StockCode = "+code
+        Foreignsql = "select * from "+self.ForeignerTable+" where StockCode = "+code
+        
+        
+        dbName = self.ForeignerDB
+        
+        conn = sqlite3.connect(dbName)
+        cursor = conn.cursor()
+        cursor.execute(Volumesql)
+        dd = cursor.fetchall()
+        print(len(dd[0]))
+        cursor.execute(Companysql)
+        dd = cursor.fetchall()
+        print(len(dd[0]))
+        cursor.execute(Foreignsql)
+        dd = cursor.fetchall()
+        print(dd[0])
+        
+        
+        
+        
+        
     
     def getCodeNameCoast(self):
         sql = "select StockCode from "+self.tableName
@@ -98,7 +123,9 @@ class YGGetCloseDB(MakeDB.DBMake):
 if __name__ == '__main__':
     bld = YGGetCloseDB()
 #     bld.createDatabase('../../Sqlite3/BuyList.db','BuyList')
-    bld.setProperties()
+#     bld.setProperties()
+    bld.initConfigSet()
+    bld.getVolumeAndForeignAndCompany('126700')
 #     dd = bld.getPrice('126700')
 #     print(dd['Close'])
 #     dd = bld.getColumns()
@@ -107,5 +134,5 @@ if __name__ == '__main__':
 #     print(dd)
 #     041140
 #     bld.togleCode('127710')
-    dd = bld.getCodeNameCoast()
-    print(dd['Code'])
+#     dd = bld.getCodeNameCoast()
+#     print(dd['Code'])

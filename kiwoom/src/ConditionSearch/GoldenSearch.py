@@ -11,16 +11,26 @@ import DrawGraph2
 import BuyListDb
 import MakeDB
 
-def keepBuying(code,DAY="",FOREIGNER=True,COMPANY=True):
+def keepBuying(code,DAY,FOREIGNER=True,COMPANY=True):
     '''DAY일동안 순매수하면 true, 기관,외국인 모두 알아볼려면 둘다 TRUE'''
-    dd =YGGetWebData.getForeignerAndCompanyPureBuy(code,DAY)
+    
+    today = datetime.datetime.today()
+    
+    start = datetime.timedelta(DAY)
+    
+    length = datetime.datetime.date(today-start)
+    
+    dd =YGGetWebData.getForeignerAndCompanyPureBuy(code,length)
+    
     day =5
     if DAY!="":
         day=int(DAY)
     
     FB=True
     CB=True
-    for index in range(day):
+    
+    print(day,DAY,len(dd))
+    for index in range(len(dd)):
         Foreign = int(dd['Foreign'][index])
         Company = int(dd['Company'][index])
         
@@ -114,7 +124,7 @@ def Search(Code,date,end,timeOut=""):
 
 if __name__ == '__main__':
     
-#     print(keepBuying(126700,30))
+    print(keepBuying(126700,3))
 #     Search(115180,'2016-1-13','2016-02-25')
     bfd = btsForDashin.btsForReal()
     codeNameCoast = bfd.UrlParsing()
