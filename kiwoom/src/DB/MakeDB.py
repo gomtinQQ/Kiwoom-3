@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import multiprocessing as mp
 import sqlite3
+import configparser
 import sys,os
 sys.path.append('../')
 sys.path.append('../Data')
@@ -14,6 +15,23 @@ class DBMake():
     
     lock = mp.Lock()
     querylock = mp.Lock()
+    config = configparser.ConfigParser()
+    config.read("../config/config.ini")
+    
+    def initConfigSet(self):
+        
+        self.ForeignerDB = self.config.get("DATABASE","VolumeAndForeignAndCompanyDB") 
+        self.ComapanyDB = self.config.get("DATABASE","VolumeAndForeignAndCompanyDB")
+        self.VolumeDB = self.config.get("DATABASE","VolumeAndForeignAndCompanyDB")
+        self.ClosePriceDB = self.config.get("DATABASE","ClosePriceDB")
+        
+#         print(self.VolumeDB)
+        self.ForeignerTable = self.config.get("DATABASE","ForeignTable")
+        self.CompanyTable = self.config.get("DATABASE","CompanyTable")
+        self.VolumeTable = self.config.get("DATABASE","VolumeTable")
+        self.ClosePriceTable = self.config.get("DATABASE","ClosePriceDBTable")
+#         print(self.VolumeTable)
+    
     def PrintException(self):
         exc_type, exc_obj, tb = sys.exc_info()
         f = tb.tb_frame
@@ -147,7 +165,7 @@ class DBMake():
         i=0
         for index,code in enumerate(self.codeNameCoast):
             
-            data = YGGetWebData.getStockPriceData(str(code),'2014-09-1')
+            data = YGGetWebData.getStockPriceData(str(code),'2016-02-04')
             for index in range(len(data)):
                 try:
 #                     print(str(data['DateIndex'][index]))
@@ -175,7 +193,7 @@ class DBMake():
         i=0
         for index,code in enumerate(self.codeNameCoast):
             
-            data = YGGetWebData.getForeignerAndCompanyPureBuy(str(code),'2014-09-1')
+            data = YGGetWebData.getForeignerAndCompanyPureBuy(str(code),'2016-02-04')
             for index in range(len(data)):
                 try:
                     Date = str(data['DateTime'][index]).split(' ')
@@ -203,7 +221,7 @@ class DBMake():
         i=0
         for index,code in enumerate(self.codeNameCoast):
             
-            data = YGGetWebData.getForeignerAndCompanyPureBuy(str(code),'2014-09-1')
+            data = YGGetWebData.getForeignerAndCompanyPureBuy(str(code),'2016-02-04')
             for index in range(len(data)):
                 try:
                     Date = str(data['DateTime'][index]).split(' ')
@@ -220,10 +238,14 @@ class DBMake():
             i+=1
             print('Code[',code,']','Total[',index,'] [',i,'/',len(self.codeNameCoast),'] (Company) ')
     
+    def ConfigTest(self):
+        print(self.config.sections())
+        print(self.config.options("DATABASE"))
+        print(self.config.get("DATABASE","volumeandforeignandcompanydb"))
         
 if __name__ == '__main__':
-    cp =closePriceMake()
+    cp =DBMake()
     cp.createDatabase('../../Sqlite3/test.db')
 #     cp.addCodeNameData()
-    cp.addDatePrice()
+#     cp.addDatePrice()
 #     cp.addDateColumn()

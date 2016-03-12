@@ -63,8 +63,6 @@ def getStockPriceData(code,date,TIMEOUT="",DATE_FMT=""):
     dd = dd.iloc[::-1]  #reverse data frame
     
     return dd
-def getStockPriceAndFCInfo(code,date):
-    '''FC Pure Buy volume is default 5'''
     
 if __name__ == '__main__':
     
