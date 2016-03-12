@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
-import sys
+import sys,traceback
 sys.path.append('../')
 sys.path.append('../Graph')
 sys.path.append('../Data')
@@ -11,6 +11,7 @@ import YGGetCloseDB
 import DrawGraph2
 import BuyListDb
 import MakeDB
+
 
 def keepBuying(code,DAY="",FOREIGNER=True,COMPANY=True):
     '''DAY일동안 순매수하면 true, 기관,외국인 모두 알아볼려면 둘다 TRUE'''
@@ -81,11 +82,11 @@ def VolumeCheck(Data,standard,condition):
     st=0
     cd=0
     for i in range(standard):
-#         print(i)
-        st+=int(Data['volume'][i])
+        print(Data)
+        st+=int(Data['Volume'][i])
     for i in range(standard ,condition):
 #         print(i)
-        cd+=int(Data['volume'][i])
+        cd+=int(Data['Volume'][i])
         
     flag = False
     if st>cd :
@@ -100,9 +101,9 @@ def Search(Code,date,end,YG,timeOut=""):
         return
     
 #     print(Data['close'])
-    Data['ma5']=DrawGraph2.movingAverage(Data['close'],5)
-    Data['ma20']=DrawGraph2.movingAverage(Data['close'],20)
-    Data['ma60']=DrawGraph2.movingAverage(Data['close'],60)
+    Data['ma5']=DrawGraph2.movingAverage(Data['Close'],5)
+    Data['ma20']=DrawGraph2.movingAverage(Data['Close'],20)
+    Data['ma60']=DrawGraph2.movingAverage(Data['Close'],60)
     
     Data['Golden_20_5']=Data['ma5']-Data['ma20']
     
@@ -116,8 +117,8 @@ def Search(Code,date,end,YG,timeOut=""):
         date_fmt='%Y-%m-%d'
         end =datetime.datetime.strptime(end,date_fmt)
         
-#         if end<dd and VolumeCheck(Data, 3, 7) and keepBuying(code,2) :
-        if end<dd  :
+        if end<dd and VolumeCheck(Data,3,7):
+#         if end<dd  :
             print('GoldenCross~ Code',Code,' When: ',dd ,end="")
             bld = BuyListDb.BuyListDB()
             bld.setProperties()
@@ -125,7 +126,7 @@ def Search(Code,date,end,YG,timeOut=""):
             
 
     except Exception as a :
-        MakeDB.DBMake().PrintException()
+        traceback.print_exc(file=sys.stdout)
 
 
 
@@ -138,7 +139,8 @@ if __name__ == '__main__':
 #     Search('126700', '2016-01-13', '2016-02-25', YG,)
     for code in range(len(codeNameCoast['Code'])):
         code = codeNameCoast['Code'][code]
-        print(code)
+        
         Search(code,'2016-1-13','2016-02-25',YG)
         i+=1
+        print('Code[',code,'] (',i,'/',len(codeNameCoast),')')
 #         print(' ',i,len(codeNameCoast))

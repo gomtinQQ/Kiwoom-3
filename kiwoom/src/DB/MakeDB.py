@@ -30,7 +30,8 @@ class DBMake():
         self.CompanyTable = self.config.get("DATABASE","CompanyTable")
         self.VolumeTable = self.config.get("DATABASE","VolumeTable")
         self.ClosePriceTable = self.config.get("DATABASE","ClosePriceDBTable")
-#         print(self.VolumeTable)
+        
+#         self.start_date = self.config.get("DATE","ClosePrice.StartDATE")
     
     def PrintException(self):
         exc_type, exc_obj, tb = sys.exc_info()
@@ -102,15 +103,20 @@ class DBMake():
     def addDatePrice(self):
         '''날짜에 맞게  종가를 대입한다.'''
         
-        if self.codeNameCoast ==None:
+#         if self.codeNameCoast ==None:
+        try:
+            self.codeNameCoast
+        except AttributeError : 
             self.setCodeNameCoast()
             
         if self.tableName ==None:
             raise ("Table Name not Assigned")
         
+        start_date = self.start_date
+        i=0
         for index,code in enumerate(self.codeNameCoast):
             
-            data = YGGetWebData.getStockPriceData(str(code),'2014-09-1')
+            data = YGGetWebData.getStockPriceData(str(code),start_date)
             for index in range(len(data)):
                 try:
                     Date = str(data['DateIndex'][index]).replace("'","")
@@ -123,8 +129,16 @@ class DBMake():
                     continue
                 
                 self.commit()
-            print(code,index,len(self.codeNameCoast))
-
+            i+=1
+            print('code[',code,'] Total[',index,'] (',i,'/',len(self.codeNameCoast),')')
+#     def addTodayClosePrice(self):
+#         '''오늘날짜 까지를 세팅한다.'''
+#         if self.codeNameCoast ==None:
+#             self.setCodeNameCoast()
+#         for code in self.codeNameCoast:
+#             
+#             data = YGGetWebData.getStockPriceData(str(code),date)
+        
         
             
     def addDateColumn(self):
