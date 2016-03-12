@@ -84,17 +84,19 @@ class YGGetCloseDB(MakeDB.DBMake):
             pData = close,date,DateIndex
             yArr.append(pData)
         dd = pd.DataFrame(yArr,columns=['Close','Date','DateIndex'])
-#         dd = dd.sort_values(by='DateIndex')
-#         dd = dd.iloc[::-1] #리버스시킴
+        dd = dd.sort_values(by='DateIndex')
+        dd = dd.iloc[::-1] #리버스시킴
+        dd = dd.reset_index(drop=True)
+        
 #         dd = dd.sort_values(by="DateIndex")
 #         dd = dd.iloc[::-1]
         
         Arc = self.getVolumeAndForeignAndCompany(code)
+#         Arc = Arc.iloc[::-1]
         
-        
-#         dd['Volume'] = Arc['Volume']
-#         dd['Foreign'] = Arc['Foreign']
-#         dd['Company']= Arc['Company']
+        dd['Volume'] = Arc['Volume']
+        dd['Foreign'] = Arc['Foreign']
+        dd['Company']= Arc['Company']
         
         dd = dd.sort_values(by="DateIndex")
         return dd
@@ -123,7 +125,7 @@ class YGGetCloseDB(MakeDB.DBMake):
         cursor.execute(Foreignsql)
         Foreign = cursor.fetchall()
         
-        print(len(Volume[0]),len(Company[0]),len(Foreign[0]),len(Date['Date']))
+#         print(len(Volume[0]),len(Company[0]),len(Foreign[0]),len(Date['Date']))
         if len(Volume[0]) != len(Company[0]) != len(Foreign[0]) is not len(Date):
             raise print("Volume and Company length Error")
         yArr = []

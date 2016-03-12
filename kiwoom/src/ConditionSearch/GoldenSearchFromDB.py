@@ -29,7 +29,7 @@ def keepBuying(code,DAY="",FOREIGNER=True,COMPANY=True):
     
     FB=True
     CB=True
-    for index in range(dd):
+    for index in range(len(dd)):
         Foreign = int(dd['Foreign'][index])
         Company = int(dd['Company'][index])
         
@@ -82,7 +82,7 @@ def VolumeCheck(Data,standard,condition):
     st=0
     cd=0
     for i in range(standard):
-        print(Data)
+#         print(Data)
         st+=int(Data['Volume'][i])
     for i in range(standard ,condition):
 #         print(i)
@@ -96,7 +96,7 @@ def VolumeCheck(Data,standard,condition):
     
 def Search(Code,date,end,YG,timeOut=""):
 #     Data = YGGetWebData.getStockPriceData(Code,date,timeOut)
-    Data = YG.getClosePriceFromDB(Code)
+    Data = YG.getClosePriceFromDB(str(Code))
     if len(Data) <20: #거래일이 20일미만인건 걍 보내주자.
         return
     
@@ -117,7 +117,7 @@ def Search(Code,date,end,YG,timeOut=""):
         date_fmt='%Y-%m-%d'
         end =datetime.datetime.strptime(end,date_fmt)
         
-        if end<dd and VolumeCheck(Data,3,7):
+        if end<dd and VolumeCheck(Data,3,7) and keepBuying(code,2):
 #         if end<dd  :
             print('GoldenCross~ Code',Code,' When: ',dd ,end="")
             bld = BuyListDb.BuyListDB()
