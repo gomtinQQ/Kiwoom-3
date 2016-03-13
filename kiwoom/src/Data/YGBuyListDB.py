@@ -54,7 +54,6 @@ class YGGetDbData(MakeDB.DBMake):
         print(query)
         self.cursor.execute(query)
         dd = self.cursor.fetchall()
-        print(dd)
         return dd[0][0]
     
 if __name__ == '__main__':
