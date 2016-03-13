@@ -9,6 +9,8 @@ import YGGetWebData
 import time
 import btsForDashin
 import linecache
+import traceback
+import logging
 
 class DBMake():
     
@@ -18,7 +20,9 @@ class DBMake():
     config = configparser.ConfigParser()
     config.read("../config/config.ini")
     
-    def initConfigSet(self):
+    
+#     def initConfigSet(self):
+    def __init__(self):
         
         self.ForeignerDB = self.config.get("DATABASE","VolumeAndForeignAndCompanyDB") 
         self.ComapanyDB = self.config.get("DATABASE","VolumeAndForeignAndCompanyDB")
@@ -31,7 +35,29 @@ class DBMake():
         self.VolumeTable = self.config.get("DATABASE","VolumeTable")
         self.ClosePriceTable = self.config.get("DATABASE","ClosePriceDBTable")
         
-#         self.start_date = self.config.get("DATE","ClosePrice.StartDATE")
+        self.start_date_closePrice = self.config.get("DATE","ClosePrice.StartDATE")
+        self.start_date_Volume = self.config.get("DATE","Volume.StartDATE")
+        self.start_date_Foreign= self.config.get("DATE","FOREIGN.StartDATE")
+        self.start_date_Company= self.config.get("DATE","Company.StartDATE")
+        
+        self.fName = self.config.get("LOG","filename")
+        self.loglevel = self.config.get("LOG","loglevel")
+        
+        self.logger = logging.getLogger("YGLogger")
+        
+#         logging.basicConfig(filename=self.fName,level = self.loglevel)
+        
+        fomatter = logging.Formatter("[%(levelname)s|%(filename)s:%(lineno)s] %(asctime)s > %(message)s")
+        fileHandler = logging.FileHandler(self.fName)
+        fileHandler.setFormatter(fomatter)
+    
+        self.logger.addHandler(fileHandler)
+        self.logger.setLevel(self.loglevel)
+        
+        self.logger.debug('*****************************DBMake Logging Start*****************************')
+        
+    def debug(self,msg):
+        self.logger.debug(msg)
     
     def PrintException(self):
         exc_type, exc_obj, tb = sys.exc_info()
@@ -112,11 +138,10 @@ class DBMake():
         if self.tableName ==None:
             raise ("Table Name not Assigned")
         
-        start_date = self.start_date
         i=0
         for index,code in enumerate(self.codeNameCoast):
             
-            data = YGGetWebData.getStockPriceData(str(code),start_date)
+            data = YGGetWebData.getStockPriceData(str(code),self.start_date_closePrice)
             for index in range(len(data)):
                 try:
                     Date = str(data['DateIndex'][index]).replace("'","")
@@ -179,7 +204,7 @@ class DBMake():
         i=0
         for index,code in enumerate(self.codeNameCoast):
             
-            data = YGGetWebData.getStockPriceData(str(code),'2016-02-04')
+            data = YGGetWebData.getStockPriceData(str(code),self.start_date_Volume)
             for index in range(len(data)):
                 try:
 #                     print(str(data['DateIndex'][index]))
@@ -207,7 +232,7 @@ class DBMake():
         i=0
         for index,code in enumerate(self.codeNameCoast):
             
-            data = YGGetWebData.getForeignerAndCompanyPureBuy(str(code),'2016-02-04')
+            data = YGGetWebData.getForeignerAndCompanyPureBuy(str(code),self.start_date_Foreign)
             for index in range(len(data)):
                 try:
                     Date = str(data['DateTime'][index]).split(' ')
@@ -235,7 +260,7 @@ class DBMake():
         i=0
         for index,code in enumerate(self.codeNameCoast):
             
-            data = YGGetWebData.getForeignerAndCompanyPureBuy(str(code),'2016-02-04')
+            data = YGGetWebData.getForeignerAndCompanyPureBuy(str(code),self.start_date_Company)
             for index in range(len(data)):
                 try:
                     Date = str(data['DateTime'][index]).split(' ')

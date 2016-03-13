@@ -29,8 +29,8 @@ def keepBuying(code,DAY,FOREIGNER=True,COMPANY=True):
     FB=True
     CB=True
     
-    print(day,DAY,len(dd))
-    for index in range(len(dd)):
+#     print(day,DAY,len(dd))
+    for index in range(day):
         Foreign = int(dd['Foreign'][index])
         Company = int(dd['Company'][index])
         

@@ -9,7 +9,7 @@ import re
 from bs4 import BeautifulSoup
 import time
 import datetime
-import sys
+import sys,logging
 sys.path.append('../')
 sys.path.append('../Data')
 import ExcelMake
@@ -148,11 +148,12 @@ class Ui_Form(QAxWidget):
         YG.setProperties('../../Sqlite3/BuyList.db','BuyList')
         code = YG.getCodeNameForReaReg()
         try:
+            
             while(True):
             
                 for index in range(len(code)):
-                    rCode=str(code['Code'][index])
-                    rCode = '0'+rCode
+                    rCode=self.addZeroToStockCode(str(code['Code'][index]))
+                    print(rCode)
                     buySell = YG.getBuySell(rCode)
                     if buySell=="N":
                         self.sendOrder(rCode)
@@ -161,6 +162,13 @@ class Ui_Form(QAxWidget):
                 
         except Exception:
             print(Exception)
+    def addZeroToStockCode(self,str):
+        str=str.strip()
+    
+        if len(str.strip())<=6:
+            while(len(str.strip())!=6):
+                str=str[:0]+"0"+str[0:]
+        return str
 
 if __name__ == "__main__":
     import sys

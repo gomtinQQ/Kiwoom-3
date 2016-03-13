@@ -67,7 +67,7 @@ class YGGetCloseDB(MakeDB.DBMake):
             self.PrintException()
         
     def getClosePriceFromDB(self,code):
-        self.initConfigSet()
+#         self.initConfigSet()
         CloseData = self.getPrice(self.ClosePriceDB,self.ClosePriceTable,code)
         date_fmt = '%Y-%m-%d'
         Date = self.getColumns(self.ClosePriceDB,self.ClosePriceTable)
