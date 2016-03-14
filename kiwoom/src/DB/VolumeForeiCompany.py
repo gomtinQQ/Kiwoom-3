@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import sqlite3
 import sys,os
 sys.path.append('../')
@@ -14,8 +13,8 @@ import multiprocessing as mp
 class VolumeForeiCompany(MakeDB.DBMake):
         
 
-    def __init__(self):
-        self.initConfigSet()
+#     def __init__(self):
+#         self.initConfigSet()
         
     def createDatabase(self,DBName,tableName):
         '''형식에 맞는 테이블 생성.'''
@@ -41,13 +40,61 @@ class VolumeForeiCompany(MakeDB.DBMake):
         self.addCodeNameData()
         self.addCompany()
         
-
+    
         
+    def addUntilForeign(self):
+        self.setProperties(self.ForeignerDB,self.ForeignerTable)
+        self.addDateColumn()
+        self.addForeign()
+#         Foreign = mp.Process(name="Foreign",target=self.addForeign)
+#         Foreign.start()
+    def addUntilVolume(self):    
+        self.setProperties(self.VolumeDB,self.VolumeTable)
+        self.addDateColumn()
+        self.addVolume()
+#         Volume = mp.Process(name="Volume",target = self.addVolume)
+#         Volume.start()
+        
+    def addUntilCompany(self):
+        self.setProperties(self.ComapanyDB,self.CompanyTable)
+        self.addDateColumn()
+        self.addCompany()
+#         Company = mp.Process(name="Company",target = self.addCompany)
+#         Company.start()
+        
+    def addUntillDate(self):
+        
+        self.setProperties(self.ForeignerDB,self.ForeignerTable)
+        self.addDateColumn()
+        Foreign = mp.Process(name="Foreign",target=self.addForeign)
+        Foreign.start()
+        
+        self.setProperties(self.VolumeDB,self.VolumeTable)
+        self.addDateColumn()
+        
+        
+        Volume = mp.Process(name="Volume",target = self.addVolume)
+        Volume.start()
+        
+        self.setProperties(self.ComapanyDB,self.CompanyTable)
+        self.addDateColumn()
+        
+        Company = mp.Process(name="Company",target = self.addCompany)
+        Company.start()
         
 if __name__ == '__main__':
     cp =VolumeForeiCompany()
-    
-    
+    cp.addUntillDate()
+#     cp.initConfigSet()
+#     cp.setLog()
+#     Foreignf = mp.Process(name="Foreign",target=cp.addUntilForeign)
+#     Volume = mp.Process(name="Volume",target = cp.addUntilVolume)
+#     Company = mp.Process(name="Company",target = cp.addUntilCompany)
+# 
+#     
+#     Foreignf.start()
+#     Volume.start()
+#     Company.start()
 #     wor11 = mp.Process(name="Company",target=cp.initAndCreateCompany)
 #     wor12 = mp.Process(name="Foreign",target=cp.initAndCreateForeign)
 #     wor13 = mp.Process(name="Volume",target=cp.initAndCreateVolume)
@@ -55,7 +102,3 @@ if __name__ == '__main__':
 #     wor11.start()
 #     wor12.start()
 #     wor13.start()
-    
-#     cp.initAndCreateForeign()
-    cp.initAndCreateVolume()
-#     cp.initAndCreateCompany()

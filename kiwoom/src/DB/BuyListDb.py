@@ -6,7 +6,7 @@ from _sqlite3 import OperationalError
 # sys.path.append('../')
 sys.path.append('../Data')
 import YGGetWebData
-import time
+import time,datetime
 import btsForDashin
 import linecache
 import MakeDB
@@ -14,7 +14,7 @@ import MakeDB
 class BuyListDB(MakeDB.DBMake):
     
     def setProperties(self,dbName="",tableName=""):
-        DB= '../../Sqlite3/BuyList.db'
+        DB= '../../Sqlite3/BuyList'+str(datetime.datetime.today().date())+'.db'
         if dbName !="":
             DbName=dbName
         Table='BuyList'

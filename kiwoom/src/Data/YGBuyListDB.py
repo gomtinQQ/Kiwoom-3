@@ -38,6 +38,7 @@ class YGGetDbData(MakeDB.DBMake):
         query = 'update '+self.tableName+' set "'+ str(time) +'" ='+str(price)+', "BUYSELL"="N"  where StockCode = '+str(code)
         self.cursor.execute(query)
         self.conn.commit()
+        self.conn.close()
         
     def getEndCode(self):
         query = 'select StockCode from '+self.tableName+' where "BUYSELL"="Y"'
@@ -51,9 +52,10 @@ class YGGetDbData(MakeDB.DBMake):
     
     def getBuySell(self,code):
         query = 'select BUYSELL from '+self.tableName+' where StockCode = "'+code+'"'
-        print(query)
+        
         self.cursor.execute(query)
         dd = self.cursor.fetchall()
+#         self.conn.close()
         return dd[0][0]
     
 if __name__ == '__main__':
@@ -61,8 +63,8 @@ if __name__ == '__main__':
     cp.setProperties('../../Sqlite3/BuyList.db','BuyList')
     yy = cp.getCodeNameForReaReg()
 #     print(yy['BuySell'])
-#     cp.buyStock(19210, 900,12000)
+    cp.buyStock(98120, 903,13000)
 #     cp.sellStock(19210, 930,12000)
 #     print(cp.getEndCode())
 #     print(yy['Code'][0])
-    print(cp.getBuySell('019210'))
+#     print(cp.getBuySell('019210'))

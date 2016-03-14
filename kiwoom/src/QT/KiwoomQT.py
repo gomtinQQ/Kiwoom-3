@@ -5,6 +5,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from PyQt4.QAxContainer import *
 from PyQt4.QtCore import QVariant
+import multiprocessing as mp
 import re
 from bs4 import BeautifulSoup
 import time
@@ -32,9 +33,12 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class Ui_Form(QAxWidget):
-    def __init__(self):
-        super().__init__()
+class Ui_Form(QAxWidget,mp.Process):
+# class Ui_Form(QAxWidget):
+    def __init__(self,**kwargs):
+#         super().__init__()
+#         mp.Process.__init__(self)
+        super(Ui_Form, self).__init__(**kwargs)
         self.kiwoom = self.setControl('KHOPENAPI.KHOpenAPICtrl.1')
         self.connect(self, SIGNAL("OnEventConnect(int)"), self.OnEventConnect)
         self.connect(self, SIGNAL("OnReceiveMsg(QString, QString, QString, QString)"), self.OnReceiveMsg)
@@ -121,15 +125,17 @@ class Ui_Form(QAxWidget):
         ret = self.dynamicCall('CommRqData(QString,QString,int,QString)', "RQName"    ,  "opt10001"    ,  0   ,  "화면번호")
         self.connect(self, SIGNAL("OnReceiveTrData(QString, QString, QString, QString, QString, int, QString, QString, QString)"), self.OnReceiveTrData)
 
-    def sendOrder (self,code):
+    def sendOrder (self,code,Position):
         
-        print('SendOrder Called!')
+        print('SendOrder Called! Position :',Position )
         ACCOUNT_CNT = self.dynamicCall('GetLoginInfo("ACCOUNT_CNT")')
         ACC_NO = self.dynamicCall('GetLoginInfo("ACCNO")')
         sRQName  = "주식주문" # 사용자 구분 요청 명 
         sScreenNo = "0107" #화면번호[4]
         ACCNO=ACC_NO.replace(';','')    #계좌번호
         nOrderType = 1      #1신규매수 2신규매도 3매수취소 4매도취소 5매수정정 6매도정정
+        if Position == "SELL":
+            nOrderType = 2
         sCode = str(code)      #주식코드
         nQty  = 10          #주문수량
         nPrice  = 0         #주문단가
@@ -144,24 +150,58 @@ class Ui_Form(QAxWidget):
         '''매수 취소 -  openApi.SendOrder(“RQ_1”, “0101”, “5015123410”, 3, “000660”, 10, “0”, “2”);            '''
     def checkSendAndRealReg(self):
         
-        YG = YGBuyListDB.YGGetDbData()
-        YG.setProperties('../../Sqlite3/BuyList.db','BuyList')
-        code = YG.getCodeNameForReaReg()
+
+#         pool.apply_async(self.mpBSSet,(1,))
+
+#         proc = mp.Process(name="set",target=self.mpBSSet)
+#         proc.start()
+#         print("END = = = = = = = = =  = = =")
         try:
-            
+             
+            while(True):
+             
+                for index in range(len(code)):
+                    rCode=self.addZeroToStockCode(str(code['Code'][index]))
+                    print(rCode)
+                    buySell = YG.getBuySell(rCode)
+#                     if buySell=="N":
+#                         self.sendOrder(rCode,"BUY")
+#                         YG.buyStock(rCode,901,12000)                
+                    if buySell =="Y":
+                        self.sendOrder(rCode,"SELL")
+                        YG.sellStock(rCode,902,12050)
+                        '''세션클로스 주의'''
+                time.sleep(1)
+                 
+        except Exception:
+            print(Exception)
+    def mpBSSet(self):
+        try:
+            print('1')
+            YG = YGBuyListDB.YGGetDbData()
+            print('2')
+            YG.setProperties('../../Sqlite3/BuyList.db','BuyList')
+            print('3')
+            code = YG.getCodeNameForReaReg()
+            print('4')
             while(True):
             
                 for index in range(len(code)):
                     rCode=self.addZeroToStockCode(str(code['Code'][index]))
                     print(rCode)
                     buySell = YG.getBuySell(rCode)
-                    if buySell=="N":
-                        self.sendOrder(rCode)
-                        YG.buyStock(rCode,901,12000)                
+#                     if buySell=="N":
+#                         self.sendOrder(rCode,"BUY")
+#                         YG.buyStock(rCode,901,12000)                
+                    if buySell =="Y":
+                        self.sendOrder(rCode,"SELL")
+                        YG.sellStock(rCode,902,12050)
+                        '''세션클로스 주의'''
                 time.sleep(1)
                 
         except Exception:
             print(Exception)
+            
     def addZeroToStockCode(self,str):
         str=str.strip()
     

@@ -42,18 +42,22 @@ class DBMake():
         
         self.fName = self.config.get("LOG","filename")
         self.loglevel = self.config.get("LOG","loglevel")
+#         print(self.loglevel)
+#         self.logFommater = self.config.get("LOG","logFommater")
         
-        self.logger = logging.getLogger("YGLogger")
+
+    def setLog(self):
         
 #         logging.basicConfig(filename=self.fName,level = self.loglevel)
         
+        self.logger = logging.getLogger("YGLogger")
         fomatter = logging.Formatter("[%(levelname)s|%(filename)s:%(lineno)s] %(asctime)s > %(message)s")
         fileHandler = logging.FileHandler(self.fName)
         fileHandler.setFormatter(fomatter)
-    
+     
         self.logger.addHandler(fileHandler)
         self.logger.setLevel(self.loglevel)
-        
+         
         self.logger.debug('*****************************DBMake Logging Start*****************************')
         
     def debug(self,msg):

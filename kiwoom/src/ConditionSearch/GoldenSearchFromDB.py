@@ -132,8 +132,8 @@ class GoldenSearchFromDB1():
             end =datetime.datetime.strptime(end,date_fmt)
             
 #             if end<dd and self.VolumeCheck(Data,3,7) and self.keepBuying(code,Data,3):
-#             if end<dd and self.VolumeCheck(Data,3,7):
-            if end<dd and self.keepBuying(code,Data,3):
+            if end<dd and self.VolumeCheck(Data,3,7):
+#             if end<dd and self.keepBuying(code,Data,3):
     #         if end<dd  :
                 print('GoldenCross~ Code',Code,' When: ',dd ,end="")
                 
@@ -156,6 +156,7 @@ if __name__ == '__main__':
     logger = logging.getLogger("YGLogger")
     bld = BuyListDb.BuyListDB()
     bld.setProperties()
+#     bld.createDatabase('../../Sqlite3/BuyList'+str(datetime.datetime.today().date())+'.db','BuyList')
 
     i=0
     for code in range(len(codeNameCoast['Code'])):

@@ -18,16 +18,17 @@ class closePriceMake(MakeDB.DBMake):
         super().createDatabase(DBName,table)
         
     def initAndCreateDefaultDB(self):
-        self.initConfigSet()
+#         self.initConfigSet()
         self.createDatabase(self.ClosePriceDB,self.ClosePriceTable)
         self.addDateColumn()
         self.addCodeNameData()
         self.addDatePrice()
         
     def addUntillDate(self):
-        self.initConfigSet()
+#         self.initConfigSet()
         self.setProperties(self.ClosePriceDB,self.ClosePriceTable)
-#         sql = "update "+self.ClosePriceTable+" set " +date+" = "+price+" where StockCode = '"+code+"'" 
+#         sql = "update "+self.ClosePriceTable+" set " +date+" = "+price+" where StockCode = '"+code+"'"
+        self.addDateColumn() 
         self.addDatePrice()
         
 if __name__ == '__main__':
