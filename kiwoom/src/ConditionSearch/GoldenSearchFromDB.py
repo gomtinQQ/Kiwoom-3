@@ -132,8 +132,8 @@ class GoldenSearchFromDB1():
             end =datetime.datetime.strptime(end,date_fmt)
             
 #             if end<dd and self.VolumeCheck(Data,3,7) and self.keepBuying(code,Data,3):
-            if end<dd and self.VolumeCheck(Data,3,7):
-#             if end<dd and self.keepBuying(code,Data,3):
+#             if end<dd and self.VolumeCheck(Data,3,7):
+            if end<dd and self.keepBuying(code,Data,3):
     #         if end<dd  :
                 print('GoldenCross~ Code',Code,' When: ',dd ,end="")
                 

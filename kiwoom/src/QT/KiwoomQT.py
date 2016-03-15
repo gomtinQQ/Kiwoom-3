@@ -5,8 +5,8 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from PyQt4.QAxContainer import *
 from PyQt4.QtCore import QVariant
-import multiprocessing as mp
 import re
+import traceback
 from bs4 import BeautifulSoup
 import time
 import datetime
@@ -14,6 +14,7 @@ import sys,logging
 sys.path.append('../')
 sys.path.append('../Data')
 import ExcelMake
+import sys
 import YGBuyListDB
 from win32ras import GetConnectStatus
 
@@ -33,12 +34,9 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class Ui_Form(QAxWidget,mp.Process):
-# class Ui_Form(QAxWidget):
-    def __init__(self,**kwargs):
-#         super().__init__()
-#         mp.Process.__init__(self)
-        super(Ui_Form, self).__init__(**kwargs)
+class Ui_Form(QAxWidget):
+    def __init__(self):
+        super().__init__()
         self.kiwoom = self.setControl('KHOPENAPI.KHOpenAPICtrl.1')
         self.connect(self, SIGNAL("OnEventConnect(int)"), self.OnEventConnect)
         self.connect(self, SIGNAL("OnReceiveMsg(QString, QString, QString, QString)"), self.OnReceiveMsg)
@@ -150,40 +148,14 @@ class Ui_Form(QAxWidget,mp.Process):
         '''매수 취소 -  openApi.SendOrder(“RQ_1”, “0101”, “5015123410”, 3, “000660”, 10, “0”, “2”);            '''
     def checkSendAndRealReg(self):
         
-
-#         pool.apply_async(self.mpBSSet,(1,))
-
-#         proc = mp.Process(name="set",target=self.mpBSSet)
-#         proc.start()
-#         print("END = = = = = = = = =  = = =")
+        YG = YGBuyListDB.YGGetDbData()
+        DB = '../../Sqlite3/BuyList'+str(datetime.datetime.today().date())+'.db'
+        Table='BuyList'
+        
+        YG.setProperties(DB,Table)
+        code = YG.getCodeNameForReaReg()
         try:
-             
-            while(True):
-             
-                for index in range(len(code)):
-                    rCode=self.addZeroToStockCode(str(code['Code'][index]))
-                    print(rCode)
-                    buySell = YG.getBuySell(rCode)
-#                     if buySell=="N":
-#                         self.sendOrder(rCode,"BUY")
-#                         YG.buyStock(rCode,901,12000)                
-                    if buySell =="Y":
-                        self.sendOrder(rCode,"SELL")
-                        YG.sellStock(rCode,902,12050)
-                        '''세션클로스 주의'''
-                time.sleep(1)
-                 
-        except Exception:
-            print(Exception)
-    def mpBSSet(self):
-        try:
-            print('1')
-            YG = YGBuyListDB.YGGetDbData()
-            print('2')
-            YG.setProperties('../../Sqlite3/BuyList.db','BuyList')
-            print('3')
-            code = YG.getCodeNameForReaReg()
-            print('4')
+            
             while(True):
             
                 for index in range(len(code)):
@@ -195,13 +167,12 @@ class Ui_Form(QAxWidget,mp.Process):
 #                         YG.buyStock(rCode,901,12000)                
                     if buySell =="Y":
                         self.sendOrder(rCode,"SELL")
-                        YG.sellStock(rCode,902,12050)
+                        YG.sellStock(rCode,905,236200)
                         '''세션클로스 주의'''
-                time.sleep(1)
+                time.sleep(5)
                 
         except Exception:
-            print(Exception)
-            
+            traceback.print_exc(file=sys.stdout)
     def addZeroToStockCode(self,str):
         str=str.strip()
     
@@ -211,7 +182,6 @@ class Ui_Form(QAxWidget,mp.Process):
         return str
 
 if __name__ == "__main__":
-    import sys
     app = QtGui.QApplication(sys.argv)
     Form = QtGui.QWidget()
     ui = Ui_Form()

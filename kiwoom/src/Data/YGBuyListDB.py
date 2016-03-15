@@ -4,7 +4,7 @@ import sys,os
 sys.path.append('../')
 sys.path.append('../DB')
 import MakeDB
-import time
+import time,datetime
 import pandas as pd
 
 
@@ -38,7 +38,6 @@ class YGGetDbData(MakeDB.DBMake):
         query = 'update '+self.tableName+' set "'+ str(time) +'" ='+str(price)+', "BUYSELL"="N"  where StockCode = '+str(code)
         self.cursor.execute(query)
         self.conn.commit()
-        self.conn.close()
         
     def getEndCode(self):
         query = 'select StockCode from '+self.tableName+' where "BUYSELL"="Y"'
@@ -55,15 +54,15 @@ class YGGetDbData(MakeDB.DBMake):
         
         self.cursor.execute(query)
         dd = self.cursor.fetchall()
-#         self.conn.close()
         return dd[0][0]
     
 if __name__ == '__main__':
     cp =YGGetDbData()
-    cp.setProperties('../../Sqlite3/BuyList.db','BuyList')
+    DB = '../../Sqlite3/BuyList'+str(datetime.datetime.today().date())+'.db'
+    cp.setProperties(DB,'BuyList')
     yy = cp.getCodeNameForReaReg()
 #     print(yy['BuySell'])
-    cp.buyStock(98120, 903,13000)
+    cp.buyStock(98120, 903,236200)
 #     cp.sellStock(19210, 930,12000)
 #     print(cp.getEndCode())
 #     print(yy['Code'][0])

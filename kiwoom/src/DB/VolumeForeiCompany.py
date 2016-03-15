@@ -84,17 +84,17 @@ class VolumeForeiCompany(MakeDB.DBMake):
         
 if __name__ == '__main__':
     cp =VolumeForeiCompany()
-    cp.addUntillDate()
+#     cp.addUntillDate()
 #     cp.initConfigSet()
 #     cp.setLog()
-#     Foreignf = mp.Process(name="Foreign",target=cp.addUntilForeign)
-#     Volume = mp.Process(name="Volume",target = cp.addUntilVolume)
-#     Company = mp.Process(name="Company",target = cp.addUntilCompany)
-# 
-#     
-#     Foreignf.start()
-#     Volume.start()
-#     Company.start()
+    Foreignf = mp.Process(name="Foreign",target=cp.addUntilForeign)
+    Volume = mp.Process(name="Volume",target = cp.addUntilVolume)
+    Company = mp.Process(name="Company",target = cp.addUntilCompany)
+ 
+     
+    Foreignf.start()
+    Volume.start()
+    Company.start()
 #     wor11 = mp.Process(name="Company",target=cp.initAndCreateCompany)
 #     wor12 = mp.Process(name="Foreign",target=cp.initAndCreateForeign)
 #     wor13 = mp.Process(name="Volume",target=cp.initAndCreateVolume)
