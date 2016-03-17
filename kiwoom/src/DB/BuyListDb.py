@@ -68,7 +68,15 @@ class BuyListDB(MakeDB.DBMake):
 if __name__ == '__main__':
     bld = BuyListDB()
 #     bld.createDatabase('../../Sqlite3/BuyList.db','BuyList')
-    bld.setProperties()
+#     bld.setProperties()
+    today = datetime.datetime.today().date()
+    oneDay = datetime.timedelta(days=1)
+        
+    YESTERDAY= str( today - oneDay)
+    bld.createDatabase('../../Sqlite3/BuyList'+YESTERDAY+'.db',bld.BuyListVolumeRotateTable)
+    bld.addCodeNameData()
+    bld.createDatabase('../../Sqlite3/BuyList'+YESTERDAY+'.db',bld.BuyListRelativeTable)
+    bld.addCodeNameData()
 #     bld.insertGold('041140')
 #     bld.togleCode('127710')
     dd = bld.getCode()

@@ -43,15 +43,15 @@ def drawGraph(code,date):
     date_fmt = '%Y-%m-%d'
     dd = getData(code,date,date_fmt)
     
-    dd['Mv5']=movingAverage(dd['close'],5)
-    dd['Mv20']=movingAverage(dd['close'],20)
+    dd['Mv5']=movingAverage(dd['Close'],5)
+    dd['Mv20']=movingAverage(dd['Close'],20)
     dd['golden_20_5']=dd['Mv5']-dd['Mv20']
     
     dd.Date=mdates.date2num(dd.Date.dt.to_pydatetime())
     SP=len(dd[19:])
     fig,ax = plt.subplots()
     
-    ax.plot_date(dd['Date'][-SP:],dd['close'][-SP:],'-')
+    ax.plot_date(dd['Date'][-SP:],dd['Close'][-SP:],'-')
     ax.plot(dd['Date'][-SP:],dd['Mv5'][-SP:],'-',label='5 SMA',linewidth=1)
     ax.plot(dd['Date'][-SP:],dd['Mv20'][-SP:],'-',label='20 SMA',linewidth=1)
     plt.legend(loc='best')
@@ -64,4 +64,4 @@ def drawGraph(code,date):
     
 if __name__ == '__main__':
     '''설정된 시간 제대로 못가져오는 버그가있음 ( 전체 날짜데이터 다가져옴 )'''
-    drawGraph('21080','2015-07-1')
+    drawGraph('222980','2015-07-1')

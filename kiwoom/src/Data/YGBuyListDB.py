@@ -12,7 +12,7 @@ class YGGetDbData(MakeDB.DBMake):
     
     def getCodeNameForReaReg(self):
         '''초기 실시간데이터받기용 쿼리'''
-        query = 'select StockCode,BUYSELL from '+self.tableName
+        query = 'select StockCode,BUYSELL from '+self.BuyListTable
         self.cursor.execute(query)
         dd = self.cursor.fetchall()
         yy=[]
@@ -26,6 +26,39 @@ class YGGetDbData(MakeDB.DBMake):
     def setProperties(self,dbName='../../Sqlite3/BuyList.db',table='BuyList'):
 #         print(dbName)
         super().setProperties(dbName,table)
+        
+    def createEachDB(self,dbName):
+#         super().createDatabase(dbName,self.BuyListVolumeRotateTable)
+#         super().addCodeNameData()
+#         super().addDateColumn()
+#         super().createDatabase(dbName,self.BuyListRelativeTable)
+#         super().addCodeNameData()
+#         super().addDateColumn()
+        pass #buylistDB에서만들어야함.수정필요.
+        
+    def updateRelativeCode(self,Code,relative):
+        tim = datetime.datetime.now()
+        hour = str(tim.hour)
+        minute = str(tim.minute)
+        foTime = hour+minute
+        
+        info = str(relative)
+        query = 'update '+self.BuyListRelativeTable+' set "'+foTime+ '" = '+str(info)+' where StockCode = '+str(Code)
+        
+        self.cursor.execute(query)
+        self.conn.commit()
+        
+    def updateVolumeCode(self,Code,Rotate):
+        tim = datetime.datetime.now()
+        hour = str(tim.hour)
+        minute = str(tim.minute)
+        foTime = hour+minute
+        
+        info = str(Rotate)
+        query = 'update '+self.BuyListVolumeRotateTable+' set "'+foTime+ '" = '+str(info)+' where StockCode = '+str(Code)
+        
+        self.cursor.execute(query)
+        self.conn.commit()
     
     def buyStock(self,code,time,price):
         '''update BuyList set '900'=0 where StockCode = 19210'''

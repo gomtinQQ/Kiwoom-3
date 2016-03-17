@@ -138,7 +138,10 @@ class YGGetCloseDB(MakeDB.DBMake):
             pdArr = vo,fo,co,date
             yArr.append(pdArr)
         dd = pd.DataFrame(yArr,columns=['Volume','Foreign','Company','DateIndex'])
-#         dd = dd.iloc[::-1]
+
+        dd = dd.sort_values(by='DateIndex')
+        dd = dd.iloc[::-1] #리버스시킴
+        dd = dd.reset_index(drop=True)
         return dd
         
     
@@ -159,8 +162,8 @@ if __name__ == '__main__':
     bld = YGGetCloseDB()
 #     bld.createDatabase('../../Sqlite3/BuyList.db','BuyList')
     bld.setProperties()
-    bld.initConfigSet()
-#     print(bld.getVolumeAndForeignAndCompany('126700'))
+#     bld.initConfigSet()
+#     print(bld.getVolumeAndForeignAndCompany('159910'))
     print(bld.getClosePriceFromDB('126700'))
 #     dd = bld.getPrice('126700')
 #     print(dd['Close'])

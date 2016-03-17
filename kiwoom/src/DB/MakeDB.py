@@ -6,11 +6,12 @@ import sys,os
 sys.path.append('../')
 sys.path.append('../Data')
 import YGGetWebData
-import time
+import time,datetime
 import btsForDashin
 import linecache
 import traceback
 import logging
+from logging.handlers import RotatingFileHandler 
 
 class DBMake():
     
@@ -28,6 +29,9 @@ class DBMake():
         self.ComapanyDB = self.config.get("DATABASE","VolumeAndForeignAndCompanyDB")
         self.VolumeDB = self.config.get("DATABASE","VolumeAndForeignAndCompanyDB")
         self.ClosePriceDB = self.config.get("DATABASE","ClosePriceDB")
+        self.BuyListDB = self.config.get("DATABASE","BuyListDB")
+        
+        
         
 #         print(self.VolumeDB)
         self.ForeignerTable = self.config.get("DATABASE","ForeignTable")
@@ -35,13 +39,21 @@ class DBMake():
         self.VolumeTable = self.config.get("DATABASE","VolumeTable")
         self.ClosePriceTable = self.config.get("DATABASE","ClosePriceDBTable")
         
+        self.BuyListTable = self.config.get("DATABASE","BuyListTable")
+        self.BuyListVolumeRotateTable = self.config.get("DATABASE","BuyListVolumeRotateTable")
+        self.BuyListRelativeTable = self.config.get("DATABASE","BuyListRelativeTable")
+        
+        
+        
+        
         self.start_date_closePrice = self.config.get("DATE","ClosePrice.StartDATE")
         self.start_date_Volume = self.config.get("DATE","Volume.StartDATE")
         self.start_date_Foreign= self.config.get("DATE","FOREIGN.StartDATE")
         self.start_date_Company= self.config.get("DATE","Company.StartDATE")
         
-        self.fName = self.config.get("LOG","filename")
+        self.fName = str(self.config.get("LOG","filename"))+'_'+str(datetime.datetime.today().date())
         self.loglevel = self.config.get("LOG","loglevel")
+        self.fileSize = self.config.get("LOG","FILESIZE")
 #         print(self.loglevel)
 #         self.logFommater = self.config.get("LOG","logFommater")
         
@@ -53,8 +65,9 @@ class DBMake():
         self.logger = logging.getLogger("YGLogger")
         fomatter = logging.Formatter("[%(levelname)s|%(filename)s:%(lineno)s] %(asctime)s > %(message)s")
         fileHandler = logging.FileHandler(self.fName)
+        fileHandler = RotatingFileHandler(filename=self.fName,maxBytes=int(self.fileSize)*1024*1024)
         fileHandler.setFormatter(fomatter)
-     
+        
         self.logger.addHandler(fileHandler)
         self.logger.setLevel(self.loglevel)
          
@@ -116,8 +129,12 @@ class DBMake():
     def addCodeNameData(self):
         '''테이블 생성후 코드와,이름 삽입'''
         
-        if self.codeNameCoast ==None:
+#         if self.codeNameCoast ==None:
+        try :
+            self.codeNameCoast
+        except:
             self.setCodeNameCoast()
+            
             
         if self.tableName ==None:
             raise ("Table Name not Assigned")

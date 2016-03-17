@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import datetime
+import datetime,time
 import sys,traceback
 sys.path.append('../')
 sys.path.append('../Graph')
@@ -20,46 +20,50 @@ class GoldenSearchFromDB1():
     
     def keepBuying(self,code,dd,DAY="",FOREIGNER=True,COMPANY=True):
         '''DAY일동안 순매수하면 true, 기관,외국인 모두 알아볼려면 둘다 TRUE'''
-        today = datetime.datetime.today()
-        
-        start = datetime.timedelta(DAY)
-        
-        length = datetime.datetime.date(today-start)
-        
-#         dd =YGGetWebData.getForeignerAndCompanyPureBuy(code,length)
-        
-        day =5
-        if DAY!="":
-            day=int(DAY)
-        dd= dd[-20:]    #20일까지만 본다.
-        dd=dd.iloc[::-1]
-        FB=True
-        CB=True
-        for index in range(day):
-#             print(index,len(dd))
+        try:
+            today = datetime.datetime.today()
+            
+            start = datetime.timedelta(DAY)
+            
+            length = datetime.datetime.date(today-start)
+            
+            day =5
+            if DAY!="":
+                day=int(DAY)
+            dd= dd[-20:]    #20일까지만 본다.
+            dd=dd.iloc[::-1]
+            FB=True
+            CB=True
 #             print(dd)
-#             print(index,dd['Foreign'][index])
-#             print(dd['Foreign'][index],index)
-            Foreign = int(dd['Foreign'][index])
-            Company = int(dd['Company'][index])
-            
-            if Foreign <=0:
-                FB=False
-            if Company <=0:
-                CB=False
+            for index in range(day):
+    #             print(index,len(dd))
+    #             print(dd)
+    #             print(index,dd['Foreign'][index])
+    #             print(dd['Foreign'][index],index)
+                Foreign = int(dd['Foreign'][index])
+                Company = int(dd['Company'][index])
                 
-        if FOREIGNER and COMPANY:
-            if FB and CB :
-                return True
-            else:
-                return False
-            
-        if FOREIGNER :
-            return FB
-        elif COMPANY : 
-            return CB 
+                if Foreign <=0:
+                    FB=False
+                if Company <=0:
+                    CB=False
+                    
+            if FOREIGNER and COMPANY:
+                if FB and CB :
+                    return True
+                else:
+                    return False
+                
+            if FOREIGNER :
+                return FB
+            elif COMPANY : 
+                return CB 
+        except :
+            YG.debug(traceback.print_exc())
     
     def Golden(self,Data):
+        '''기본적으로 5일선이 20일선 돌파하면 골든, 반대면 데드로 판단'''
+        
         prev_key,prev_val=0,0
         
         
@@ -78,10 +82,9 @@ class GoldenSearchFromDB1():
             return Gold 
                 
         except UnboundLocalError :
-            traceback.print_exc(file=sys.stdout)
-            return None
+            YG.debug(traceback.print_exc())
         except Exception as a:
-            traceback.print_exc(file=sys.stdout)
+            YG.debug(traceback.print_exc())
             
     def VolumeCheck(self,Data,standard,condition):
         '''가장 최근일을 기준으로 몇일동안 거래량증가했는지 day로 나타냄'''
@@ -91,11 +94,13 @@ class GoldenSearchFromDB1():
         
         st=0
         cd=0
+#         print(Data)
+        
         for i in range(standard):
 #             print(Data,i)
             st+=int(Data['Volume'][i])
         for i in range(standard ,condition):
-    #         print(i)
+#             print(i)
             cd+=int(Data['Volume'][i])
         
 #         print(st,cd)
@@ -106,15 +111,11 @@ class GoldenSearchFromDB1():
         
         
     def Search(self,Code,date,end,YG,bld,timeOut=""):
-    #     Data = YGGetWebData.getStockPriceData(Code,date,timeOut)
-#         print(Code)
         dd = str(Code)
-#         print(dd)
         Data = YG.getClosePriceFromDB(dd)
         if len(Data) <20: #거래일이 20일미만인건 걍 보내주자.
             return
         
-    #     print(Data['close'])
         Data['ma5']=DrawGraph2.movingAverage(Data['Close'],5)
         Data['ma20']=DrawGraph2.movingAverage(Data['Close'],20)
         Data['ma60']=DrawGraph2.movingAverage(Data['Close'],60)
@@ -122,7 +123,6 @@ class GoldenSearchFromDB1():
         Data['Golden_20_5']=Data['ma5']-Data['ma20']
         
         
-    #     print(Data['Date'])
         Gold = self.Golden(Data)
         
         try:
@@ -131,39 +131,87 @@ class GoldenSearchFromDB1():
             date_fmt='%Y-%m-%d'
             end =datetime.datetime.strptime(end,date_fmt)
             
-#             if end<dd and self.VolumeCheck(Data,3,7) and self.keepBuying(code,Data,3):
-#             if end<dd and self.VolumeCheck(Data,3,7):
-            if end<dd and self.keepBuying(code,Data,3):
-    #         if end<dd  :
-                print('GoldenCross~ Code',Code,' When: ',dd ,end="")
+            if end<dd and self.keepBuying(Code,Data,2):
                 
+                print('keepBuying~ Code',Code,' When: ',dd ,end="")
+                self.goldenCount+=1
+                self.keepbuy+=1
+                YG.debug('keepBuying ~ [%s'%Code+'] DATE [ %s'%dd+']')
                 bld.insertGold(str(Code))
                 
-    
+            elif end<dd and self.VolumeCheck(Data,3,13):
+                
+                print('Volume!~ Code',Code,' When: ',dd ,end="")
+                self.goldenCount+=1
+                YG.debug('Volume!~ [%s'%Code+'] DATE [ %s'%dd+']')
+                bld.insertGold(str(Code))
+                self.volcheck+=1
+                
         except Exception as a :
-            traceback.print_exc(file=sys.stdout)
+            print(traceback.print_exc())
+            YG.debug(traceback.print_exc())
 
+    def createSearchingDB(self,YG):
+        
+#         YG = YGGetCloseDB.YGGetCloseDB()
+#         YG.setProperties()
+        start_time = time.time()
+        codeNameCoast = YG.getCodeNameCoast()
+        
+        
+        bld = BuyListDb.BuyListDB()
+        bld.createDatabase('../../Sqlite3/BuyList'+str(datetime.datetime.today().date())+'.db','BuyList')
+
+        i=0
+        self.goldenCount = 0
+        self.keepbuy=0
+        self.volcheck=0
+        for code in range(len(codeNameCoast['Code'])):
+            code = codeNameCoast['Code'][code]
+            
+            self.Search(code,'2016-1-13','2016-02-25',YG,bld)
+            i+=1
+            YG.debug('Code[%s'%code+'] ( %s'%(i,)+'/ %s'%(len(codeNameCoast))+')')
+        takeTime=time.time()-start_time
+        YG.debug('Total Golden Count [%s'%self.goldenCount+'] keepbuying[%s'%self.keepbuy+'] Volume[%s'%self.volcheck+']')
+        YG.debug('Time [%s'%takeTime)
+        print('Total Golden Count [%s'%self.goldenCount+'] keepbuying[%s'%self.keepbuy+'] Volume[%s'%self.volcheck+']')
+        print('Time [%s'%takeTime)
+        
 
 
 if __name__ == '__main__':
     
-    
+    dd=  GoldenSearchFromDB1()
     YG = YGGetCloseDB.YGGetCloseDB()
     YG.setProperties()
-    codeNameCoast = YG.getCodeNameCoast()
+    YG.setLog()
     
-    md = GoldenSearchFromDB1()
-    logger = logging.getLogger("YGLogger")
-    bld = BuyListDb.BuyListDB()
-    bld.setProperties()
-#     bld.createDatabase('../../Sqlite3/BuyList'+str(datetime.datetime.today().date())+'.db','BuyList')
+#     ddf = str(159910)
+#     Data = YG.getClosePriceFromDB(ddf)
+#     print(dd.keepBuying(159910,Data,3))
+#     print(dd.VolumeCheck(Data,3,10))
+     
+    dd.createSearchingDB(YG)
 
-    i=0
-    for code in range(len(codeNameCoast['Code'])):
-        code = codeNameCoast['Code'][code]
-        
-        md.Search(code,'2016-1-13','2016-02-25',YG,bld)
-        i+=1
-#         print('Code[',code,'] (',i,'/',len(codeNameCoast),')')
-        logger.debug('Code[ %s'%code+'] ( %s'%(i,)+'/ %s'%(len(codeNameCoast))+')')
+
+
+#     YG = YGGetCloseDB.YGGetCloseDB()
+#     YG.setProperties()
+#     codeNameCoast = YG.getCodeNameCoast()
+#     
+#     md = GoldenSearchFromDB1()
+#     logger = logging.getLogger("YGLogger")
+#     bld = BuyListDb.BuyListDB()
+# #     bld.setProperties()
+#     bld.createDatabase('../../Sqlite3/BuyList'+str(datetime.datetime.today().date())+'.db','BuyList')
+# 
+#     i=0
+#     for code in range(len(codeNameCoast['Code'])):
+#         code = codeNameCoast['Code'][code]
+#         
+#         md.Search(code,'2016-1-13','2016-02-25',YG,bld)
+#         i+=1
+# #         print('Code[',code,'] (',i,'/',len(codeNameCoast),')')
+#         logger.debug('Code[ %s'%code+'] ( %s'%(i,)+'/ %s'%(len(codeNameCoast))+')')
 #         print(' ',i,len(codeNameCoast))
