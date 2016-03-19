@@ -33,5 +33,5 @@ class closePriceMake(MakeDB.DBMake):
         
 if __name__ == '__main__':
     cp =closePriceMake()
-    cp.addUntillDate()
-#     cp.initAndCreateDefaultDB()
+    cp.initAndCreateDefaultDB()
+#     cp.addUntillDate()

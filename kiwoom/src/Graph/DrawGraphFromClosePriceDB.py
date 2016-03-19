@@ -36,7 +36,7 @@ def checkGolden(ax,dd,SP):
 def getData(code,date,TIMEOUT="",DATE_FMT=""):
     
     YG = YGGetCloseDB.YGGetCloseDB()
-    YG.setProperties()
+#     YG.setProperties()
     return YG.getClosePriceFromDB(code)
 
 def drawGraph(code,date):
@@ -64,4 +64,4 @@ def drawGraph(code,date):
     
 if __name__ == '__main__':
     '''설정된 시간 제대로 못가져오는 버그가있음 ( 전체 날짜데이터 다가져옴 )'''
-    drawGraph('222980','2015-07-1')
+    drawGraph('053450','2015-07-1')

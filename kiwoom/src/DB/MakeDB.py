@@ -30,10 +30,18 @@ class DBMake():
         self.VolumeDB = self.config.get("DATABASE","VolumeAndForeignAndCompanyDB")
         self.ClosePriceDB = self.config.get("DATABASE","ClosePriceDB")
         self.BuyListDB = self.config.get("DATABASE","BuyListDB")
+        today = datetime.datetime.today().date()
+        oneDay = datetime.timedelta(days=1)
+        YESTERDAY= str( today - oneDay)
         
         
+        self.ForeignerDB = self.ForeignerDB+".db"
+        self.ComapanyDB = self.ComapanyDB+".db"
+        self.VolumeDB = self.VolumeDB+".db"
+        self.ClosePriceDB = self.ClosePriceDB+".db"
+        self.BuyListDB =self.BuyListDB+YESTERDAY+".db" 
         
-#         print(self.VolumeDB)
+        
         self.ForeignerTable = self.config.get("DATABASE","ForeignTable")
         self.CompanyTable = self.config.get("DATABASE","CompanyTable")
         self.VolumeTable = self.config.get("DATABASE","VolumeTable")
@@ -54,8 +62,11 @@ class DBMake():
         self.fName = str(self.config.get("LOG","filename"))+'_'+str(datetime.datetime.today().date())
         self.loglevel = self.config.get("LOG","loglevel")
         self.fileSize = self.config.get("LOG","FILESIZE")
-#         print(self.loglevel)
-#         self.logFommater = self.config.get("LOG","logFommater")
+        
+        for name,value in self.config.items():
+            print('==========================',name,'==========================')
+            for items in self.config.items(name):
+                print('==',items[0],'=',items[1])
         
 
     def setLog(self):
@@ -198,8 +209,8 @@ class DBMake():
         if self.tableName ==None:
             raise ("Table Name not Assigned")
         
-        code='126700'   #126700의 데이터를갖고 날짜를 가져온다.
-        data = YGGetWebData.getStockPriceData(str(code),'2014-09-1')
+        code='005930'   #삼성전자의 데이터를갖고 날짜를 가져온다.
+        data = YGGetWebData.getStockPriceData(str(code),self.start_date_closePrice)
 #         print(len(self.codeNameCoast),len(data['DateIndex']))
         for index in range(len(data['DateIndex'])):
             try:
