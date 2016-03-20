@@ -44,7 +44,8 @@ class DBSet():
         self.ComapanyDB = self.ComapanyDB+".db"
         self.VolumeDB = self.VolumeDB+".db"
         self.ClosePriceDB = self.ClosePriceDB+".db"
-        self.BuyListDB =self.BuyListDB+YESTERDAY+".db" 
+        self.BuyListDBYesterday =self.BuyListDB+YESTERDAY+".db"
+        self.BuyListDBToday = self.BuyListDB+str(today)+".db" 
         
         
         self.ForeignerTable = self.config.get("DATABASE","ForeignTable")

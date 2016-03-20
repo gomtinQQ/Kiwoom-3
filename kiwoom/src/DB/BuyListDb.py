@@ -39,13 +39,9 @@ class BuyListDB(MakeDB.DBMake):
             self.conn.commit()  
             print("table created ["+str(time.time()-_start)+"]")
         except :
-<<<<<<< HEAD
 #             self.PrintException()
             self.tracebackLog()        
-=======
-            self.PrintException()
->>>>>>> branch 'master' of https://github.com/rkdls/Kiwoom
-        
+
             
     def insertGold(self,code):
         
