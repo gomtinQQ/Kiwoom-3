@@ -37,7 +37,7 @@ class BuyListDB(MakeDB.DBMake):
                     self.cursor.execute("alter table "+table+" add '"+str(i)+str(j)+"' INTEGER")
             self.cursor.execute(sql)
             self.conn.commit()  
-            print("table created ["+str(time.time()-_start)+"]")
+            print("DataColumn Added ["+str(time.time()-_start)+"]")
         except :
 #             self.PrintException()
             self.tracebackLog()        
