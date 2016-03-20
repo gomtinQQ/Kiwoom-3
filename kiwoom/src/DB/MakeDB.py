@@ -39,7 +39,8 @@ class DBMake():
         self.ComapanyDB = self.ComapanyDB+".db"
         self.VolumeDB = self.VolumeDB+".db"
         self.ClosePriceDB = self.ClosePriceDB+".db"
-        self.BuyListDB =self.BuyListDB+YESTERDAY+".db" 
+        self.BuyListDBYesterday =self.BuyListDB+YESTERDAY+".db"
+        self.BuyListDBToday = self.BuyListDB+str(today)+".db" 
         
         
         self.ForeignerTable = self.config.get("DATABASE","ForeignTable")
@@ -227,6 +228,8 @@ class DBMake():
     
     def addVolume(self):
         
+        '''거래량삽입'''
+        
         if self.codeNameCoast ==None:
             self.setCodeNameCoast()
             
@@ -254,7 +257,7 @@ class DBMake():
             print('Code[',code,']','Total[',index,'] [',i,'/',len(self.codeNameCoast),'] (Volume)')
     
     def addForeign(self):
-        
+        '''외국인 매수 삽입'''
         if self.codeNameCoast ==None:
             self.setCodeNameCoast()
             
@@ -282,7 +285,7 @@ class DBMake():
             print('Code[',code,']','Total[',index,'] [',i,'/',len(self.codeNameCoast),'] (Foreign)')
     
     def addCompany(self):
-        
+        '''기관매수 삽입'''
         if self.codeNameCoast ==None:
             self.setCodeNameCoast()
             
