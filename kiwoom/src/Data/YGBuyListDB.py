@@ -39,25 +39,39 @@ class YGGetDbData(DBSet.DBSet):
         self.cursor.execute(query)
         self.conn.commit()
         
-    def updateVolumeCode(self,Code,Rotate,foTime):
+    def updateVolumeCode(self,Code,Rotate,timeVal):
         
-        info = str(Rotate)
-        foTime = str(foTime)
+        info = str(timeVal[1])
+        foTime = str(timeVal[0])
         
         query = 'update '+self.BuyListVolumeRotateTable+' set "'+foTime+ '" = '+str(info)+' where StockCode = '+str(Code)
         
         self.cursor.execute(query)
         self.conn.commit()
     
-    def buyStock(self,code,time,price):
-        '''update BuyList set '900'=0 where StockCode = 19210'''
+    def updateBuy(self,code):
         
-        query = 'update '+self.tableName+' set "'+ str(time) +'" ='+str(price)+', "BUYSELL"="Y"  where StockCode = '+str(code)
+        code = str(code)
+        query = 'update '+self.BuyListTable+' set "BUYSELL"="B" where StockCode = '+code
+        self.cursor.execute(query)
+        self.conn.commit()
+    
+    def buyStock(self,code,time,CurrPrice):
+        '''update BuyList set '900'=0 where StockCode = 19210'''
+        price=CurrPrice
+        query = 'update '+self.BuyListTable+' set "'+ str(time) +'" ='+str(price)+', "BUYSELL"="Y"  where StockCode = '+str(code)
         self.cursor.execute(query)
         self.conn.commit()
         
-    def sellStock(self,code,time,price):
-        query = 'update '+self.tableName+' set "'+ str(time) +'" ='+str(price)+', "BUYSELL"="N"  where StockCode = '+str(code)
+    def updateSell(self,code):
+        code = str(code)
+        query = 'update '+self.BuyListTable+' set "BUYSELL"="S" where StockCode = '+code
+        self.cursor.execute(query)
+        self.conn.commit()
+        
+    def sellStock(self,code,time,CurrPrice):
+        price=CurrPrice
+        query = 'update '+self.BuyListTable+' set "'+ str(time) +'" ='+str(price)+', "BUYSELL"="N"  where StockCode = '+str(code)
         self.cursor.execute(query)
         self.conn.commit()
         
@@ -71,12 +85,20 @@ class YGGetDbData(DBSet.DBSet):
             yy.append(code)
         return pd.DataFrame(yy,columns=['Code'])
     
-    def getBuySell(self,code):
-        query = 'select BUYSELL from '+self.BuyListTable+' where StockCode = "'+code+'"'
+    def getBuySell(self):
+#         query = 'select BUYSELL from '+self.BuyListTable+' where StockCode = "'+code+'"'
+        query = 'select StockCode,BUYSELL from '+self.BuyListTable
         
         self.cursor.execute(query)
         dd = self.cursor.fetchall()
-        return dd[0][0]
+        
+        arw=[]
+        for i in range(len(dd)):
+            if dd[i][1] =="B":
+                arw.append(dd[i])
+            elif dd[i][1] =="S":
+                arw.append(dd[i])
+        return arw
     
     def insertGold(self,code):
         
@@ -90,9 +112,9 @@ class YGGetDbData(DBSet.DBSet):
             
             self.conn.commit()
             
-        except OperationalError:
+        except Exception:
             
-            print(traceback.print_exc())
+            self.tracebackLog()
     
     
 if __name__ == '__main__':
@@ -106,8 +128,10 @@ if __name__ == '__main__':
     yy = cp.getCodeNameForReaReg()
 #     print(yy['BuySell'])
 #     cp.buyStock(98120, 903,236200)
-    cp.updateVolumeCode(227950, 3820,932)
+#     cp.updateVolumeCode(227950, 3820,932)
 #     cp.sellStock(19210, 930,12000)
 #     print(cp.getEndCode())
 #     print(yy['Code'][0])
-#     print(cp.getBuySell('019210'))
+    dd = cp.getBuySell()
+    for i in range(len(dd)):
+        print(str(dd[i][1]))
