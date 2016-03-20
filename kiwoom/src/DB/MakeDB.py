@@ -117,7 +117,7 @@ class DBMake(DBSet.DBSet):
 #         self.lock.release()
         
     def createDatabase(self,DBName,table):
-        '''Çü½Ä¿¡ ¸Â´Â Å×ÀÌºí »ý¼º.'''
+        '''ï¿½ï¿½ï¿½Ä¿ï¿½ ï¿½Â´ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½ï¿½ï¿½ï¿½.'''
         self.setTable(table)
         self.dbName=DBName
         self.conn = sqlite3.connect(self.dbName)
@@ -140,7 +140,7 @@ class DBMake(DBSet.DBSet):
         self.commit()
     
     def addCodeNameData(self):
-        '''Å×ÀÌºí »ý¼ºÈÄ ÄÚµå¿Í,ÀÌ¸§ »ðÀÔ'''
+        '''ï¿½ï¿½ï¿½Ìºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½,ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½'''
         
 #         if self.codeNameCoast ==None:
         try :
@@ -161,7 +161,7 @@ class DBMake(DBSet.DBSet):
         self.commit()
     
     def addDatePrice(self):
-        '''³¯Â¥¿¡ ¸Â°Ô  Á¾°¡¸¦ ´ëÀÔÇÑ´Ù.'''
+        '''ï¿½ï¿½Â¥ï¿½ï¿½ ï¿½Â°ï¿½  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.'''
         
 #         if self.codeNameCoast ==None:
         try:
@@ -196,7 +196,7 @@ class DBMake(DBSet.DBSet):
             
     def addDateColumn(self):
         
-        '''³¯Â¥Ä®·³ »ðÀÔ.'''
+        '''ï¿½ï¿½Â¥Ä®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.'''
         try:
             self.codeNameCoast
         except AttributeError:
@@ -205,7 +205,7 @@ class DBMake(DBSet.DBSet):
         if self.tableName ==None:
             raise ("Table Name not Assigned")
         
-        code='005930'   #»ï¼ºÀüÀÚÀÇ µ¥ÀÌÅÍ¸¦°®°í ³¯Â¥¸¦ °¡Á®¿Â´Ù.
+        code='005930'   #ï¿½ï¼ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Â¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½.
         data = YGGetWebData.getStockPriceData(str(code),self.start_date_closePrice)
 #         print(len(self.codeNameCoast),len(data['DateIndex']))
         for index in range(len(data['DateIndex'])):
@@ -224,7 +224,7 @@ class DBMake(DBSet.DBSet):
     
     def addVolume(self):
         
-        '''°Å·¡·®»ðÀÔ'''
+        '''ï¿½Å·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'''
         
         if self.codeNameCoast ==None:
             self.setCodeNameCoast()
@@ -254,7 +254,7 @@ class DBMake(DBSet.DBSet):
             print('Code[',code,']','Total[',index,'] [',i,'/',len(self.codeNameCoast),'] (Volume)')
     
     def addForeign(self):
-        '''¿Ü±¹ÀÎ ¸Å¼ö »ðÀÔ'''
+        '''ï¿½Ü±ï¿½ï¿½ï¿½ ï¿½Å¼ï¿½ ï¿½ï¿½ï¿½ï¿½'''
         if self.codeNameCoast ==None:
             self.setCodeNameCoast()
             
@@ -283,7 +283,7 @@ class DBMake(DBSet.DBSet):
             print('Code[',code,']','Total[',index,'] [',i,'/',len(self.codeNameCoast),'] (Foreign)')
     
     def addCompany(self):
-        '''±â°ü¸Å¼ö »ðÀÔ'''
+        '''ï¿½ï¿½ï¿½ï¿½Å¼ï¿½ ï¿½ï¿½ï¿½ï¿½'''
         if self.codeNameCoast ==None:
             self.setCodeNameCoast()
             
