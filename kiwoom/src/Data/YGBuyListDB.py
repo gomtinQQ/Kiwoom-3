@@ -62,7 +62,7 @@ class YGGetDbData(DBSet.DBSet):
         self.conn.commit()
         
     def getEndCode(self):
-        query = 'select StockCode from '+self.tableName+' where "BUYSELL"="Y"'
+        query = 'select StockCode from '+self.BuyListTable+' where "BUYSELL"="Y"'
         self.cursor.execute(query)
         dd = self.cursor.fetchall()
         yy=[]
@@ -72,7 +72,7 @@ class YGGetDbData(DBSet.DBSet):
         return pd.DataFrame(yy,columns=['Code'])
     
     def getBuySell(self,code):
-        query = 'select BUYSELL from '+self.tableName+' where StockCode = "'+code+'"'
+        query = 'select BUYSELL from '+self.BuyListTable+' where StockCode = "'+code+'"'
         
         self.cursor.execute(query)
         dd = self.cursor.fetchall()
