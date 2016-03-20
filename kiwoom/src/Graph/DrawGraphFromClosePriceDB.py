@@ -22,13 +22,14 @@ def movingAverage(values,window):
 
 def checkGolden(ax,dd,SP):
     
-    prev_key=prev_val=0
+    prev_key=0
+    prev_val=0
     for key,val in dd['golden_20_5'].iteritems():
         if val ==0:
             continue
         if val*prev_val < 0 and val > prev_val:
             ax.annotate('GOLDEN',xy=(dd['Date'][-SP:][key],dd['Mv20'][key]),xytext=(10,-30),textcoords='offset points',arrowprops=dict(facecolor='red',arrowstyle="->"))
-            print(dd['DateIndex'][-SP:][key])
+            print("Golden When [",dd['DateIndex'][-SP:][key],"]")
         if val*prev_val < 0 and val < prev_val:
             ax.annotate('DEAD',xy=(dd['Date'][-SP:][key],dd['Mv20'][key]),xytext=(10,30),textcoords='offset points',arrowprops=dict(facecolor='blue', arrowstyle="->"))
         prev_key,prev_val=key,val

@@ -27,19 +27,11 @@ class YGGetDbData(MakeDB.DBMake):
 #         print(dbName)
         super().setProperties(dbName,table)
         
-    def createEachDB(self,dbName):
-#         super().createDatabase(dbName,self.BuyListVolumeRotateTable)
-#         super().addCodeNameData()
-#         super().addDateColumn()
-#         super().createDatabase(dbName,self.BuyListRelativeTable)
-#         super().addCodeNameData()
-#         super().addDateColumn()
-        pass #buylistDB에서만들어야함.수정필요.
         
-    def updateRelativeCode(self,Code,relative):
+    def updateRelativeCode(self,Code,relative,pastMinute):
         tim = datetime.datetime.now()
         hour = str(tim.hour)
-        minute = str(tim.minute)
+        minute = str(pastMinute)
         foTime = hour+minute
         
         info = str(relative)
@@ -48,13 +40,11 @@ class YGGetDbData(MakeDB.DBMake):
         self.cursor.execute(query)
         self.conn.commit()
         
-    def updateVolumeCode(self,Code,Rotate):
-        tim = datetime.datetime.now()
-        hour = str(tim.hour)
-        minute = str(tim.minute)
-        foTime = hour+minute
+    def updateVolumeCode(self,Code,Rotate,foTime):
         
+        print(foTime)
         info = str(Rotate)
+        
         query = 'update '+self.BuyListVolumeRotateTable+' set "'+foTime+ '" = '+str(info)+' where StockCode = '+str(Code)
         
         self.cursor.execute(query)
@@ -91,11 +81,16 @@ class YGGetDbData(MakeDB.DBMake):
     
 if __name__ == '__main__':
     cp =YGGetDbData()
-    DB = '../../Sqlite3/BuyList'+str(datetime.datetime.today().date())+'.db'
-    cp.setProperties(DB,'BuyList')
+#     DB = '../../Sqlite3/BuyList'+str(datetime.datetime.today().date())+'.db'
+    DB = cp.BuyListDBToday
+    table = cp.BuyListTable
+    print(DB,table)
+    cp.setProperties(DB,table)
+    
     yy = cp.getCodeNameForReaReg()
 #     print(yy['BuySell'])
-    cp.buyStock(98120, 903,236200)
+#     cp.buyStock(98120, 903,236200)
+    cp.updateVolumeCode(227950, 3820,32)
 #     cp.sellStock(19210, 930,12000)
 #     print(cp.getEndCode())
 #     print(yy['Code'][0])

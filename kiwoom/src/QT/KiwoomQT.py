@@ -57,7 +57,8 @@ class Ui_Form(QAxWidget):
         self.YG.setLog()
         self.btn_login()
 #         self.YG.createEachDB(DB)
-        
+        self.acumulativeVolume=0 #누적거래량 변수
+        self.pastMinute = datetime.datetime.now().minute #현재 분
     def btn_login(self):        
         ret = self.dynamicCall("CommConnect()") 
         
@@ -114,7 +115,7 @@ class Ui_Form(QAxWidget):
         sRealData = str(sRealData)
 #         print('sJongmokCode[',sJongmokCode,'] sRealType[',sRealType,'] sRealData[',sRealData,']')
         
-#         Fid = '10;31;29;26' #현재가,회전율,거래대금증감,전일거래량대비
+#         Fid = '10;31;29;26;15;12' #현재가,회전율,거래대금증감,전일거래량대비,거래량 체결량 , 등락율
         CurrPrice = self.dynamicCall('GetCommRealData(QString, int )',sRealType,10)
         VolumeRotate = self.dynamicCall('GetCommRealData(QString, int )',sRealType,31)
         RelativeVolume = self.dynamicCall('GetCommRealData(QString, int )',sRealType,26)
@@ -123,10 +124,31 @@ class Ui_Form(QAxWidget):
         
         relative = self.dynamicCall('GetCommRealData(QString, int )',sRealType,12)
         
+        volume= self.dynamicCall('GetCommRealData(QString, int )',sRealType,15)
+        
+        print(volume) #체결량이랑 거래량인데 어떻게 들어오는지 확인해야함 그래서 거래량만 파싱해야함.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        
+        self.acumulativeVolume+=volume
+        self.currMinute = datetime.datetime.now().minute
+        
+        tim = datetime.datetime.now()
+        hour = str(tim.hour)
+        minute = str(self.pastMinute)
+        foTime = hour+minute
+        
+        if self.pastMinute != self.currMinute :
+            self.pastMinute = self.currMinute
+            self.YG.updateVolumeCode(sJongmokCode,self.acumulativeVolume,foTime)
+            self.acumulativeVolume =0 #거래량 다시 초기화
+            
+            
+        
+        
         
         if float(VolumeRotate) > 6 and float(relative) > 6:
 #             self.YG.debug('종목코드[%s'%sJongmokCode+']@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
 #             self.YG.updateCode(sJongmokCode,relative,VolumeRotate)
+            
             self.YG.updateRelativeCode(sJongmokCode,relative)
             self.YG.updateVolumeCode(sJongmokCode,VolumeRotate)
             print('종목코드[%s'%sJongmokCode+'] 현재가[%s'%CurrPrice+'] Rotate[%s'%VolumeRotate+'] 전일대비[%s'%yester+'] 등락율[%s'%relative+']')

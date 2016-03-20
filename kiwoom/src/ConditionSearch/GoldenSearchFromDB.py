@@ -64,22 +64,18 @@ class GoldenSearchFromDB1():
     def Golden(self,Data):
         '''기본적으로 5일선이 20일선 돌파하면 골든, 반대면 데드로 판단'''
         
-        prev_key,prev_val=0,0
-        
+        prev_key=0
+        prev_val=0
         
         try:
             Gold =None
-    #         print(Data['Golden_20_5'])
             for key,val in Data['Golden_20_5'].iteritems():
-    #             print(key,val)
                 if val == 0:
                     continue
                 if val*prev_val < 0 and val > prev_val:
                     Gold=Data['Date'][key]
-    #                 print(Gold)
-    #                 print(val,prev_val)
                 prev_key,prev_val=key,val
-            return Gold 
+            return Gold
                 
         except UnboundLocalError :
             YG.debug(traceback.print_exc())
@@ -110,9 +106,10 @@ class GoldenSearchFromDB1():
         return flag
         
         
-    def Search(self,Code,date,end,YG,bld,timeOut=""):
+    def Search(self,Code,end,YG,bld,DBLog,timeOut=""):
         dd = str(Code)
         Data = YG.getClosePriceFromDB(dd)
+        print("DB LOG [",DBLog,"]")
         if len(Data) <20: #거래일이 20일미만인건 걍 보내주자.
             return
         
@@ -137,15 +134,19 @@ class GoldenSearchFromDB1():
                 self.goldenCount+=1
                 self.keepbuy+=1
                 YG.debug('keepBuying ~ [%s'%Code+'] DATE [ %s'%dd+']')
-                bld.insertGold(str(Code))
                 
-            elif end<dd and self.VolumeCheck(Data,3,13):
+                if DBLog:
+                    bld.insertGold(str(Code))
+                
+            elif end<dd and self.VolumeCheck(Data,3,20):
                 
                 print('Volume!~ Code',Code,' When: ',dd ,end="")
                 self.goldenCount+=1
-                YG.debug('Volume!~ [%s'%Code+'] DATE [ %s'%dd+']')
-                bld.insertGold(str(Code))
                 self.volcheck+=1
+                YG.debug('Volume!~ [%s'%Code+'] DATE [ %s'%dd+']')
+                
+                if DBLog:
+                    bld.insertGold(str(Code))
                 
         except Exception as a :
             print(traceback.print_exc())
@@ -160,7 +161,10 @@ class GoldenSearchFromDB1():
         
         
         bld = BuyListDb.BuyListDB()
-        bld.createDatabase('../../Sqlite3/BuyList'+str(datetime.datetime.today().date())+'.db','BuyList')
+        print(bld.BuyListDBToday)
+        bld.createDatabase(dbName=bld.BuyListDBToday ,table=bld.BuyListTable)
+        bld.createDatabase(dbName=bld.BuyListDBToday ,table=bld.BuyListVolumeRotateTable)
+        bld.createDatabase(dbName=bld.BuyListDBToday ,table=bld.BuyListRelativeTable)
 
         i=0
         self.goldenCount = 0
@@ -169,7 +173,7 @@ class GoldenSearchFromDB1():
         for code in range(len(codeNameCoast['Code'])):
             code = codeNameCoast['Code'][code]
             
-            self.Search(code,'2016-1-13','2016-02-25',YG,bld)
+            self.Search(code,'2016-02-25',YG,bld,DBLog=True)
             i+=1
             YG.debug('Code[%s'%code+'] ( %s'%(i,)+'/ %s'%(len(codeNameCoast))+')')
         takeTime=time.time()-start_time
