@@ -163,12 +163,12 @@ class GoldenSearchFromDB1():
 #         print(bld.BuyListDBToday)    16.3.30
 #         bld.createDefaultDB()
         bld = YGBuyListDB.YGGetDbData()
-        
+        bld.setProperties(bld.BuyListDBToday,bld.BuyListTable)
         i=0
         self.goldenCount = 0
         self.keepbuy=0
         self.volcheck=0
-        DBLog=False
+        DBLog=True
         print("DB LOG [",DBLog,"]")
         for code in range(len(codeNameCoast['Code'])):
             code = codeNameCoast['Code'][code]

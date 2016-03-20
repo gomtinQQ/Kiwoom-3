@@ -117,7 +117,7 @@ class DBMake(DBSet.DBSet):
 #         self.lock.release()
         
     def createDatabase(self,DBName,table):
-        '''형식에 맞는 테이블 생성.'''
+        '''���Ŀ� �´� ���̺� ����.'''
         self.setTable(table)
         self.dbName=DBName
         self.conn = sqlite3.connect(self.dbName)
@@ -140,7 +140,7 @@ class DBMake(DBSet.DBSet):
         self.commit()
     
     def addCodeNameData(self):
-        '''테이블 생성후 코드와,이름 삽입'''
+        '''���̺� ������ �ڵ��,�̸� ����'''
         
 #         if self.codeNameCoast ==None:
         try :
@@ -161,7 +161,7 @@ class DBMake(DBSet.DBSet):
         self.commit()
     
     def addDatePrice(self):
-        '''날짜에 맞게  종가를 대입한다.'''
+        '''��¥�� �°�  ������ �����Ѵ�.'''
         
 #         if self.codeNameCoast ==None:
         try:
@@ -196,7 +196,7 @@ class DBMake(DBSet.DBSet):
             
     def addDateColumn(self):
         
-        '''날짜칼럼 삽입.'''
+        '''��¥Į�� ����.'''
         try:
             self.codeNameCoast
         except AttributeError:
@@ -205,7 +205,7 @@ class DBMake(DBSet.DBSet):
         if self.tableName ==None:
             raise ("Table Name not Assigned")
         
-        code='005930'   #삼성전자의 데이터를갖고 날짜를 가져온다.
+        code='005930'   #�Ｚ������ �����͸����� ��¥�� �����´�.
         data = YGGetWebData.getStockPriceData(str(code),self.start_date_closePrice)
 #         print(len(self.codeNameCoast),len(data['DateIndex']))
         for index in range(len(data['DateIndex'])):
@@ -224,7 +224,7 @@ class DBMake(DBSet.DBSet):
     
     def addVolume(self):
         
-        '''거래량삽입'''
+        '''�ŷ�������'''
         
         if self.codeNameCoast ==None:
             self.setCodeNameCoast()
@@ -254,7 +254,7 @@ class DBMake(DBSet.DBSet):
             print('Code[',code,']','Total[',index,'] [',i,'/',len(self.codeNameCoast),'] (Volume)')
     
     def addForeign(self):
-        '''외국인 매수 삽입'''
+        '''�ܱ��� �ż� ����'''
         if self.codeNameCoast ==None:
             self.setCodeNameCoast()
             
@@ -283,7 +283,7 @@ class DBMake(DBSet.DBSet):
             print('Code[',code,']','Total[',index,'] [',i,'/',len(self.codeNameCoast),'] (Foreign)')
     
     def addCompany(self):
-        '''기관매수 삽입'''
+        '''����ż� ����'''
         if self.codeNameCoast ==None:
             self.setCodeNameCoast()
             

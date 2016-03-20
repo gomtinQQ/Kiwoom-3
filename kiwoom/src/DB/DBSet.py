@@ -32,10 +32,6 @@ class DBSet(object):
     config = configparser.ConfigParser()
     config.read("../config/config.ini")
     
-    lock = mp.Lock()
-    querylock = mp.Lock()
-    config = configparser.ConfigParser()
-    config.read("../config/config.ini")
     
     
 #     def initConfigSet(self):

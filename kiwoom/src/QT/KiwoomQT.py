@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
@@ -14,7 +13,10 @@ import sys,logging
 import statistics
 sys.path.append('../')
 sys.path.append('../Data')
+sys.path.append('../AnalyseDB')
+import RealAnalyse
 import ExcelMake
+import multiprocessing as mp
 import sys
 import YGBuyListDB
 from win32ras import GetConnectStatus
@@ -47,18 +49,12 @@ class Ui_Form(QAxWidget):
         self.connect(self, SIGNAL("OnReceiveRealData(QString, QString, QString)"),self.OnReceiveRealData)        
         self.YG = YGBuyListDB.YGGetDbData()
         
-        today = datetime.datetime.today().date()
-        oneDay = datetime.timedelta(days=1)
-        
-        YESTERDAY= str( today - oneDay)
-        DB = '../../Sqlite3/BuyList'+YESTERDAY+'.db'
-        Table='BuyList'
-        self.YG.setProperties(DB,Table)
+        self.YG.setProperties(self.YG.BuyListDBYesterday,self.YG.BuyListTable)
         self.YG.setLog()
         self.btn_login()
-#         self.YG.createEachDB(DB)
         self.acumulativeVolume=0 #누적거래량 변수
         self.pastMinute = datetime.datetime.now().minute #현재 분
+        self.timeVal={}
     def btn_login(self):        
         ret = self.dynamicCall("CommConnect()") 
         
@@ -134,26 +130,32 @@ class Ui_Form(QAxWidget):
         tim = datetime.datetime.now()
         hour = str(tim.hour)
         minute = str(self.pastMinute)
+        
+        if len(minute)<2:
+            minute='0'+minute
         foTime = hour+minute
         
-        if self.pastMinute != self.currMinute :
+        self.timeVal[sJongmokCode] = foTime,self.acumulativeVolume
+        
+#         if self.pastMinute != self.currMinute :
+        if minute != str(self.currMinute):
             self.pastMinute = self.currMinute
-            self.YG.updateVolumeCode(sJongmokCode,self.acumulativeVolume,foTime)
+            self.YG.updateVolumeCode(sJongmokCode,self.acumulativeVolume,self.timeVal[sJongmokCode])
             self.acumulativeVolume =0 #거래량 다시 초기화
+            self.timeVal[sJongmokCode] = None
             
-            
+        self.checkBuyOrSell(foTime,CurrPrice)
         
-        
-        
-        if float(VolumeRotate) > 6 and float(relative) > 6:
-#             self.YG.debug('종목코드[%s'%sJongmokCode+']@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-#             self.YG.updateCode(sJongmokCode,relative,VolumeRotate)
-            
-            self.YG.updateRelativeCode(sJongmokCode,relative)
-            self.YG.updateVolumeCode(sJongmokCode,VolumeRotate)
-            print('종목코드[%s'%sJongmokCode+'] 현재가[%s'%CurrPrice+'] Rotate[%s'%VolumeRotate+'] 전일대비[%s'%yester+'] 등락율[%s'%relative+']')
-            self.YG.debug('종목코드[%s'%sJongmokCode+'] 현재가[%s'%CurrPrice+'] Rotate[%s'%VolumeRotate+'] 전일대비[%s'%yester+'] 등락율[%s'%relative+']')
-            
+#         
+#         if float(VolumeRotate) > 6 and float(relative) > 6:
+# #             self.YG.debug('종목코드[%s'%sJongmokCode+']@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+# #             self.YG.updateCode(sJongmokCode,relative,VolumeRotate)
+#             
+#             self.YG.updateRelativeCode(sJongmokCode,relative)
+#             self.YG.updateVolumeCode(sJongmokCode,VolumeRotate)
+#             print('종목코드[%s'%sJongmokCode+'] 현재가[%s'%CurrPrice+'] Rotate[%s'%VolumeRotate+'] 전일대비[%s'%yester+'] 등락율[%s'%relative+']')
+#             self.YG.debug('종목코드[%s'%sJongmokCode+'] 현재가[%s'%CurrPrice+'] Rotate[%s'%VolumeRotate+'] 전일대비[%s'%yester+'] 등락율[%s'%relative+']')
+#             
             
 #         self.YG.debug('종목코드[%s'%sJongmokCode+'] 현재가[%s'%CurrPrice+'] Rotate[%s'%VolumeRotate+'] 전일대비[%s'%yester+'] 등락율[%s'%relative+']')
 #         print('종목코드[%s'%sJongmokCode+'] 현재가[%s'%CurrPrice+'] Rotate[%s'%VolumeRotate+'] 전일대비[%s'%yester+'] 등락율[%s'%relative+']')
@@ -189,12 +191,8 @@ class Ui_Form(QAxWidget):
         ret = self.dynamicCall('SetRealReg(QString,QString,QString,QString)', strScreenNo,strCodeList,strFidList,strRealType)
         print('리얼타입 등록 :',ret)
         
-    def get10001Info(self):
-        ret = self.dynamicCall('SetInputValue(QString,QString)', "종목코드"    ,126700)
-        ret = self.dynamicCall('CommRqData(QString,QString,int,QString)', "RQName"    ,  "opt10001"    ,  0   ,  "화면번호")
-        self.connect(self, SIGNAL("OnReceiveTrData(QString, QString, QString, QString, QString, int, QString, QString, QString)"), self.OnReceiveTrData)
 
-    def checkSendAndRealReg(self):
+    def checkBuyOrSell(self,time,CurrPrice):
         
 #         self.YG = YGBuyListDB.YGGetDbData()
 #         today = datetime.datetime.today().date()
@@ -205,25 +203,36 @@ class Ui_Form(QAxWidget):
 #         Table='BuyList'
 #         
 #         self.YG.setProperties(DB,Table)
-        code = self.YG.getCodeNameForReaReg()
         try:
             
-            while(True):
+#             while(True):
+            stockCodeList = self.YG.getBuySell()
             
-                for index in range(len(code)):
-                    rCode=self.addZeroToStockCode(str(code['Code'][index]))
-#                     print(rCode)
-                    buySell = self.YG.getBuySell(rCode)
+            for i in range(len(stockCodeList)):
+                stockCode = stockCodeList[i][0]
+                
+                if str(stockCodeList[i][1]) =="B":
+                    self.YG.buyStock(stockCode,time,CurrPrice)#dblogging
+                    self.sendOrder(stockCode,"BUY")#sendOrder
+                
+                elif str(stockCodeList[i][1]) =="S":
+                    self.YG.sellStock(stockCode,time,CurrPrice)#dblogging
+                    self.sendOrder(stockCode,"SELL")#sendOrder
+                
+                
+#                 for index in range(len(code)):
+#                     rCode=self.addZeroToStockCode(str(code['Code'][index]))
+#                     buySell = self.YG.getBuySell(rCode)
 #                     if buySell=="N":
 #                         self.sendOrder(rCode,"BUY")
 #                         self.YG.buyStock(rCode,901,12000)                
 #                     if buySell =="Y":
 #                         self.sendOrder(rCode,"SELL")
 #                         self.YG.sellStock(rCode,905,236200)
-                time.sleep(5)
+#                 time.sleep(5)
                 
         except Exception:
-            traceback.print_exc(file=sys.stdout)
+            traceback.print_exc()
             
     def sendOrder (self,code,Position):
         
@@ -258,6 +267,12 @@ class Ui_Form(QAxWidget):
         return str
 
 if __name__ == "__main__":
+    
+    d = RealAnalyse.RealAnalyse()
+    proc = mp.Process(target=d.gogo)
+    proc.start()
+    
+    
     app = QtGui.QApplication(sys.argv)
     Form = QtGui.QWidget()
     ui = Ui_Form()
