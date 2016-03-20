@@ -44,17 +44,9 @@ class BuyListDB(MakeDB.DBMake):
 
     def createDefaultDB(self):
         
-        try:
-            sql = 'insert into '+self.BuyListTable+' (StockCode) values("'+str(code)+'");'
-            self.cursor.execute(sql)
-            sql = 'insert into '+self.BuyListVolumeRotateTable+' (StockCode) values("'+str(code)+'");'
-            self.cursor.execute(sql)
-            sql = 'insert into '+self.BuyListRelativeTable+' (StockCode) values("'+str(code)+'");'
-            self.cursor.execute(sql)
-            
-            self.conn.commit()
-            
-        except OperationalError:
+        self.createDatabase(self.BuyListDBToday, self.BuyListTable)
+        self.createDatabase(self.BuyListDBToday ,self.BuyListVolumeRotateTable)
+        self.createDatabase(self.BuyListDBToday ,self.BuyListRelativeTable)
             
 #     def insertGold(self,code):
 #         

@@ -24,7 +24,6 @@ class YGGetDbData(DBSet.DBSet):
         return pd.DataFrame(yy,columns=['Code','BuySell'])
     
     def setProperties(self,dbName='../../Sqlite3/BuyList.db',table='BuyList'):
-#         print(dbName)
         super().setProperties(dbName,table)
         
         
@@ -42,7 +41,6 @@ class YGGetDbData(DBSet.DBSet):
         
     def updateVolumeCode(self,Code,Rotate,foTime):
         
-        print(foTime)
         info = str(Rotate)
         foTime = str(foTime)
         

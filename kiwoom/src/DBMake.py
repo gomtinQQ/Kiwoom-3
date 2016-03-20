@@ -18,14 +18,14 @@ class dbm2(mp.Process):
     def __init__(self,dbname=""):
         super(dbm2, self).__init__()
         
-    def PrintException(self):
-        exc_type, exc_obj, tb = sys.exc_info()
-        f = tb.tb_frame
-        lineno = tb.tb_lineno
-        filename = f.f_code.co_filename
-        linecache.checkcache(filename)
-        line = linecache.getline(filename, lineno, f.f_globals)
-        print ('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+#     def PrintException(self):
+#         exc_type, exc_obj, tb = sys.exc_info()
+#         f = tb.tb_frame
+#         lineno = tb.tb_lineno
+#         filename = f.f_code.co_filename
+#         linecache.checkcache(filename)
+#         line = linecache.getline(filename, lineno, f.f_globals)
+#         print ('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
 
     def tracebackLog(self):
         print(traceback.print_exc())
