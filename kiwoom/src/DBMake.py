@@ -2,6 +2,7 @@
 
 import sqlite3
 import ExcelMake
+import traceback
 import bts
 import time
 import multiprocessing as mp
@@ -26,6 +27,8 @@ class dbm2(mp.Process):
         line = linecache.getline(filename, lineno, f.f_globals)
         print ('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
 
+    def tracebackLog(self):
+        print(traceback.print_exc())
         
     def getConnection(self):
         return self.conn
@@ -73,7 +76,8 @@ class dbm2(mp.Process):
                     self.cursor.execute("alter table kosdaq add '"+str(i)+str(j)+"' REAL")
             print("table created ["+str(time.time()-_start)+"]")
         except :
-            self.PrintException()
+            self.tracebackLog()
+#             self.PrintException()
             
             
         try:
@@ -140,7 +144,8 @@ class dbm2(mp.Process):
 #             cursor.execute(query)
             return query
         except:
-            self.PrintException()
+            self.tracebackLog()
+#             self.PrintException()
         
         
     def dropTable(self,Table):
@@ -152,7 +157,8 @@ class dbm2(mp.Process):
         try:
             self.cursor.execute('Insert into kosdaq (StockCode,StockName) values("'+code+'","'+name+'")')
         except :
-            self.PrintException()
+            self.tracebackLog()
+#             self.PrintException()
         
         print('['+name+'] setting ['+str(time.time()-_start)+']')
 

@@ -22,7 +22,8 @@ class BuyListDB(DBMake.dbm2):
         try:
             self.Buydb_cursor.execute(query)
         except :
-            self.PrintException()
+            self.tracebackLog()
+#             self.PrintException()
 
     def getSelectDB(self,dbName=""):
         if dbName=="":
