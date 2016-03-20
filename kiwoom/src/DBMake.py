@@ -2,6 +2,7 @@
 
 import sqlite3
 import ExcelMake
+import traceback
 import bts
 import time
 import multiprocessing as mp
@@ -17,15 +18,17 @@ class dbm2(mp.Process):
     def __init__(self,dbname=""):
         super(dbm2, self).__init__()
         
-    def PrintException(self):
-        exc_type, exc_obj, tb = sys.exc_info()
-        f = tb.tb_frame
-        lineno = tb.tb_lineno
-        filename = f.f_code.co_filename
-        linecache.checkcache(filename)
-        line = linecache.getline(filename, lineno, f.f_globals)
-        print ('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+#     def PrintException(self):
+#         exc_type, exc_obj, tb = sys.exc_info()
+#         f = tb.tb_frame
+#         lineno = tb.tb_lineno
+#         filename = f.f_code.co_filename
+#         linecache.checkcache(filename)
+#         line = linecache.getline(filename, lineno, f.f_globals)
+#         print ('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
 
+    def tracebackLog(self):
+        print(traceback.print_exc())
         
     def getConnection(self):
         return self.conn
@@ -73,7 +76,8 @@ class dbm2(mp.Process):
                     self.cursor.execute("alter table kosdaq add '"+str(i)+str(j)+"' REAL")
             print("table created ["+str(time.time()-_start)+"]")
         except :
-            self.PrintException()
+            self.tracebackLog()
+#             self.PrintException()
             
             
         try:
@@ -140,7 +144,8 @@ class dbm2(mp.Process):
 #             cursor.execute(query)
             return query
         except:
-            self.PrintException()
+            self.tracebackLog()
+#             self.PrintException()
         
         
     def dropTable(self,Table):
@@ -152,7 +157,8 @@ class dbm2(mp.Process):
         try:
             self.cursor.execute('Insert into kosdaq (StockCode,StockName) values("'+code+'","'+name+'")')
         except :
-            self.PrintException()
+            self.tracebackLog()
+#             self.PrintException()
         
         print('['+name+'] setting ['+str(time.time()-_start)+']')
 

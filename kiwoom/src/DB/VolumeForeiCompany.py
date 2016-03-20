@@ -40,7 +40,11 @@ class VolumeForeiCompany(MakeDB.DBMake):
         self.addCodeNameData()
         self.addCompany()
         
-    
+    def initAndCreateClose(self):
+        self.createDatabase(self.ClosePriceDB,self.ClosePriceTable)
+        self.addDateColumn()
+        self.addCodeNameData()
+        self.addDatePrice()
         
     def addUntilForeign(self):
         self.setProperties(self.ForeignerDB,self.ForeignerTable)
@@ -61,6 +65,11 @@ class VolumeForeiCompany(MakeDB.DBMake):
         self.addCompany()
 #         Company = mp.Process(name="Company",target = self.addCompany)
 #         Company.start()
+
+    def addUntilClose(self):
+        self.setProperties(self.ClosePriceDB,self.ClosePriceTable)
+        self.addDateColumn() 
+        self.addDatePrice()
         
     def addUntillDate(self):
         
@@ -90,11 +99,12 @@ if __name__ == '__main__':
     Foreignf = mp.Process(name="Foreign",target=cp.addUntilForeign)
     Volume = mp.Process(name="Volume",target = cp.addUntilVolume)
     Company = mp.Process(name="Company",target = cp.addUntilCompany)
- 
+    closePrice = mp.Process(name="Close",target = cp.addUntilClose)
      
     Foreignf.start()
     Volume.start()
     Company.start()
+    closePrice.start()
 #     wor11 = mp.Process(name="Company",target=cp.initAndCreateCompany)
 #     wor12 = mp.Process(name="Foreign",target=cp.initAndCreateForeign)
 #     wor13 = mp.Process(name="Volume",target=cp.initAndCreateVolume)

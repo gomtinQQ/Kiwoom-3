@@ -45,7 +45,8 @@ class YGGetCloseDB(MakeDB.DBMake):
             return pd.DataFrame(pArr,columns=['Close'])
             
         except OperationalError:
-            self.PrintException()
+#             self.PrintException()
+            self.tracebackLog()
             
     def getColumns(self,db,table):
         sql = 'select sql from sqlite_master where name="'+table+'"'
@@ -64,7 +65,8 @@ class YGGetCloseDB(MakeDB.DBMake):
             return pd.DataFrame(YMDDate,columns=['Date'])
                 
         except OperationalError:
-            self.PrintException()
+#             self.PrintException()
+            self.tracebackLog()
         
     def getClosePriceFromDB(self,code):
 #         self.initConfigSet()

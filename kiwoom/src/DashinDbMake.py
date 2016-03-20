@@ -32,7 +32,8 @@ class DashinDbMake(dbm2):
             query=super().updateCode(Code,Time,coast,Cursor)
             Cursor.execute(query)
         except:
-            self.PrintException()
+            self.tracebackLog()
+#             self.PrintException()
         
     def run(self):
         print('work start')
@@ -56,7 +57,8 @@ class DashinDbMake(dbm2):
                 self.commit()
                 time.sleep(58)
             except : 
-                self.PrintException()
+                self.tracebackLog()
+#                 self.PrintException()
                 continue
 
 if __name__ == '__main__':

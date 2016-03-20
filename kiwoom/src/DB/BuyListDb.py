@@ -10,46 +10,54 @@ import time,datetime
 import btsForDashin
 import linecache
 import MakeDB
+import traceback
 
 class BuyListDB(MakeDB.DBMake):
     
     def setProperties(self,dbName="",tableName=""):
-        DB= '../../Sqlite3/BuyList'+str(datetime.datetime.today().date())+'.db'
-        if dbName !="":
-            DbName=dbName
-        Table='BuyList'
-        if tableName !="":
-            Table=tableName
+#         DB= '../../Sqlite3/'+self.BuyListDB
+#         if dbName !="":
+#             DbName=dbName
+#         Table='BuyList'
+#         if tableName !="":
+#             Table=tableName
             
-        super().setProperties(DB,Table)
+        super().setProperties(dbName,tableName)
     
     def createDatabase(self,dbName,table):
         super().createDatabase(dbName,table)
-        sql = "alter table "+self.tableName+" add BUYSELL TEXT default N;";
+        sql = "alter table "+table+" add BUYSELL TEXT default N;";
         try:
+            _start=time.time()
             for i in range(9,15):
                 for j in range(0,60):
                     if j<10:
                         j=str(j)
                         j=j[:0]+str('0')+j[0:]
-                    self.cursor.execute("alter table "+self.tableName+" add '"+str(i)+str(j)+"' INTEGER")
+                    self.cursor.execute("alter table "+table+" add '"+str(i)+str(j)+"' INTEGER")
             self.cursor.execute(sql)
             self.conn.commit()  
+            print("table created ["+str(time.time()-_start)+"]")
         except :
-            self.PrintException()
+#             self.PrintException()
+            self.tracebackLog()        
+        
             
     def insertGold(self,code):
         
-        sql = 'insert into '+self.tableName+' (StockCode) values("'+str(code)+'");'
         try:
+            sql = 'insert into '+self.BuyListTable+' (StockCode) values("'+str(code)+'");'
             self.cursor.execute(sql)
+            sql = 'insert into '+self.BuyListVolumeRotateTable+' (StockCode) values("'+str(code)+'");'
+            self.cursor.execute(sql)
+            sql = 'insert into '+self.BuyListRelativeTable+' (StockCode) values("'+str(code)+'");'
+            self.cursor.execute(sql)
+            
             self.conn.commit()
             
         except OperationalError:
             
-            self.createDatabase('../../Sqlite3/BuyList.db','BuyList')
-            self.cursor.execute(sql)
-            self.conn.commit()
+            print(traceback.print_exc())
         
     def togleCode(self,code):
         sesql = 'select BUYSELL from '+self.tableName+' where StockCode = '+code
