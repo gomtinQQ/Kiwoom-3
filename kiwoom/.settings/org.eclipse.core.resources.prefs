@@ -1,4 +1,13 @@
 eclipse.preferences.version=1
 encoding//src/ConditionSearch/GoldenSearchFromDB.py=utf-8
 encoding//src/DB/BuyListDb.py=utf-8
+<<<<<<< HEAD
+=======
+encoding//src/DB/DBSet.py=utf-8
+encoding//src/DB/MakeDB.py=utf-8
+encoding//src/DB/VolumeForeiCompany.py=utf-8
+encoding//src/DB/closePriceMake.py=utf-8
+encoding//src/DBMake.py=utf-8
+encoding//src/DashinDbMake.py=utf-8
+>>>>>>> branch 'master' of https://github.com/rkdls/Kiwoom
 encoding//src/Data/YGBuyListDB.py=utf-8
