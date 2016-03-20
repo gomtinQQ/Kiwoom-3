@@ -42,22 +42,27 @@ class BuyListDB(MakeDB.DBMake):
 #             self.PrintException()
             self.tracebackLog()        
 
-            
-    def insertGold(self,code):
+    def createDefaultDB(self):
         
-        try:
-            sql = 'insert into '+self.BuyListTable+' (StockCode) values("'+str(code)+'");'
-            self.cursor.execute(sql)
-            sql = 'insert into '+self.BuyListVolumeRotateTable+' (StockCode) values("'+str(code)+'");'
-            self.cursor.execute(sql)
-            sql = 'insert into '+self.BuyListRelativeTable+' (StockCode) values("'+str(code)+'");'
-            self.cursor.execute(sql)
+        self.createDatabase(self.BuyListDBToday, self.BuyListTable)
+        self.createDatabase(self.BuyListDBToday ,self.BuyListVolumeRotateTable)
+        self.createDatabase(self.BuyListDBToday ,self.BuyListRelativeTable)
             
-            self.conn.commit()
-            
-        except OperationalError:
-            
-            print(traceback.print_exc())
+#     def insertGold(self,code):
+#         
+#         try:
+#             sql = 'insert into '+self.BuyListTable+' (StockCode) values("'+str(code)+'");'
+#             self.cursor.execute(sql)
+#             sql = 'insert into '+self.BuyListVolumeRotateTable+' (StockCode) values("'+str(code)+'");'
+#             self.cursor.execute(sql)
+#             sql = 'insert into '+self.BuyListRelativeTable+' (StockCode) values("'+str(code)+'");'
+#             self.cursor.execute(sql)
+#             
+#             self.conn.commit()
+#             
+#         except OperationalError:
+#             
+#             print(traceback.print_exc())
         
     def togleCode(self,code):
         sesql = 'select BUYSELL from '+self.tableName+' where StockCode = '+code

@@ -3,12 +3,12 @@ import sqlite3
 import sys,os
 sys.path.append('../')
 sys.path.append('../DB')
-import MakeDB
+import DBSet
 import time,datetime
 import pandas as pd
 
 
-class YGGetDbData(MakeDB.DBMake):
+class YGGetDbData(DBSet.DBSet):
     
     def getCodeNameForReaReg(self):
         '''초기 실시간데이터받기용 쿼리'''
@@ -24,7 +24,6 @@ class YGGetDbData(MakeDB.DBMake):
         return pd.DataFrame(yy,columns=['Code','BuySell'])
     
     def setProperties(self,dbName='../../Sqlite3/BuyList.db',table='BuyList'):
-#         print(dbName)
         super().setProperties(dbName,table)
         
         
@@ -42,8 +41,8 @@ class YGGetDbData(MakeDB.DBMake):
         
     def updateVolumeCode(self,Code,Rotate,foTime):
         
-        print(foTime)
         info = str(Rotate)
+        foTime = str(foTime)
         
         query = 'update '+self.BuyListVolumeRotateTable+' set "'+foTime+ '" = '+str(info)+' where StockCode = '+str(Code)
         
@@ -79,6 +78,23 @@ class YGGetDbData(MakeDB.DBMake):
         dd = self.cursor.fetchall()
         return dd[0][0]
     
+    def insertGold(self,code):
+        
+        try:
+            sql = 'insert into '+self.BuyListTable+' (StockCode) values("'+str(code)+'");'
+            self.cursor.execute(sql)
+            sql = 'insert into '+self.BuyListVolumeRotateTable+' (StockCode) values("'+str(code)+'");'
+            self.cursor.execute(sql)
+            sql = 'insert into '+self.BuyListRelativeTable+' (StockCode) values("'+str(code)+'");'
+            self.cursor.execute(sql)
+            
+            self.conn.commit()
+            
+        except OperationalError:
+            
+            print(traceback.print_exc())
+    
+    
 if __name__ == '__main__':
     cp =YGGetDbData()
 #     DB = '../../Sqlite3/BuyList'+str(datetime.datetime.today().date())+'.db'
@@ -90,7 +106,7 @@ if __name__ == '__main__':
     yy = cp.getCodeNameForReaReg()
 #     print(yy['BuySell'])
 #     cp.buyStock(98120, 903,236200)
-    cp.updateVolumeCode(227950, 3820,32)
+    cp.updateVolumeCode(227950, 3820,932)
 #     cp.sellStock(19210, 930,12000)
 #     print(cp.getEndCode())
 #     print(yy['Code'][0])

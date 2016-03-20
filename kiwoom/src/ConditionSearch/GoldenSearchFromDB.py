@@ -6,14 +6,13 @@ sys.path.append('../Graph')
 sys.path.append('../Data')
 sys.path.append('../DB')
 import btsForDashin
-import YGGetWebData
 import YGGetCloseDB
 import DrawGraph2
 import BuyListDb
 # import MakeDB
 import configparser
 import logging
-
+import YGBuyListDB
 class GoldenSearchFromDB1():
     
     
@@ -107,9 +106,8 @@ class GoldenSearchFromDB1():
         
         
     def Search(self,Code,end,YG,bld,DBLog,timeOut=""):
-        dd = str(Code)
-        Data = YG.getClosePriceFromDB(dd)
-        print("DB LOG [",DBLog,"]")
+        Data = YG.getClosePriceFromDB(str(Code))
+        
         if len(Data) <20: #거래일이 20일미만인건 걍 보내주자.
             return
         
@@ -150,7 +148,7 @@ class GoldenSearchFromDB1():
                 
         except Exception as a :
             print(traceback.print_exc())
-            YG.debug(traceback.print_exc())
+#             YG.debug(traceback.print_exc()) 안먹히는 이유를 모르겠음. 
 
     def createSearchingDB(self,YG):
         
@@ -160,20 +158,22 @@ class GoldenSearchFromDB1():
         codeNameCoast = YG.getCodeNameCoast()
         
         
-        bld = BuyListDb.BuyListDB()
-        print(bld.BuyListDBToday)
-        bld.createDatabase(dbName=bld.BuyListDBToday ,table=bld.BuyListTable)
-        bld.createDatabase(dbName=bld.BuyListDBToday ,table=bld.BuyListVolumeRotateTable)
-        bld.createDatabase(dbName=bld.BuyListDBToday ,table=bld.BuyListRelativeTable)
-
+#         bld = BuyListDb.BuyListDB()
+        BuyListDb.BuyListDB().createDefaultDB()
+#         print(bld.BuyListDBToday)    16.3.30
+#         bld.createDefaultDB()
+        bld = YGBuyListDB.YGGetDbData()
+        
         i=0
         self.goldenCount = 0
         self.keepbuy=0
         self.volcheck=0
+        DBLog=False
+        print("DB LOG [",DBLog,"]")
         for code in range(len(codeNameCoast['Code'])):
             code = codeNameCoast['Code'][code]
             
-            self.Search(code,'2016-02-25',YG,bld,DBLog=True)
+            self.Search(code,'2016-02-25',YG,bld,DBLog)
             i+=1
             YG.debug('Code[%s'%code+'] ( %s'%(i,)+'/ %s'%(len(codeNameCoast))+')')
         takeTime=time.time()-start_time

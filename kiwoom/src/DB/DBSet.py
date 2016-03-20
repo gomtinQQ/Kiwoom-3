@@ -13,8 +13,19 @@ import traceback
 import logging
 from logging.handlers import RotatingFileHandler 
 
-class DBSet():
+class Singleton(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+
+
+
+class DBSet(object):
     
+    __metaclass__ = Singleton
     
     lock = mp.Lock()
     querylock = mp.Lock()
@@ -96,3 +107,20 @@ class DBSet():
     def tracebackLog(self):
         print(traceback.print_exc())
         
+    def commit(self):
+        self.lock.acquire()
+        self.conn.commit()
+        self.lock.release()
+        
+    def setProperties(self,dbName,table):
+        self.dbName=dbName
+        self.conn = sqlite3.connect(self.dbName)
+        self.cursor = self.conn.cursor()
+        self.setTable(table)
+        
+    def setTable(self,tableName):
+        self.tableName = tableName
+        
+    def setCodeNameCoast(self):
+        bfd = btsForDashin.btsForReal()
+        self.codeNameCoast = bfd.UrlParsing()

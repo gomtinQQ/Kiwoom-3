@@ -92,28 +92,29 @@ class DBMake(DBSet.DBSet):
         
 
 
-    def debug(self,msg):
-        self.logger.debug(msg)
+#     def debug(self,msg):
+#         self.logger.debug(msg)
     
         
-    def setTable(self,tableName):
-        self.tableName = tableName
+#     def setTable(self,tableName):
+#         self.tableName = tableName
     
-    def setCodeNameCoast(self):
-        bfd = btsForDashin.btsForReal()
-        self.codeNameCoast = bfd.UrlParsing()
+#     def setCodeNameCoast(self):
+#         bfd = btsForDashin.btsForReal()
+#         self.codeNameCoast = bfd.UrlParsing()
     
-    def setProperties(self,dbName,table):
+#     def setProperties(self,dbName,table):
+#         
+#         self.dbName=dbName
+#         self.conn = sqlite3.connect(self.dbName)
+#         self.cursor = self.conn.cursor()
+#         self.setTable(table)
         
-        self.dbName=dbName
-        self.conn = sqlite3.connect(self.dbName)
-        self.cursor = self.conn.cursor()
-        self.setTable(table)
-    def commit(self):
-        
-        self.lock.acquire()
-        self.conn.commit()
-        self.lock.release()
+#     def commit(self):
+#         
+#         self.lock.acquire()
+#         self.conn.commit()
+#         self.lock.release()
         
     def createDatabase(self,DBName,table):
         '''형식에 맞는 테이블 생성.'''
@@ -190,13 +191,6 @@ class DBMake(DBSet.DBSet):
                 self.commit()
             i+=1
             print('code[',code,'] Total[',index,'] (',i,'/',len(self.codeNameCoast),')')
-#     def addTodayClosePrice(self):
-#         '''오늘날짜 까지를 세팅한다.'''
-#         if self.codeNameCoast ==None:
-#             self.setCodeNameCoast()
-#         for code in self.codeNameCoast:
-#             
-#             data = YGGetWebData.getStockPriceData(str(code),date)
         
         
             
