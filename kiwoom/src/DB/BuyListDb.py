@@ -39,10 +39,10 @@ class BuyListDB(MakeDB.DBMake):
             self.conn.commit()  
             print("table created ["+str(time.time()-_start)+"]")
         except :
-            self.PrintException()
-        
-            
-    def insertGold(self,code):
+#             self.PrintException()
+            self.tracebackLog()        
+
+    def createDefaultDB(self):
         
         try:
             sql = 'insert into '+self.BuyListTable+' (StockCode) values("'+str(code)+'");'
@@ -56,7 +56,21 @@ class BuyListDB(MakeDB.DBMake):
             
         except OperationalError:
             
-            print(traceback.print_exc())
+#     def insertGold(self,code):
+#         
+#         try:
+#             sql = 'insert into '+self.BuyListTable+' (StockCode) values("'+str(code)+'");'
+#             self.cursor.execute(sql)
+#             sql = 'insert into '+self.BuyListVolumeRotateTable+' (StockCode) values("'+str(code)+'");'
+#             self.cursor.execute(sql)
+#             sql = 'insert into '+self.BuyListRelativeTable+' (StockCode) values("'+str(code)+'");'
+#             self.cursor.execute(sql)
+#             
+#             self.conn.commit()
+#             
+#         except OperationalError:
+#             
+#             print(traceback.print_exc())
         
     def togleCode(self,code):
         sesql = 'select BUYSELL from '+self.tableName+' where StockCode = '+code
