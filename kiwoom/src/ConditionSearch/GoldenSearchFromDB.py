@@ -105,7 +105,7 @@ class GoldenSearchFromDB1():
         return flag
         
         
-    def Search(self,Code,end,YG,bld,DBLog,timeOut=""):
+    def Search(self,Code,end,YG,bld,DBLog,name,timeOut=""):
         Data = YG.getClosePriceFromDB(str(Code))
         
         if len(Data) <20: #거래일이 20일미만인건 걍 보내주자.
@@ -134,7 +134,7 @@ class GoldenSearchFromDB1():
                 YG.debug('keepBuying ~ [%s'%Code+'] DATE [ %s'%dd+']')
                 
                 if DBLog:
-                    bld.insertGold(str(Code))
+                    bld.insertGold(str(Code),name)
                 
             elif end<dd and self.VolumeCheck(Data,3,20):
                 
@@ -144,7 +144,7 @@ class GoldenSearchFromDB1():
                 YG.debug('Volume!~ [%s'%Code+'] DATE [ %s'%dd+']')
                 
                 if DBLog:
-                    bld.insertGold(str(Code))
+                    bld.insertGold(str(Code),name)
                 
         except Exception as a :
             print(traceback.print_exc())
@@ -169,11 +169,12 @@ class GoldenSearchFromDB1():
         self.keepbuy=0
         self.volcheck=0
         DBLog=True
-        print("DB LOG [",DBLog,"]")
-        for code in range(len(codeNameCoast['Code'])):
-            code = codeNameCoast['Code'][code]
+        print("DB LOGGING [",DBLog,"]")
+        for index in range(len(codeNameCoast['code'])):
+            code = codeNameCoast['code'][index]
+            name = codeNameCoast['name'][index]
             
-            self.Search(code,'2016-02-25',YG,bld,DBLog)
+            self.Search(code,'2016-02-25',YG,bld,DBLog,name)
             i+=1
             YG.debug('Code[%s'%code+'] ( %s'%(i,)+'/ %s'%(len(codeNameCoast))+')')
         takeTime=time.time()-start_time

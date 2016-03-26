@@ -148,15 +148,23 @@ class YGGetCloseDB(MakeDB.DBMake):
         
     
     def getCodeNameCoast(self):
-        sql = "select StockCode from "+self.tableName
+        sql = "select StockCode,StockName from "+self.tableName
         self.cursor.execute(sql)
         dd = self.cursor.fetchall()
         
         
         yy = []
         for index in range(len(dd)):
-            yy.append(dd[index][0])
-        return pd.DataFrame(yy,columns=['Code'])
+            
+            code = dd[index][0]
+            name = dd[index][1]
+            
+            codename = code,name
+            yy.append(codename)
+            
+        
+        
+        return pd.DataFrame(yy,columns=['code','name'])
             
         
         
@@ -166,7 +174,7 @@ if __name__ == '__main__':
     bld.setProperties()
 #     bld.initConfigSet()
 #     print(bld.getVolumeAndForeignAndCompany('159910'))
-    print(bld.getClosePriceFromDB('126700'))
+#     print(bld.getClosePriceFromDB('126700'))
 #     dd = bld.getPrice('126700')
 #     print(dd['Close'])
 #     dd = bld.getColumns()
@@ -175,5 +183,5 @@ if __name__ == '__main__':
 #     print(dd)
 #     041140
 #     bld.togleCode('127710')
-#     dd = bld.getCodeNameCoast()
-#     print(dd['Code'])
+    dd = bld.getCodeNameCoast()
+    print(dd['code'],dd['name'])

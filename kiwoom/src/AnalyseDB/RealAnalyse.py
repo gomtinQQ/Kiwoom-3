@@ -17,8 +17,6 @@ import YGBuyListDB
 
 class RealAnalyse(DBSet.DBSet):
 
-
-
     def getSelectQuery(self,Time="",count="",interval=""):
         '''set SimulatorTime if not,get the current Time'''
         
@@ -39,7 +37,6 @@ class RealAnalyse(DBSet.DBSet):
         Time=int(Time)
         currTime = self.getNowTime()
         beforeTime = self.pastAgo(currTime,interval)
-#         print('beforeTime'+str(beforeTime),interval,currTime)
         
         self.whereQuery = 'select StockCode,StockName from kosdaq where "' + \
             str(beforeTime) + '"<"' + str(currTime) + '"'
@@ -62,7 +59,6 @@ class RealAnalyse(DBSet.DBSet):
             return self.whereQuery
 
         else:  
-
 #             Time=self.TimeFormat(Time)
 #             currTime = self.TimeFormat(Time)
             currTime = Time
@@ -136,6 +132,6 @@ class RealAnalyse(DBSet.DBSet):
 if __name__ == '__main__':
     ra = RealAnalyse()
     
-#     proc = mp.Process(target=ra.gogo)
-#     proc.start()
-    print(ra.getSelectQuery())
+    proc = mp.Process(target=ra.gogo)
+    proc.start()
+#     print(ra.getSelectQuery())

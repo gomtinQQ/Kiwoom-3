@@ -101,14 +101,19 @@ class YGGetDbData(DBSet.DBSet):
                 arw.append(dd[i])
         return arw
     
-    def insertGold(self,code):
+    def insertGold(self,code,name):
         
         try:
-            sql = 'insert into '+self.BuyListTable+' (StockCode) values("'+str(code)+'");'
+#             sql = 'insert into '+self.BuyListTable+' (StockCode) values("'+str(code)+'");'
+            
+            sql = self.insertGoldQuery.format(tableName=self.BuyListTable,StockCode=str(code),StockName=str(name))
             self.cursor.execute(sql)
-            sql = 'insert into '+self.BuyListVolumeRotateTable+' (StockCode) values("'+str(code)+'");'
+            
+            sql = self.insertGoldQuery.format(tableName=self.BuyListVolumeRotateTable,StockCode=str(code),StockName=str(name))
+#             sql = 'insert into '+self.BuyListVolumeRotateTable+' (StockCode) values("'+str(code)+'");'
             self.cursor.execute(sql)
-            sql = 'insert into '+self.BuyListRelativeTable+' (StockCode) values("'+str(code)+'");'
+            sql = self.insertGoldQuery.format(tableName=self.BuyListRelativeTable,StockCode=str(code),StockName=str(name))
+#             sql = 'insert into '+self.BuyListRelativeTable+' (StockCode) values("'+str(code)+'");'
             self.cursor.execute(sql)
             
             self.conn.commit()
@@ -120,6 +125,7 @@ class YGGetDbData(DBSet.DBSet):
     
 if __name__ == '__main__':
     cp =YGGetDbData()
+    cp.insertGold('000222')
 #     DB = '../../Sqlite3/BuyList'+str(datetime.datetime.today().date())+'.db'
     DB = cp.BuyListDBToday
     table = cp.BuyListTable
