@@ -120,3 +120,52 @@ class DBSet(object):
     def setCodeNameCoast(self):
         bfd = btsForDashin.btsForReal()
         self.codeNameCoast = bfd.UrlParsing()
+        
+    def getNowTime(self):
+        dd = datetime.datetime.today()
+        hours = dd.hour
+        minute = str(dd.minute)
+        if len(minute)<2:
+            minute ='0'+minute
+        print(str(hours)+minute)
+        return str(hours)+minute
+    
+    def pastAgo(self,time,interval):
+        '''''''''''''''''''''''''''''''''수정해야한다!!!'''
+        print(time)
+        today = datetime.datetime.today()
+        
+        year_to = today.year
+        month_to = today.month
+        day_to = today.day
+        
+        t_hour = (time[:2])
+#         if len(t_hour)<2:
+        print(t_hour)
+        while len(t_hour)<2:
+            t_hour = '0'+t_hour
+        t_minute = int(time[2:])
+        now = datetime.datetime(year=year_to,month=month_to,day=day_to,hour=int(t_hour),minute=t_minute)
+#         now = datetime.timedelta(hours=t_hour,minutes=t_minute)
+        ago = datetime.timedelta(minutes=interval)
+        dd = now-ago
+        hours = dd.hour
+        minute = str(dd.minute)
+        print(now)
+        if len(minute)<2:
+            minute='0'+minute
+        print(str(hours)+minute)
+        return str(hours)+minute
+    
+    def timeFormat(self,time):
+        time=str(time)
+        if len(time) !=4:
+            raise  "타임을 4자리로맞추세요"
+        hour = time[:2]
+        minute = time[2:]
+        
+        
+        
+        
+        
+        

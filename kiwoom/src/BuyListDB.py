@@ -63,7 +63,7 @@ class BuyListDB(DBMake.dbm2):
 
         
         
-
+        print(self.whereQuery)
         return self.whereQuery
 
     def excuteQuery(self,query):
@@ -185,21 +185,21 @@ if __name__ == '__main__':
 
     dbmake = BuyListDB()
     
-    dbmake.getSelectDB()
+#     dbmake.getSelectDB()
     
 #     for Time in range(900,1459):
 #         Time = dbmake.TimeFormat(Time)
-    for i in range(9,15):
-        for j in range(0,60):
-            if j<10:
-                j=str(j)
-                j=j[:0]+str('0')+j[0:]
-            Time=str(i)+str(j)
-            dd = dbmake.excuteQuery(dbmake.getSelectQuery(str(Time),'10',3))
-            if ( len(dd) > 0 ):
-                for code in dd:
-                    print(str(code)+' '+str(Time))
-#     dd = dbmake.getSelectQuery('1005','5','5')
+#     for i in range(9,15):
+#         for j in range(0,60):
+#             if j<10:
+#                 j=str(j)
+#                 j=j[:0]+str('0')+j[0:]
+#             Time=str(i)+str(j)
+#             dd = dbmake.excuteQuery(dbmake.getSelectQuery(str(Time),'10',3))
+#             if ( len(dd) > 0 ):
+#                 for code in dd:
+#                     print(str(code)+' '+str(Time))
+    dd = dbmake.getSelectQuery('1005','5','5')
 #     print(dd)
 #     dd = dbmake.excuteQuery(dbmake.getSelectQuery('1202','5',5))
     

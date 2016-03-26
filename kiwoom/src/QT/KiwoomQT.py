@@ -52,7 +52,8 @@ class Ui_Form(QAxWidget):
         self.YG.setProperties(self.YG.BuyListDBYesterday,self.YG.BuyListTable)
         self.YG.setLog()
         self.btn_login()
-        self.acumulativeVolume=0 #누적거래량 변수
+        self.acumulativeVolume={} #누적거래량 변수
+        self.perPast={}
         self.pastMinute = datetime.datetime.now().minute #현재 분
         self.timeVal={}
     def btn_login(self):        
@@ -105,7 +106,8 @@ class Ui_Form(QAxWidget):
         print(chjang,chjang1,chjang2,chjang3)
         
     def OnReceiveRealData(self,sJongmokCode,sRealType,sRealData):
-
+        
+        
 
 #         print('===========RealData called===========[',datetime.datetime.now(),']')
         sRealData = str(sRealData)
@@ -122,26 +124,46 @@ class Ui_Form(QAxWidget):
         
         volume= self.dynamicCall('GetCommRealData(QString, int )',sRealType,15)
         
-        print(volume) #체결량이랑 거래량인데 어떻게 들어오는지 확인해야함 그래서 거래량만 파싱해야함.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#         print(volume) #체결량이랑 거래량인데 어떻게 들어오는지 확인해야함 그래서 거래량만 파싱해야함.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         
-        self.acumulativeVolume+=volume
+        
+        try:
+            self.acumulativeVolume[sJongmokCode]
+            self.perPast[sJongmokCode]
+        except :
+            self.acumulativeVolume[sJongmokCode]=0
+            self.perPast[sJongmokCode]= str(self.pastMinute)
+        
+        try:
+            self.acumulativeVolume[sJongmokCode]+=int(volume)
+        except :
+            print('거래량 에러',volume)
         self.currMinute = datetime.datetime.now().minute
         
         tim = datetime.datetime.now()
         hour = str(tim.hour)
         minute = str(self.pastMinute)
         
+        if self.perPast[sJongmokCode] !=None:
+            minute =str(self.perPast[sJongmokCode])
+            
         if len(minute)<2:
             minute='0'+minute
         foTime = hour+minute
         
-        self.timeVal[sJongmokCode] = foTime,self.acumulativeVolume
-        
+        self.timeVal[sJongmokCode] = foTime,self.acumulativeVolume[sJongmokCode]
+        if self.perPast[sJongmokCode] ==None:
+            self.perPast[sJongmokCode]=minute
 #         if self.pastMinute != self.currMinute :
-        if minute != str(self.currMinute):
-            self.pastMinute = self.currMinute
-            self.YG.updateVolumeCode(sJongmokCode,self.acumulativeVolume,self.timeVal[sJongmokCode])
-            self.acumulativeVolume =0 #거래량 다시 초기화
+#         print(sJongmokCode, self.perPast[sJongmokCode],self.currMinute)
+        if self.perPast[sJongmokCode] != str(self.currMinute):
+            print(sJongmokCode,self.acumulativeVolume[sJongmokCode],self.perPast[sJongmokCode])
+            self.perPast[sJongmokCode] = str(self.currMinute)
+            
+            self.YG.updateVolumeCode(sJongmokCode,self.acumulativeVolume[sJongmokCode],self.timeVal[sJongmokCode])
+            self.YG.updateRelativeCode(sJongmokCode,CurrPrice,self.timeVal[sJongmokCode])
+            
+            self.acumulativeVolume[sJongmokCode] =0 #거래량 다시 초기화
             self.timeVal[sJongmokCode] = None
             
         self.checkBuyOrSell(foTime,CurrPrice)

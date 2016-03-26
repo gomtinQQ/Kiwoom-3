@@ -117,7 +117,7 @@ class DBMake(DBSet.DBSet):
 #         self.lock.release()
         
     def createDatabase(self,DBName,table):
-        '''���Ŀ� �´� ���̺� ����.'''
+        '''형식에 맞는 테이블 생성.'''
         self.setTable(table)
         self.dbName=DBName
         self.conn = sqlite3.connect(self.dbName)
@@ -140,7 +140,7 @@ class DBMake(DBSet.DBSet):
         self.commit()
     
     def addCodeNameData(self):
-        '''���̺� ������ �ڵ��,�̸� ����'''
+        '''테이블 생성후 코드와,이름 삽입'''
         
 #         if self.codeNameCoast ==None:
         try :
@@ -161,7 +161,7 @@ class DBMake(DBSet.DBSet):
         self.commit()
     
     def addDatePrice(self):
-        '''��¥�� �°�  ������ �����Ѵ�.'''
+        '''날짜에 맞게  종가를 대입한다.'''
         
 #         if self.codeNameCoast ==None:
         try:
@@ -190,13 +190,13 @@ class DBMake(DBSet.DBSet):
                 
                 self.commit()
             i+=1
-            print('code[',code,'] Total[',index,'] (',i,'/',len(self.codeNameCoast),')')
+            print('code[',code,'] Total[',index,'] (',i,'/',len(self.codeNameCoast),') (ClosePrice)')
         
         
             
     def addDateColumn(self):
         
-        '''��¥Į�� ����.'''
+        '''날짜칼럼 삽입.'''
         try:
             self.codeNameCoast
         except AttributeError:
@@ -205,8 +205,8 @@ class DBMake(DBSet.DBSet):
         if self.tableName ==None:
             raise ("Table Name not Assigned")
         
-        code='005930'   #�Ｚ������ �����͸����� ��¥�� �����´�.
-        data = YGGetWebData.getStockPriceData(str(code),self.start_date_closePrice)
+        code='005930'   #126700의 데이터를갖고 날짜를 가져온다.
+        data = YGGetWebData.getStockPriceData(str(code),'2014-09-1')
 #         print(len(self.codeNameCoast),len(data['DateIndex']))
         for index in range(len(data['DateIndex'])):
             try:
@@ -223,8 +223,6 @@ class DBMake(DBSet.DBSet):
         self.commit()
     
     def addVolume(self):
-        
-        '''�ŷ�������'''
         
         if self.codeNameCoast ==None:
             self.setCodeNameCoast()

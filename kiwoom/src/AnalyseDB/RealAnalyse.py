@@ -18,9 +18,64 @@ import YGBuyListDB
 class RealAnalyse(DBSet.DBSet):
 
 
+
+    def getSelectQuery(self,Time="",count="",interval=""):
+        '''set SimulatorTime if not,get the current Time'''
+        
+        if count=="":
+            count=5
+        count=int(count)
+        
+        if interval=="":
+            interval=1
+        interval=int(interval)
+            
+#         print(self.getNowTime(),self.pastAgo(interval))
+        self.tocount = 1
+        
+        if Time=="":
+            Time = int(self.getNowTime())
+            
+        Time=int(Time)
+        currTime = self.getNowTime()
+        beforeTime = self.pastAgo(currTime,interval)
+#         print('beforeTime'+str(beforeTime),interval,currTime)
+        
+        self.whereQuery = 'select StockCode,StockName from kosdaq where "' + \
+            str(beforeTime) + '"<"' + str(currTime) + '"'
+            
+        self.getSelectQuery_proc(count, beforeTime ,interval)
+
+        
+        
+#         print(self.whereQuery)
+        return self.whereQuery
+    
+    def getSelectQuery_proc(self, count, Time,interval):
+        '''
+        get the update query set
+        '''
+
+        if self.tocount == count:
+            self.tocount = 0
+#             print(self.whereQuery)
+            return self.whereQuery
+
+        else:  
+
+#             Time=self.TimeFormat(Time)
+#             currTime = self.TimeFormat(Time)
+            currTime = Time
+            beforeTime =self.pastAgo(currTime, interval)
+ 
+            self.whereQuery = self.whereQuery + ' and "' + \
+                str(beforeTime) + '"<"' + str(currTime) + '"'
+
+            self.tocount += 1
+            self.getSelectQuery_proc(count, beforeTime,interval)
     
     def analyseVolume(self,YG):
-        conn = sqlite3.connect(self.BuyListDBToday)
+        conn = sqlite3.connect(self.BuyListDBYesterday)
         cursor = conn.cursor()
         
         currTime =datetime.datetime.today()
@@ -45,7 +100,7 @@ class RealAnalyse(DBSet.DBSet):
         print(dd[0][0],dd[0][1])
         
     def analysePrice(self):
-        conn = sqlite3.connect(self.BuyListDBToday)
+        conn = sqlite3.connect(self.BuyListDBYesterday)
         cursor = conn.cursor()
         
         currTime =datetime.datetime.today()
@@ -81,5 +136,6 @@ class RealAnalyse(DBSet.DBSet):
 if __name__ == '__main__':
     ra = RealAnalyse()
     
-    proc = mp.Process(target=ra.gogo)
-    proc.start()
+#     proc = mp.Process(target=ra.gogo)
+#     proc.start()
+    print(ra.getSelectQuery())
