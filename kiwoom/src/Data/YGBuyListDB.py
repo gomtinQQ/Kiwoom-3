@@ -27,7 +27,8 @@ class YGGetDbData(DBSet.DBSet):
         super().setProperties(dbName,table)
         
         
-    def updateRelativeCode(self,Code,relative,pastMinute):
+#     def updateRelativeCode(self,Code,relative,pastMinute):
+    def updateRelativeCode(self,Code,relative,timeVal):
 #         tim = datetime.datetime.now()
 #         hour = str(tim.hour)
 #         minute = str(pastMinute)
@@ -46,7 +47,7 @@ class YGGetDbData(DBSet.DBSet):
         foTime = str(timeVal[0])
         
         query = 'update '+self.BuyListVolumeRotateTable+' set "'+foTime+ '" = '+str(info)+' where StockCode = '+str(Code)
-        print(query)
+#         print(query)
         self.cursor.execute(query)
         self.conn.commit()
     

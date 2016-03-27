@@ -17,7 +17,7 @@ import YGBuyListDB
 
 class RealAnalyse(DBSet.DBSet):
 
-    def getSelectQuery(self,Time="",count="",interval=""):
+    def getSelectQuery(self,tableName,Time="",count="",interval=""):
         '''set SimulatorTime if not,get the current Time'''
         
         if count=="":
@@ -38,7 +38,7 @@ class RealAnalyse(DBSet.DBSet):
         currTime = self.getNowTime()
         beforeTime = self.pastAgo(currTime,interval)
         
-        self.whereQuery = 'select StockCode,StockName from kosdaq where "' + \
+        self.whereQuery = 'select StockCode,StockName from '+tableName+' where "' + \
             str(beforeTime) + '"<"' + str(currTime) + '"'
             
         self.getSelectQuery_proc(count, beforeTime ,interval)
@@ -74,23 +74,14 @@ class RealAnalyse(DBSet.DBSet):
         conn = sqlite3.connect(self.BuyListDBYesterday)
         cursor = conn.cursor()
         
-        currTime =datetime.datetime.today()
-        currMin = currTime.minute
-        one_past = int(currMin)-1
         
-        currHour = currTime.hour
-        
-        if currMin <2:
-            currMin='0'+str(currMin)
-        toTime = str(currHour)+str(currMin)
-        beTime = str(currHour)+str(one_past)
-        toTime='901'
-        beTime='900'
-        
-        query="select \""+str(beTime)+"\",\""+str(toTime)+ "\" from "+self.BuyListVolumeRotateTable+" where StockCode = 227950"
+#         query="select \""+str(beTime)+"\",\""+str(toTime)+ "\" from "+self.BuyListVolumeRotateTable+" where StockCode = 227950"
+        query = self.getSelectQuery(self.BuyListVolumeRotateTable,count=2)
+#         print(query)
+        print(query)
         cursor.execute(query)
         dd = cursor.fetchall()
-        
+        print(dd)
         if dd[0][0]<dd[0][1]:
             YG.updateBuy(227950)
         print(dd[0][0],dd[0][1])
@@ -110,7 +101,8 @@ class RealAnalyse(DBSet.DBSet):
         toTime = str(currHour)+str(currMin)
         beTime = str(currHour)+str(one_past)
         
-        query="select \""+str(beTime)+"\" from "+self.BuyListRelativeTable
+#         query="select \""+str(beTime)+"\" from "+self.BuyListRelativeTable
+        query = self.getSelectQuery(self.BuyListRelativeTable, count=2)
         
         cursor.execute(query)
         dd = cursor.fetchall()
@@ -134,4 +126,4 @@ if __name__ == '__main__':
     
     proc = mp.Process(target=ra.gogo)
     proc.start()
-#     print(ra.getSelectQuery())
+#     print(ra.getSelectQuery('tableName'))
