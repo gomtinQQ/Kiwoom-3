@@ -144,7 +144,10 @@ class DBSet(object):
         month_to = today.month
         day_to = today.day
         
+        if len(time)<4:
+            time='0'+time
         t_hour = (time[:2])
+        print(t_hour)
 #         if len(t_hour)<2:
         while len(t_hour)<2:
             t_hour = '0'+t_hour

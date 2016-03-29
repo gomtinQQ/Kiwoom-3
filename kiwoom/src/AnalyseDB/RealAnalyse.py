@@ -62,6 +62,7 @@ class RealAnalyse(DBSet.DBSet):
 #             Time=self.TimeFormat(Time)
 #             currTime = self.TimeFormat(Time)
             currTime = Time
+            print(currTime,interval)
             beforeTime =self.pastAgo(currTime, interval)
  
             self.whereQuery = self.whereQuery + ' and "' + \
@@ -82,43 +83,35 @@ class RealAnalyse(DBSet.DBSet):
         cursor.execute(query)
         dd = cursor.fetchall()
         print(dd)
-        if dd[0][0]<dd[0][1]:
-            YG.updateBuy(227950)
+#         if dd[0][0]<dd[0][1]:
         print(dd[0][0],dd[0][1])
+        for i in range(len(dd)):
+            YG.updateBuy(dd[i][0])
         
-    def analysePrice(self):
+    def analysePrice(self,YG):
         conn = sqlite3.connect(self.BuyListDBYesterday)
         cursor = conn.cursor()
         
-        currTime =datetime.datetime.today()
-        currMin = currTime.minute
-        one_past = int(currMin)-1
-        
-        currHour = currTime.hour
-        
-        if currMin <2:
-            currMin='0'+str(currMin)
-        toTime = str(currHour)+str(currMin)
-        beTime = str(currHour)+str(one_past)
-        
-#         query="select \""+str(beTime)+"\" from "+self.BuyListRelativeTable
         query = self.getSelectQuery(self.BuyListRelativeTable, count=2)
         
         cursor.execute(query)
         dd = cursor.fetchall()
 #         print(dd)
+        for i in range(len(dd)):
+            YG.updateBuy(dd[i][0])
         
     def gogo(self):
-        try:
-            YG = YGBuyListDB.YGGetDbData()
-            YG.setProperties(YG.BuyListDBToday,YG.BuyListRelativeTable)
-            while(True):
+        while(True):
+            try:
+                YG = YGBuyListDB.YGGetDbData()
+                YG.setProperties(YG.BuyListDBYesterday,YG.BuyListRelativeTable)
                 self.analyseVolume(YG)
-                self.analysePrice()
+                self.analysePrice(YG)
                 time.sleep(0.5)
                 
-        except Exception:
-            self.tracebackLog()
+            except Exception:
+                self.tracebackLog()
+                continue
                 
             
 if __name__ == '__main__':
