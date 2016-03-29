@@ -62,7 +62,7 @@ class RealAnalyse(DBSet.DBSet):
 #             Time=self.TimeFormat(Time)
 #             currTime = self.TimeFormat(Time)
             currTime = Time
-            print(currTime,interval)
+#             print(currTime,interval)
             beforeTime =self.pastAgo(currTime, interval)
  
             self.whereQuery = self.whereQuery + ' and "' + \
@@ -82,9 +82,9 @@ class RealAnalyse(DBSet.DBSet):
         print(query)
         cursor.execute(query)
         dd = cursor.fetchall()
-        print(dd)
+#         print(dd)
 #         if dd[0][0]<dd[0][1]:
-        print(dd[0][0],dd[0][1])
+#         print(dd[0][0],dd[0][1])
         for i in range(len(dd)):
             YG.updateBuy(dd[i][0])
         
@@ -100,23 +100,29 @@ class RealAnalyse(DBSet.DBSet):
         for i in range(len(dd)):
             YG.updateBuy(dd[i][0])
         
-    def gogo(self):
+    def gogo(self,YG=""):
+        
+        print(YG)
+        if YG =="":
+            YG = YGBuyListDB.YGGetDbData()
+            YG.setProperties(YG.BuyListDBYesterday,YG.BuyListRelativeTable)
         while(True):
             try:
-                YG = YGBuyListDB.YGGetDbData()
-                YG.setProperties(YG.BuyListDBYesterday,YG.BuyListRelativeTable)
                 self.analyseVolume(YG)
                 self.analysePrice(YG)
                 time.sleep(0.5)
                 
             except Exception:
                 self.tracebackLog()
+                break
                 continue
                 
             
 if __name__ == '__main__':
     ra = RealAnalyse()
+    df =[]
+    df.append("YG")
     
-    proc = mp.Process(target=ra.gogo)
+    proc = mp.Process(target=ra.gogo, args=("YG",) )
     proc.start()
 #     print(ra.getSelectQuery('tableName'))
