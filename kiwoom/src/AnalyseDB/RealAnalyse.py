@@ -104,6 +104,7 @@ class RealAnalyse(DBSet.DBSet):
         
         print(YG)
         if YG =="":
+            print('YGMAKING')
             YG = YGBuyListDB.YGGetDbData()
             YG.setProperties(YG.BuyListDBYesterday,YG.BuyListRelativeTable)
         while(True):
@@ -114,15 +115,16 @@ class RealAnalyse(DBSet.DBSet):
                 
             except Exception:
                 self.tracebackLog()
-                break
                 continue
+                break
                 
             
 if __name__ == '__main__':
     ra = RealAnalyse()
     df =[]
     df.append("YG")
-    
-    proc = mp.Process(target=ra.gogo, args=("YG",) )
+    YG = YGBuyListDB.YGGetDbData()
+    YG.setProperties(YG.BuyListDBYesterday,YG.BuyListRelativeTable)
+    proc = mp.Process(target=ra.gogo, args=(YG,) )
     proc.start()
 #     print(ra.getSelectQuery('tableName'))
