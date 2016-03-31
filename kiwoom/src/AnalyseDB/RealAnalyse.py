@@ -17,7 +17,7 @@ import YGBuyListDB
 
 class RealAnalyse(DBSet.DBSet):
 
-    def getSelectQuery(self,tableName,Time="",count="",interval=""):
+    def getSelectQuery(self,tableName,buySell,Time="",count="",interval=""):
         '''set SimulatorTime if not,get the current Time'''
         
         if count=="":
@@ -27,8 +27,6 @@ class RealAnalyse(DBSet.DBSet):
         if interval=="":
             interval=1
         interval=int(interval)
-            
-#         print(self.getNowTime(),self.pastAgo(interval))
         self.tocount = 1
         
         if Time=="":
@@ -38,53 +36,46 @@ class RealAnalyse(DBSet.DBSet):
         currTime = self.getNowTime()
         beforeTime = self.pastAgo(currTime,interval)
         
+        op=">"
+        if buySell =="B" or buySell =="BUY":
+            op = "<"
+        
+#         self.whereQuery = 'select StockCode,StockName from '+tableName+' where "' + \
+#             str(beforeTime) + '"<"' + str(currTime) + '"'
         self.whereQuery = 'select StockCode,StockName from '+tableName+' where "' + \
-            str(beforeTime) + '"<"' + str(currTime) + '"'
+            str(beforeTime) +'"'+op+'"' + str(currTime) + '"'
             
-        self.getSelectQuery_proc(count, beforeTime ,interval)
-
-        
-        
-#         print(self.whereQuery)
+        self.getSelectQuery_proc(count, beforeTime ,interval,op)
         return self.whereQuery
     
-    def getSelectQuery_proc(self, count, Time,interval):
+    def getSelectQuery_proc(self, count, Time,interval,op):
         '''
         get the update query set
         '''
 
         if self.tocount == count:
             self.tocount = 0
-#             print(self.whereQuery)
             return self.whereQuery
 
-        else:  
-#             Time=self.TimeFormat(Time)
-#             currTime = self.TimeFormat(Time)
+        else:
             currTime = Time
-#             print(currTime,interval)
             beforeTime =self.pastAgo(currTime, interval)
  
             self.whereQuery = self.whereQuery + ' and "' + \
-                str(beforeTime) + '"<"' + str(currTime) + '"'
+                str(beforeTime) +'"'+ op +'"' + str(currTime) + '"'
 
             self.tocount += 1
-            self.getSelectQuery_proc(count, beforeTime,interval)
+            self.getSelectQuery_proc(count, beforeTime,interval,op)
     
     def analyseVolume(self,YG):
         conn = sqlite3.connect(self.BuyListDBYesterday)
         cursor = conn.cursor()
         
-        
-#         query="select \""+str(beTime)+"\",\""+str(toTime)+ "\" from "+self.BuyListVolumeRotateTable+" where StockCode = 227950"
-        query = self.getSelectQuery(self.BuyListVolumeRotateTable,count=2)
-#         print(query)
+        query = self.getSelectQuery(self.BuyListVolumeRotateTable,count=2,buySell="SELL")
         print(query)
         cursor.execute(query)
         dd = cursor.fetchall()
-#         print(dd)
-#         if dd[0][0]<dd[0][1]:
-#         print(dd[0][0],dd[0][1])
+
         for i in range(len(dd)):
             YG.updateBuy(dd[i][0])
         
@@ -92,11 +83,11 @@ class RealAnalyse(DBSet.DBSet):
         conn = sqlite3.connect(self.BuyListDBYesterday)
         cursor = conn.cursor()
         
-        query = self.getSelectQuery(self.BuyListRelativeTable, count=2)
+        query = self.getSelectQuery(self.BuyListRelativeTable, count=2,buySell="SELL")
         
         cursor.execute(query)
         dd = cursor.fetchall()
-#         print(dd)
+
         for i in range(len(dd)):
             YG.updateBuy(dd[i][0])
         

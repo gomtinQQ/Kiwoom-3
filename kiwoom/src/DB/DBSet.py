@@ -155,7 +155,9 @@ class DBSet(object):
 #         now = datetime.timedelta(hours=t_hour,minutes=t_minute)
         ago = datetime.timedelta(minutes=interval)
         dd = now-ago
-        hours = dd.hour
+        hours = str(dd.hour)
+        if len(hours)<2:
+            hours = '0'+hours
         minute = str(dd.minute)
         if len(minute)<2:
             minute='0'+minute
