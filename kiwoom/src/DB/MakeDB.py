@@ -3,6 +3,7 @@ import multiprocessing as mp
 import sqlite3
 import configparser
 import sys,os
+from _sqlite3 import OperationalError
 sys.path.append('../')
 sys.path.append('../Data')
 import YGGetWebData
@@ -216,10 +217,13 @@ class DBMake(DBSet.DBSet):
 #                 print(Date)
                 query1 = "alter table "+self.tableName+" add "+str(Date)+" INTEGER;";
                 self.cursor.execute(query1)
+            except OperationalError:
+                print('날짜컬럼 생성하다 중복에러 (상관없음)')
+                continue
             except Exception:
                 self.tracebackLog()
 #                 self.PrintException()
-                continue
+#                 continue
         self.commit()
     
     def addVolume(self):

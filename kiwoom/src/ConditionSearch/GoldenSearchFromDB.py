@@ -40,6 +40,9 @@ class GoldenSearchFromDB1():
     #             print(index,dd['Foreign'][index])
     #             print(dd['Foreign'][index],index)
                 Foreign = int(dd['Foreign'][index])
+                if str(dd['Company'][index]) == 'nan':
+                    print('non! ' ,code)
+#                 print(dd['Company'][index])
                 Company = int(dd['Company'][index])
                 
                 if Foreign <=0:
@@ -119,6 +122,8 @@ class GoldenSearchFromDB1():
         
         
         Gold = self.Golden(Data)
+        if Gold == None :   #골든크로스 안뜸
+            return
         
         try:
             dd =Gold.to_datetime()
@@ -128,7 +133,8 @@ class GoldenSearchFromDB1():
             
             if end<dd and self.keepBuying(Code,Data,2):
                 
-                print('keepBuying~ Code',Code,' When: ',dd ,end="")
+#                 print('keepBuying~ Code',Code,' When: ',dd ,end="")
+                print('keepBuying~ Code',Code,' When: ',dd )
                 self.goldenCount+=1
                 self.keepbuy+=1
                 YG.debug('keepBuying ~ [%s'%Code+'] DATE [ %s'%dd+']')
@@ -138,14 +144,15 @@ class GoldenSearchFromDB1():
                 
             elif end<dd and self.VolumeCheck(Data,3,20):
                 
-                print('Volume!~ Code',Code,' When: ',dd ,end="")
+#                 print('Volume!~ Code',Code,' When: ',dd ,end="")
+                print('Volume!~ Code',Code,' When: ',dd )
                 self.goldenCount+=1
                 self.volcheck+=1
                 YG.debug('Volume!~ [%s'%Code+'] DATE [ %s'%dd+']')
                 
                 if DBLog:
                     bld.insertGold(str(Code),name)
-                
+        
         except Exception as a :
             print(traceback.print_exc())
 #             YG.debug(traceback.print_exc()) 안먹히는 이유를 모르겠음. 

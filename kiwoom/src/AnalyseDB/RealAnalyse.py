@@ -39,9 +39,6 @@ class RealAnalyse(DBSet.DBSet):
         op=">"
         if buySell =="B" or buySell =="BUY":
             op = "<"
-        
-#         self.whereQuery = 'select StockCode,StockName from '+tableName+' where "' + \
-#             str(beforeTime) + '"<"' + str(currTime) + '"'
         self.whereQuery = 'select StockCode,StockName from '+tableName+' where "' + \
             str(beforeTime) +'"'+op+'"' + str(currTime) + '"'
             
@@ -90,6 +87,20 @@ class RealAnalyse(DBSet.DBSet):
 
         for i in range(len(dd)):
             YG.updateBuy(dd[i][0])
+    
+    def checkCodeSet(self,YG,db,tableName,BS):
+        conn = sqlite3.connect(db)
+        cursor = conn.cursor()
+        
+        query = self.getSelectQuery(tableName, buySell=BS,count=2)
+        
+        cursor.execute(query)
+        buyListCode= cursor.fetchall()
+        
+        
+        for i in range(len(buyListCode)): 
+            YG.updateBuy(buyListCode[i][0])
+        
         
     def gogo(self,YG=""):
         
@@ -100,14 +111,21 @@ class RealAnalyse(DBSet.DBSet):
             YG.setProperties(YG.BuyListDBYesterday,YG.BuyListRelativeTable)
         while(True):
             try:
-                self.analyseVolume(YG)
-                self.analysePrice(YG)
+#                 self.analyseVolume(YG)
+#                 self.analysePrice(YG)
+                self.checkCodeSet(YG,self.BuyListDBYesterday, self.BuyListRelativeTable,'BUY' )
+                self.checkCodeSet(YG,self.BuyListDBYesterday, self.BuyListVolumeRotateTable,'BUY' )
+                
+                self.checkCodeSet(YG,self.BuyListDBYesterday, self.BuyListRelativeTable,'SELL' )
+                self.checkCodeSet(YG,self.BuyListDBYesterday, self.BuyListVolumeRotateTable,'SELL' )
+                
+                
                 time.sleep(0.5)
                 
             except Exception:
                 self.tracebackLog()
-                continue
                 break
+                continue
                 
             
 if __name__ == '__main__':
@@ -118,4 +136,4 @@ if __name__ == '__main__':
     YG.setProperties(YG.BuyListDBYesterday,YG.BuyListRelativeTable)
     proc = mp.Process(target=ra.gogo, args=(YG,) )
     proc.start()
-#     print(ra.getSelectQuery('tableName'))
+#     print(ra.getSelectQuery('tableName','BUY',interval=60,count=1))
