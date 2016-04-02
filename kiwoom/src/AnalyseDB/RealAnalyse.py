@@ -98,8 +98,18 @@ class RealAnalyse(DBSet.DBSet):
         buyListCode= cursor.fetchall()
         
         
-        for i in range(len(buyListCode)): 
-            YG.updateBuy(buyListCode[i][0])
+        try:
+            if BS =="BUY":
+                for i in range(len(buyListCode)): 
+                    YG.updateBuy(buyListCode[i][0])
+            elif BS == "SELL":
+                for i in range(len(buyListCode)):
+                    YG.updateSell(buyListCode[i][0])
+                    
+            else :
+                print('Select correctly Buy or Sell ')
+        except :
+            self.tracebackLog()
         
         
     def gogo(self,YG=""):

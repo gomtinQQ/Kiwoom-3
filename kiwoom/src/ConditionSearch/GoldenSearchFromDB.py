@@ -39,9 +39,11 @@ class GoldenSearchFromDB1():
     #             print(dd)
     #             print(index,dd['Foreign'][index])
     #             print(dd['Foreign'][index],index)
+                if str(dd['Foreign'][index]) == 'nan':
+                    print('None Foreign! ' ,code)
                 Foreign = int(dd['Foreign'][index])
                 if str(dd['Company'][index]) == 'nan':
-                    print('non! ' ,code)
+                    print('None Company! ' ,code)
 #                 print(dd['Company'][index])
                 Company = int(dd['Company'][index])
                 

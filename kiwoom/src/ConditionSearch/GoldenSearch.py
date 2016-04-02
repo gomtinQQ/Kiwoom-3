@@ -103,6 +103,8 @@ def Search(Code,date,end,timeOut=""):
 #     print(Data['Date'])
     Gold = Golden(Data)
 
+    if Gold == None:
+        return
     
     try:
         dd =Gold.to_datetime()
