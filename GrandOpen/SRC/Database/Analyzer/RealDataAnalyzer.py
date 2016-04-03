@@ -98,6 +98,7 @@ class RealAnalyse(DBSet.DBSet):
         
         
         try:
+            print(query)
             if BS =="BUY":
                 for i in range(len(buyListCode)): 
                     YG.updateBuy(buyListCode[i][0])

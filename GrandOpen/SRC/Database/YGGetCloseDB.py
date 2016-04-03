@@ -15,7 +15,7 @@ import datetime
 class YGGetCloseDB(MakeDB.DBMake):
     
     def setProperties(self,dbName="",tableName=""):
-        DB= '../../../DATABASE/VolumeForeignCompany.db'
+        DB= '../DATABASE/VolumeForeignCompany.db'
         if dbName !="":
             DbName=dbName
         self.Table='ClosePrice'
