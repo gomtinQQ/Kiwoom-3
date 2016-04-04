@@ -46,13 +46,21 @@ class Ui_Form(QAxWidget):
         self.connect(self, SIGNAL("OnReceiveRealData(QString, QString, QString)"),self.OnReceiveRealData)        
         self.YG = YGBuyListDB.YGGetDbData()
         
+        
+        d = RealDataAnalyzer.RealAnalyse()
+        
         self.YG.setProperties(self.YG.BuyListDBYesterday,self.YG.BuyListTable)
+#         self.YG.setProperties(self.YG.BuyListDBToday,self.YG.BuyListTable)
         self.YG.setLog()
         self.btn_login()
         self.acumulativeVolume={} #누적거래량 변수
         self.perPast={}
         self.pastMinute = datetime.datetime.now().minute #현재 분
         self.timeVal={}
+        
+        proc = mp.Process(target=d.gogo,args=(self.YG,))
+        proc.start()
+        
     def btn_login(self):        
         ret = self.dynamicCall("CommConnect()") 
         
@@ -287,9 +295,7 @@ class Ui_Form(QAxWidget):
 
 if __name__ == "__main__":
     
-    d = RealDataAnalyzer.RealAnalyse()
-    proc = mp.Process(target=d.gogo)
-    proc.start()
+
     
     
     app = QtGui.QApplication(sys.argv)

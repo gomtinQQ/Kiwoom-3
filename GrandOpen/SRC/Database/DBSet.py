@@ -113,7 +113,7 @@ class DBSet(object):
         
     def setProperties(self,dbName,table):
         self.dbName=dbName
-        print(self.dbName)
+#         print(self.dbName)
         self.conn = sqlite3.connect(self.dbName)
         self.cursor = self.conn.cursor()
         self.setTable(table)
@@ -129,10 +129,10 @@ class DBSet(object):
         dd = datetime.datetime.today()
         hours = str(dd.hour)
         
-        if len(hours)<2:
-            hours = '0'+hours
+#         if len(hours)<2:
+#             hours = '0'+hours
             
-        minute = str(dd.minute)
+        minute = str(dd.minute-1)
         if len(minute)<2:
             minute ='0'+minute
             
@@ -157,8 +157,8 @@ class DBSet(object):
         ago = datetime.timedelta(minutes=interval)
         dd = now-ago
         hours = str(dd.hour)
-        if len(hours)<2:
-            hours = '0'+hours
+#         if len(hours)<2:
+#             hours = '0'+hours
         minute = str(dd.minute)
         if len(minute)<2:
             minute='0'+minute

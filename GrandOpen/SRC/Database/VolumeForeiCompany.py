@@ -65,7 +65,7 @@ class VolumeForeiCompany(MakeDB.DBMake):
 #         Company.start()
 
     def addUntilClose(self):
-        self.setProperties(self.ClosePriceDB,self.ClosePriceTable)
+        self.setProperties(self.ForeignerDB,self.ClosePriceTable)
         self.addDateColumn() 
         self.addDatePrice()
         

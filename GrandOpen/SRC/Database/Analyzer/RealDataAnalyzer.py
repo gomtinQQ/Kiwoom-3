@@ -87,47 +87,60 @@ class RealAnalyse(DBSet.DBSet):
         for i in range(len(dd)):
             YG.updateBuy(dd[i][0])
     
-    def checkCodeSet(self,YG,db,tableName,BS):
-        conn = sqlite3.connect(db)
-        cursor = conn.cursor()
-        
-        query = self.getSelectQuery(tableName, buySell=BS,count=2)
-        
-        cursor.execute(query)
-        buyListCode= cursor.fetchall()
-        
-        
-        try:
-            print(query)
+    def checkCodeSet(self,YG,connection,Cursor,tableName,BS):
+        try:            
+            conn = connection
+            cursor = Cursor
+
             if BS =="BUY":
+                query = self.getSelectQuery(tableName, buySell=BS,count=3,interval=1)
+            
+                cursor.execute(query)
+                buyListCode= cursor.fetchall()
+#                 print(query)
                 for i in range(len(buyListCode)): 
-                    YG.updateBuy(buyListCode[i][0])
+                    YG.updateBuy(buyListCode[i][0],cursor,conn)
+                    print(buyListCode[i][0])
+                    
             elif BS == "SELL":
+                query = self.getSelectQuery(tableName, buySell=BS,count=2,interval=3)
+            
+                cursor.execute(query)
+                buyListCode= cursor.fetchall()
+#                 print(query)
                 for i in range(len(buyListCode)):
                     YG.updateSell(buyListCode[i][0])
+                    print(buyListCode[i][0])
                     
             else :
                 print('Select correctly Buy or Sell ')
+                
+#             print(query)
+#             print(buyListCode,BS)
         except :
             self.tracebackLog()
         
         
     def gogo(self,YG=""):
         
-        print(YG)
+#         print(YG)
         if YG =="":
             print('YGMAKING')
             YG = YGBuyListDB.YGGetDbData()
-            YG.setProperties(YG.BuyListDBYesterday,YG.BuyListRelativeTable)
+            YG.setProperties(YG.BuyListDBToday,YG.BuyListRelativeTable)
+            
+        conn = sqlite3.connect(self.BuyListDBYesterday)
+        cursor = conn.cursor()
+        
         while(True):
             try:
 #                 self.analyseVolume(YG)
 #                 self.analysePrice(YG)
-                self.checkCodeSet(YG,self.BuyListDBYesterday, self.BuyListRelativeTable,'BUY' )
-                self.checkCodeSet(YG,self.BuyListDBYesterday, self.BuyListVolumeRotateTable,'BUY' )
+                self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'BUY' )
+                self.checkCodeSet(YG,conn,cursor, self.BuyListVolumeRotateTable,'BUY' )
                 
-                self.checkCodeSet(YG,self.BuyListDBYesterday, self.BuyListRelativeTable,'SELL' )
-                self.checkCodeSet(YG,self.BuyListDBYesterday, self.BuyListVolumeRotateTable,'SELL' )
+                self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'SELL' )
+                self.checkCodeSet(YG,conn,cursor, self.BuyListVolumeRotateTable,'SELL' )
                 
                 
                 time.sleep(0.5)
@@ -140,11 +153,9 @@ class RealAnalyse(DBSet.DBSet):
             
 if __name__ == '__main__':
     ra = RealAnalyse()
-    df =[]
-    df.append("YG")
     YG = YGBuyListDB.YGGetDbData()
 #     print(YG.BuyListDBYesterday,YG.BuyListRelativeTable)
-    YG.setProperties(YG.BuyListDBYesterday,YG.BuyListRelativeTable)
+    YG.setProperties(YG.BuyListDBToday,YG.BuyListRelativeTable)
     proc = mp.Process(target=ra.gogo, args=(YG,) ) 
     proc.start()
 #     print(ra.getSelectQuery('tableName','BUY',interval=60,count=1))
