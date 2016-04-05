@@ -127,7 +127,7 @@ class RealAnalyse(DBSet.DBSet):
         if YG =="":
             print('YGMAKING')
             YG = YGBuyListDB.YGGetDbData()
-            YG.setProperties(YG.BuyListDBToday,YG.BuyListRelativeTable)
+            YG.setProperties(YG.BuyListDBYesterday,YG.BuyListRelativeTable)
             
         conn = sqlite3.connect(self.BuyListDBYesterday)
         cursor = conn.cursor()
