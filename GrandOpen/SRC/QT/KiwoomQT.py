@@ -297,15 +297,16 @@ class Ui_Form(QAxWidget):
 if __name__ == "__main__":
     
 
-       
+
     d = RealDataAnalyzer.RealAnalyse()
     YG = YGBuyListDB.YGGetDbData()
     YG.setProperties(YG.BuyListDBYesterday,YG.BuyListTable)
     YG.setLog()
     
-    proc = mp.Process(target=d.gogo )
-    
-    proc.start()
+#     proc = mp.Process(target=d.gogo(YG), args=(YG,))
+#     proc.start()
+    d.setYG(YG)
+    d.start() 
     
     app = QtGui.QApplication(sys.argv)
     Form = QtGui.QWidget()
