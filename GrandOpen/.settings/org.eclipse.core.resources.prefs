@@ -9,5 +9,6 @@ encoding//SRC/Database/YGBuyListDB.py=utf-8
 encoding//SRC/Database/YGGetCloseDB.py=utf-8
 encoding//SRC/Graph/DrawGraph.py=utf-8
 encoding//SRC/QT/KiwoomQT.py=utf-8
+encoding//SRC/TEST/DBConnectionTest.py=utf-8
 encoding//SRC/WEB/YGGetWebData.py=utf-8
 encoding//SRC/WEB/btsForDaily.py=utf-8

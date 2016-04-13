@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 import time
 import datetime
 import sys,logging
+from ipyparallel.controller.sqlitedb import sqlite3
 sys.path.append("../")
 sys.path.append("../Database")
 import statistics
@@ -48,7 +49,6 @@ class Ui_Form(QAxWidget):
         self.YG=YG
         
         
-#         d = RealDataAnalyzer.RealAnalyse()
         
 #         self.YG.setProperties(self.YG.BuyListDBYesterday,self.YG.BuyListTable)
 #         self.YG.setProperties(self.YG.BuyListDBToday,self.YG.BuyListTable)
@@ -59,7 +59,9 @@ class Ui_Form(QAxWidget):
         self.pastMinute = datetime.datetime.now().minute #현재 분
         self.timeVal={}
         
-#         proc = mp.Process(target=d.gogo,args=(self.YG,))
+        print("=============initializing completed============================")
+#         ra = RealDataAnalyzer.RealAnalyse()
+#         proc = mp.Process(target=ra.gogo,args=(self.YG,))
 #         proc.start()
 
         
@@ -298,17 +300,27 @@ class Ui_Form(QAxWidget):
 if __name__ == "__main__":
     
 
-
-#     d = RealDataAnalyzer.RealAnalyse()
+        
+    
     YG = YGBuyListDB.YGGetDbData()
     YG.setProperties(YG.BuyListDBYesterday,YG.BuyListTable)
     YG.setLog()
+
+    q = mp.Queue
+    for conn in range(5):
+        q.put(sqlite3.connect(YG.BuyListDBYesterday))
+        
+    YG.setQueue(q)
     
-#     proc = mp.Process(target=d.gogo(YG), args=(YG,))
-#     proc.start()
+        
+    ra = RealDataAnalyzer.RealAnalyse()
+    ra.setYG(YG)
+    proc = mp.Process(target=ra.gogo)
+    proc.start()
+#     ra.gogo(YG)
+    
 #     d.setYG(YG)
 #     d.start() 
-    
     app = QtGui.QApplication(sys.argv)
     Form = QtGui.QWidget()
     ui = Ui_Form(YG)

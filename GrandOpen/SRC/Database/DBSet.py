@@ -171,6 +171,9 @@ class DBSet(object):
         hour = time[:2]
         minute = time[2:]
         
+    def setQueue(self,q):
+        self.dbQueue=q
+        
         
         
         

@@ -14,7 +14,7 @@ import multiprocessing as mp
 from SRC.Database import DBSet
 from SRC.Database import YGBuyListDB
 
-class RealAnalyse(DBSet.DBSet,mp.Process):
+class RealAnalyse(DBSet.DBSet):
 
     def getSelectQuery(self,tableName,buySell,Time="",count="",interval=""):
         '''set SimulatorTime if not,get the current Time'''
@@ -123,7 +123,7 @@ class RealAnalyse(DBSet.DBSet,mp.Process):
     def setYG(self,YG):
         self.YG=YG
     
-    def run(self,YG=""):
+    def gogo(self):
         
 #         print(YG)
         YG=self.YG
@@ -161,8 +161,8 @@ if __name__ == '__main__':
     YG.setProperties(YG.BuyListDBToday,YG.BuyListRelativeTable)
     
     ra.setYG(YG)
-#     proc = mp.Process(target=ra.gogo, args=(YG,) ) 
-#     proc.start()
+    proc = mp.Process(target=ra.gogo) 
+    proc.start()
 
-    ra.start()
+#     ra.start()
 #     print(ra.getSelectQuery('tableName','BUY',interval=60,count=1))
