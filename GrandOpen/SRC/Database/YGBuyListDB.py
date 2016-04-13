@@ -54,19 +54,23 @@ class YGGetDbData(DBSet.DBSet):
     def updateBuy(self,code,cursor,conn):
         
         code = str(code)
-        
+
+        '''사기전 현재 보유상태 체크'''        
         selQuery = 'select BUYSELL from '+self.BuyListTable+' where StockCode = '+code
         
-        buySell = cursor.execute(selQuery)
-        
-        if str(buySell[0]) == "N":
-        
+        cursor.execute(selQuery)
+        buySell = cursor.fetchall()
+
+#         print(str(buySell[0][0]))
+        if str(buySell[0][0]) == "N":
+            '''미보유 일때만 구매'''
             query = 'update '+self.BuyListTable+' set "BUYSELL"="B" where StockCode = '+code
         
             cursor.execute(query)
             conn.commit()
         else :
-            print(buySell)
+#             print(buySell)
+            return
     
     def buyStock(self,code,time,CurrPrice):
         '''update BuyList set '900'=0 where StockCode = 19210'''

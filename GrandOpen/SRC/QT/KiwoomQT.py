@@ -85,6 +85,10 @@ class Ui_Form(QAxWidget):
     def OnEventConnect(self, nErrCode):
         if nErrCode == 0:
             print("서버에 연결 되었습니다...")
+            ra = RealDataAnalyzer.RealAnalyse()
+            ra.setDB(YG.BuyListDBYesterday)
+            proc = mp.Process(target=ra.gogo)
+            proc.start()
 #             code = self.kiwoom.connect(self.kiwoom, SIGNAL("OnEventConnect(int)"), self.OnEventConnect())
 #             self.get10001Info()
             self.setReal()
@@ -305,18 +309,13 @@ if __name__ == "__main__":
     YG = YGBuyListDB.YGGetDbData()
     YG.setProperties(YG.BuyListDBYesterday,YG.BuyListTable)
     YG.setLog()
-
-    q = mp.Queue
-    for conn in range(5):
-        q.put(sqlite3.connect(YG.BuyListDBYesterday))
-        
-    YG.setQueue(q)
+#     YG.setQueue(q)
     
         
-    ra = RealDataAnalyzer.RealAnalyse()
-    ra.setYG(YG)
-    proc = mp.Process(target=ra.gogo)
-    proc.start()
+#     ra = RealDataAnalyzer.RealAnalyse()
+#     ra.setDB(YG.BuyListDBYesterday)
+#     proc = mp.Process(target=ra.gogo)
+#     proc.start()
 #     ra.gogo(YG)
     
 #     d.setYG(YG)

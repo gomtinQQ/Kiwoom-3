@@ -100,7 +100,7 @@ class RealAnalyse(DBSet.DBSet):
 #                 print(query)
                 for i in range(len(buyListCode)): 
                     YG.updateBuy(buyListCode[i][0],cursor,conn)
-                    print(buyListCode[i][0])
+#                     print(buyListCode[i][0])
                     
             elif BS == "SELL":
                 query = self.getSelectQuery(tableName, buySell=BS,count=2,interval=3)
@@ -110,7 +110,7 @@ class RealAnalyse(DBSet.DBSet):
 #                 print(query)
                 for i in range(len(buyListCode)):
                     YG.updateSell(buyListCode[i][0])
-                    print(buyListCode[i][0])
+#                     print(buyListCode[i][0])
                     
             else :
                 print('Select correctly Buy or Sell ')
@@ -120,19 +120,21 @@ class RealAnalyse(DBSet.DBSet):
         except :
             self.tracebackLog()
         
-    def setYG(self,YG):
-        self.YG=YG
+    def setDB(self,DB):
+        self.DB= DB
     
     def gogo(self):
         
 #         print(YG)
-        YG=self.YG
-        if YG =="":
-            print('YGMAKING')
-            YG = YGBuyListDB.YGGetDbData()
-            YG.setProperties(YG.BuyListDBYesterday,YG.BuyListRelativeTable)
-            
+#         YG=self.YG
+#         if YG =="":
+#             print('YGMAKING')
+        YG = YGBuyListDB.YGGetDbData()
+        YG.setProperties(self.DB,YG.BuyListRelativeTable)
+        
+#         conn = q
         conn = sqlite3.connect(self.BuyListDBYesterday)
+        print(conn)
         cursor = conn.cursor()
         
         while(True):
