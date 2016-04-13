@@ -111,6 +111,15 @@ class RealAnalyse(DBSet.DBSet):
                 for i in range(len(buyListCode)):
                     YG.updateSell(buyListCode[i][0])
 #                     print(buyListCode[i][0])
+            elif BS == "END":
+                
+                query = 'select StockCode from '+tableName+' where "BUYSELL"="Y"'
+                cursor.execute(query)
+                buyListCode = cursor.fetchall()
+                
+                for i in range(len(buyListCode)):
+                    YG.updateSell(buyListCode[i][0])
+                
                     
             else :
                 print('Select correctly Buy or Sell ')
@@ -132,12 +141,11 @@ class RealAnalyse(DBSet.DBSet):
         YG = YGBuyListDB.YGGetDbData()
         YG.setProperties(self.DB,YG.BuyListRelativeTable)
         
-#         conn = q
         conn = sqlite3.connect(self.BuyListDBYesterday)
-        print(conn)
         cursor = conn.cursor()
         
-        while(True):
+        
+        while(self.getNowTime()!= "1500"):
             try:
 #                 self.analyseVolume(YG)
 #                 self.analysePrice(YG)
@@ -146,6 +154,9 @@ class RealAnalyse(DBSet.DBSet):
                 
                 self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'SELL' )
                 self.checkCodeSet(YG,conn,cursor, self.BuyListVolumeRotateTable,'SELL' )
+                
+                if self.getNowTime() == "1449":
+                    self.checkCodeSet(YG,conn,cursor,self.BuyListTable,'END')
                 
                 
                 time.sleep(0.5)
