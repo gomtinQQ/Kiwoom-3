@@ -61,6 +61,7 @@ class Ui_Form(QAxWidget):
         
 #         proc = mp.Process(target=d.gogo,args=(self.YG,))
 #         proc.start()
+
         
     def btn_login(self):        
         ret = self.dynamicCall("CommConnect()") 
@@ -298,15 +299,15 @@ if __name__ == "__main__":
     
 
 
-    d = RealDataAnalyzer.RealAnalyse()
+#     d = RealDataAnalyzer.RealAnalyse()
     YG = YGBuyListDB.YGGetDbData()
     YG.setProperties(YG.BuyListDBYesterday,YG.BuyListTable)
     YG.setLog()
     
 #     proc = mp.Process(target=d.gogo(YG), args=(YG,))
 #     proc.start()
-    d.setYG(YG)
-    d.start() 
+#     d.setYG(YG)
+#     d.start() 
     
     app = QtGui.QApplication(sys.argv)
     Form = QtGui.QWidget()
