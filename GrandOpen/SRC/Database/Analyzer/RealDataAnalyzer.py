@@ -109,7 +109,7 @@ class RealAnalyse(DBSet.DBSet):
                 buyListCode= cursor.fetchall()
 #                 print(query)
                 for i in range(len(buyListCode)):
-                    YG.updateSell(buyListCode[i][0])
+                    YG.updateSell(buyListCode[i][0],cursor,conn)
 #                     print(buyListCode[i][0])
             elif BS == "END":
                 
@@ -118,7 +118,7 @@ class RealAnalyse(DBSet.DBSet):
                 buyListCode = cursor.fetchall()
                 
                 for i in range(len(buyListCode)):
-                    YG.updateSell(buyListCode[i][0])
+                    YG.updateSell(buyListCode[i][0],cursor,conn)
                 
                     
             else :

@@ -131,8 +131,8 @@ class DBSet(object):
         
 #         if len(hours)<2:
 #             hours = '0'+hours
-            
-        minute = str(dd.minute-1)
+        minute = str((dd-datetime.timedelta(minutes=1)).minute)
+#         minute = str(dd.minute-1)
         if len(minute)<2:
             minute ='0'+minute
             

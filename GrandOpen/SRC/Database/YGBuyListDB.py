@@ -68,9 +68,9 @@ class YGGetDbData(DBSet.DBSet):
         
             cursor.execute(query)
             conn.commit()
+            print(code,' buy !')
         else :
-#             print(buySell)
-            return
+            print('사기전 보유수량이 있음 (',code,')')
     
     def buyStock(self,code,time,CurrPrice):
         '''update BuyList set '900'=0 where StockCode = 19210'''
@@ -79,11 +79,24 @@ class YGGetDbData(DBSet.DBSet):
         self.cursor.execute(query)
         self.conn.commit()
         
-    def updateSell(self,code):
+    def updateSell(self,code,cursor,conn):
         code = str(code)
-        query = 'update '+self.BuyListTable+' set "BUYSELL"="S" where StockCode = '+code
-        self.cursor.execute(query)
-        self.conn.commit()
+        
+        '''팔기전 현재 보유상태 체크'''
+        selQuery = 'select BUYSELL from '+self.BuyListTable+' where StockCode = '+code
+        
+        cursor.execute(selQuery)
+        buySell = cursor.fetchall()
+        
+        if str(buySell[0][0]) == "Y":
+            
+        
+            query = 'update '+self.BuyListTable+' set "BUYSELL"="S" where StockCode = '+code
+            cursor.execute(query)
+            conn.commit()
+            print(code,' sell !')
+        else :
+            print('팔기전 보유수량이 없음 (',code,')')
         
     def sellStock(self,code,time,CurrPrice):
         price=CurrPrice
