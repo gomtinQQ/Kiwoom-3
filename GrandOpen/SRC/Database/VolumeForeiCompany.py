@@ -69,25 +69,27 @@ class VolumeForeiCompany(MakeDB.DBMake):
         self.addDateColumn() 
         self.addDatePrice()
         
-    def addUntillDate(self):
+    def gogo(self):
         
-        self.setProperties(self.ForeignerDB,self.ForeignerTable)
-        self.addDateColumn()
+#         self.setProperties(self.ForeignerDB,self.ForeignerTable)
+#         self.addDateColumn()
         Foreign = mp.Process(name="Foreign",target=self.addForeign)
         Foreign.start()
         
-        self.setProperties(self.VolumeDB,self.VolumeTable)
-        self.addDateColumn()
-        
-        
+#         self.setProperties(self.VolumeDB,self.VolumeTable)
+#         self.addDateColumn()
         Volume = mp.Process(name="Volume",target = self.addVolume)
         Volume.start()
         
-        self.setProperties(self.ComapanyDB,self.CompanyTable)
-        self.addDateColumn()
-        
+#         self.setProperties(self.ComapanyDB,self.CompanyTable)
+#         self.addDateColumn()
         Company = mp.Process(name="Company",target = self.addCompany)
         Company.start()
+        
+#         self.setProperties(self.ForeignerDB,self.ClosePriceTable)
+#         self.addDateColumn()
+        Close = mp.Process(name="ClosePrice",target = self.addDatePrice) 
+        Close.start()
         
 if __name__ == '__main__':
     cp =VolumeForeiCompany()

@@ -56,7 +56,8 @@ class GoldenSearchFromDB1():
             elif COMPANY : 
                 return CB 
         except :
-            YG.debug(traceback.print_exc())
+#             YG.debug(traceback.print_exc())
+            print(traceback.print_exc())
     
     def Golden(self,Data):
         '''기본적으로 5일선이 20일선 돌파하면 골든, 반대면 데드로 판단'''
@@ -75,9 +76,11 @@ class GoldenSearchFromDB1():
             return Gold
                 
         except UnboundLocalError :
-            YG.debug(traceback.print_exc())
+#             YG.debug(traceback.print_exc())
+            print(traceback.print_exc())
         except Exception as a:
-            YG.debug(traceback.print_exc())
+#             YG.debug(traceback.print_exc())
+            print(traceback.print_exc())
             
     def VolumeCheck(self,Data,standard,condition):
         '''가장 최근일을 기준으로 몇일동안 거래량증가했는지 day로 나타냄'''
@@ -152,7 +155,7 @@ class GoldenSearchFromDB1():
             print(traceback.print_exc())
 #             YG.debug(traceback.print_exc()) 안먹히는 이유를 모르겠음. 
 
-    def createSearchingDB(self,YG):
+    def createSearchingDB(self,YG,config):
         
 #         YG = YGGetCloseDB.YGGetCloseDB()
 #         YG.setProperties()
@@ -161,10 +164,10 @@ class GoldenSearchFromDB1():
         
         
 #         bld = BuyListDb.BuyListDB()
-        BuyListDb.BuyListDB().createDefaultDB()
+        BuyListDb.BuyListDB(config).createDefaultDB()
 #         print(bld.BuyListDBToday)    16.3.30
 #         bld.createDefaultDB()
-        bld = YGBuyListDB.YGGetDbData()
+        bld = YGBuyListDB.YGGetDbData(config)
         bld.setProperties(bld.BuyListDBToday,bld.BuyListTable)
         i=0
         self.goldenCount = 0
@@ -185,7 +188,18 @@ class GoldenSearchFromDB1():
         print('Total Golden Count [%s'%self.goldenCount+'] keepbuying[%s'%self.keepbuy+'] Volume[%s'%self.volcheck+']')
         print('Time [%s'%takeTime)
         
-
+def gogo(config):
+    dd=  GoldenSearchFromDB1()
+    YG = YGGetCloseDB.YGGetCloseDB(config)
+    YG.setProperties()
+    YG.setLog()
+    
+#     ddf = str(159910)
+#     Data = YG.getClosePriceFromDB(ddf)
+#     print(dd.keepBuying(159910,Data,3))
+#     print(dd.VolumeCheck(Data,3,10))
+     
+    dd.createSearchingDB(YG,config)
 
 if __name__ == '__main__':
     

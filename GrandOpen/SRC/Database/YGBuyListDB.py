@@ -70,7 +70,8 @@ class YGGetDbData(DBSet.DBSet):
             conn.commit()
             print(code,' buy !')
         else :
-            print('사기전 보유수량이 있음 (',code,')')
+#             print('사기전 보유수량이 있음 (',code,')')
+            pass
     
     def buyStock(self,code,time,CurrPrice):
         '''update BuyList set '900'=0 where StockCode = 19210'''
@@ -96,7 +97,8 @@ class YGGetDbData(DBSet.DBSet):
             conn.commit()
             print(code,' sell !')
         else :
-            print('팔기전 보유수량이 없음 (',code,')')
+#             print('팔기전 보유수량이 없음 (',code,')')
+            pass
         
     def sellStock(self,code,time,CurrPrice):
         price=CurrPrice

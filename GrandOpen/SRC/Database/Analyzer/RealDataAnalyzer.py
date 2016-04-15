@@ -131,6 +131,8 @@ class RealAnalyse(DBSet.DBSet):
         
     def setDB(self,DB):
         self.DB= DB
+    def setConfig(self,config):
+        self.config=config
     
     def gogo(self):
         
@@ -138,7 +140,7 @@ class RealAnalyse(DBSet.DBSet):
 #         YG=self.YG
 #         if YG =="":
 #             print('YGMAKING')
-        YG = YGBuyListDB.YGGetDbData()
+        YG = YGBuyListDB.YGGetDbData(self.config)
         YG.setProperties(self.DB,YG.BuyListRelativeTable)
         
         conn = sqlite3.connect(self.BuyListDBYesterday)

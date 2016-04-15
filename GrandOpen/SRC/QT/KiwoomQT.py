@@ -36,7 +36,7 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_Form(QAxWidget):
-    def __init__(self,YG):
+    def __init__(self,YG,config):
         super().__init__()
         self.kiwoom = self.setControl('KHOPENAPI.KHOpenAPICtrl.1')
         self.connect(self, SIGNAL("OnEventConnect(int)"), self.OnEventConnect)
@@ -48,7 +48,7 @@ class Ui_Form(QAxWidget):
 #         self.YG = YGBuyListDB.YGGetDbData()
         self.YG=YG
         
-        
+        self.config=config
         
 #         self.YG.setProperties(self.YG.BuyListDBYesterday,self.YG.BuyListTable)
 #         self.YG.setProperties(self.YG.BuyListDBToday,self.YG.BuyListTable)
@@ -85,8 +85,9 @@ class Ui_Form(QAxWidget):
     def OnEventConnect(self, nErrCode):
         if nErrCode == 0:
             print("서버에 연결 되었습니다...")
-            ra = RealDataAnalyzer.RealAnalyse()
-            ra.setDB(YG.BuyListDBYesterday)
+            ra = RealDataAnalyzer.RealAnalyse(self.config)
+            ra.setDB(self.YG.BuyListDBYesterday)
+            ra.setConfig(self.config)
             proc = mp.Process(target=ra.gogo)
             proc.start()
 #             code = self.kiwoom.connect(self.kiwoom, SIGNAL("OnEventConnect(int)"), self.OnEventConnect())
@@ -170,7 +171,7 @@ class Ui_Form(QAxWidget):
 #         if self.pastMinute != self.currMinute :
 #         print(sJongmokCode, self.perPast[sJongmokCode],self.currMinute)
         if self.perPast[sJongmokCode] != str(self.currMinute):
-            print(sJongmokCode,self.acumulativeVolume[sJongmokCode],self.perPast[sJongmokCode])
+#             print(sJongmokCode,self.acumulativeVolume[sJongmokCode],self.perPast[sJongmokCode])
             self.perPast[sJongmokCode] = str(self.currMinute)
             
             self.YG.updateVolumeCode(sJongmokCode,self.acumulativeVolume[sJongmokCode],self.timeVal[sJongmokCode])
@@ -304,6 +305,16 @@ class Ui_Form(QAxWidget):
             while(len(str.strip())!=6):
                 str=str[:0]+"0"+str[0:]
         return str
+    
+def gogo(config):
+    YG = YGBuyListDB.YGGetDbData(config)
+    YG.setProperties(YG.BuyListDBYesterday,YG.BuyListTable)
+    YG.setLog()
+    
+    app = QtGui.QApplication(sys.argv)
+    Form = QtGui.QWidget()
+    ui = Ui_Form(YG,config)
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
     
