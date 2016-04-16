@@ -192,14 +192,9 @@ def gogo(config):
     dd=  GoldenSearchFromDB1()
     YG = YGGetCloseDB.YGGetCloseDB(config)
     YG.setProperties()
-    YG.setLog()
-    
-#     ddf = str(159910)
-#     Data = YG.getClosePriceFromDB(ddf)
-#     print(dd.keepBuying(159910,Data,3))
-#     print(dd.VolumeCheck(Data,3,10))
-     
+    YG.setLog()     
     dd.createSearchingDB(YG,config)
+    
 
 if __name__ == '__main__':
     

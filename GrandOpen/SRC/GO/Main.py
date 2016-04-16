@@ -28,8 +28,17 @@ class Main():
                 print(items[0],'=',items[1])
 #         print(self.config.items("Init.Run"))
         
+        for name,value in self.config.items("Init.Run"):
+            
+            if value !="0":
+                print(value,"Start!")
+#                 eval(value).gogo(self.config)
+                
+                proc = mp.Process(target=eval(value).gogo , args=(self.config,))
+                proc.start
+#                 name.gogo(self.config)
 #         KiwoomQT.gogo(self.config)
-        GoldenSearchFromDB.gogo(self.config)
+#         GoldenSearchFromDB.gogo(self.config)
              
                 
         
