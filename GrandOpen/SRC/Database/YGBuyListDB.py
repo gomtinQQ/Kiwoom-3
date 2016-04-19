@@ -37,7 +37,7 @@ class YGGetDbData(DBSet.DBSet):
         
         info = str(relative)
         query = 'update '+self.BuyListRelativeTable+' set "'+foTime+ '" = '+str(info)+' where StockCode = '+str(Code)
-        
+#         print(query)
         self.cursor.execute(query)
         self.conn.commit()
         
@@ -68,7 +68,7 @@ class YGGetDbData(DBSet.DBSet):
         
             cursor.execute(query)
             conn.commit()
-            print(code,' buy !')
+#             print(code,' buy !')
         else :
 #             print('사기전 보유수량이 있음 (',code,')')
             pass
@@ -95,7 +95,7 @@ class YGGetDbData(DBSet.DBSet):
             query = 'update '+self.BuyListTable+' set "BUYSELL"="S" where StockCode = '+code
             cursor.execute(query)
             conn.commit()
-            print(code,' sell !')
+#             print(code,' sell !')
         else :
 #             print('팔기전 보유수량이 없음 (',code,')')
             pass

@@ -28,19 +28,19 @@ class DBSet(object):
     
     lock = mp.Lock()
     querylock = mp.Lock()
-#     config = configparser.ConfigParser()
-#     config.read("../CONFIG/config.ini")
+    config = configparser.ConfigParser()
+    config.read("../CONFIG/config.ini")
     
     
     
 #     def initConfigSet(self):
-    def __init__(self,config):
+    def __init__(self):
         
-        self.ForeignerDB = config.get("DATABASE","VolumeAndForeignAndCompanyDB") 
-        self.ComapanyDB = config.get("DATABASE","VolumeAndForeignAndCompanyDB")
-        self.VolumeDB = config.get("DATABASE","VolumeAndForeignAndCompanyDB")
+        self.ForeignerDB = self.config.get("DATABASE","VolumeAndForeignAndCompanyDB") 
+        self.ComapanyDB = self.config.get("DATABASE","VolumeAndForeignAndCompanyDB")
+        self.VolumeDB = self.config.get("DATABASE","VolumeAndForeignAndCompanyDB")
 #         self.ClosePriceDB = config.get("DATABASE","ClosePriceDB")
-        self.BuyListDB = config.get("DATABASE","BuyListDB")
+        self.BuyListDB = self.config.get("DATABASE","BuyListDB")
         today = datetime.datetime.today().date()
         oneDay = datetime.timedelta(days=1)
         YESTERDAY= str( today - oneDay)
@@ -54,29 +54,29 @@ class DBSet(object):
         self.BuyListDBToday = self.BuyListDB+str(today)+".db" 
         
         
-        self.ForeignerTable = config.get("DATABASE","ForeignTable")
-        self.CompanyTable = config.get("DATABASE","CompanyTable")
-        self.VolumeTable = config.get("DATABASE","VolumeTable")
-        self.ClosePriceTable = config.get("DATABASE","ClosePriceDBTable")
+        self.ForeignerTable = self.config.get("DATABASE","ForeignTable")
+        self.CompanyTable = self.config.get("DATABASE","CompanyTable")
+        self.VolumeTable = self.config.get("DATABASE","VolumeTable")
+        self.ClosePriceTable = self.config.get("DATABASE","ClosePriceDBTable")
         
-        self.BuyListTable = config.get("DATABASE","BuyListTable")
-        self.BuyListVolumeRotateTable = config.get("DATABASE","BuyListVolumeRotateTable")
-        self.BuyListRelativeTable = config.get("DATABASE","BuyListRelativeTable")
-        
-        
+        self.BuyListTable = self.config.get("DATABASE","BuyListTable")
+        self.BuyListVolumeRotateTable = self.config.get("DATABASE","BuyListVolumeRotateTable")
+        self.BuyListRelativeTable = self.config.get("DATABASE","BuyListRelativeTable")
         
         
-        self.start_date_closePrice = config.get("DATE","ClosePrice.StartDATE")
-        self.start_date_Volume = config.get("DATE","Volume.StartDATE")
-        self.start_date_Foreign= config.get("DATE","FOREIGN.StartDATE")
-        self.start_date_Company= config.get("DATE","Company.StartDATE")
         
         
-        self.insertGoldQuery = config.get("QueryList","InsertGold")
+        self.start_date_closePrice = self.config.get("DATE","ClosePrice.StartDATE")
+        self.start_date_Volume = self.config.get("DATE","Volume.StartDATE")
+        self.start_date_Foreign= self.config.get("DATE","FOREIGN.StartDATE")
+        self.start_date_Company= self.config.get("DATE","Company.StartDATE")
         
-        self.fName = str(config.get("LOG","filename"))+'_'+str(datetime.datetime.today().date())
-        self.loglevel = config.get("LOG","loglevel")
-        self.fileSize = config.get("LOG","FILESIZE")
+        
+        self.insertGoldQuery = self.config.get("QueryList","InsertGold")
+        
+        self.fName = str(self.config.get("LOG","filename"))+'_'+str(datetime.datetime.today().date())
+        self.loglevel = self.config.get("LOG","loglevel")
+        self.fileSize = self.config.get("LOG","FILESIZE")
         
 #         for name,value in config.items():
 #             print('==========================',name,'==========================')

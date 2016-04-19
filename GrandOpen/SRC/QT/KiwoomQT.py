@@ -36,7 +36,7 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_Form(QAxWidget):
-    def __init__(self,YG,config):
+    def __init__(self,YG):
         super().__init__()
         self.kiwoom = self.setControl('KHOPENAPI.KHOpenAPICtrl.1')
         self.connect(self, SIGNAL("OnEventConnect(int)"), self.OnEventConnect)
@@ -48,7 +48,7 @@ class Ui_Form(QAxWidget):
 #         self.YG = YGBuyListDB.YGGetDbData()
         self.YG=YG
         
-        self.config=config
+        
         
 #         self.YG.setProperties(self.YG.BuyListDBYesterday,self.YG.BuyListTable)
 #         self.YG.setProperties(self.YG.BuyListDBToday,self.YG.BuyListTable)
@@ -85,9 +85,8 @@ class Ui_Form(QAxWidget):
     def OnEventConnect(self, nErrCode):
         if nErrCode == 0:
             print("서버에 연결 되었습니다...")
-            ra = RealDataAnalyzer.RealAnalyse(self.config)
+            ra = RealDataAnalyzer.RealAnalyse()
             ra.setDB(self.YG.BuyListDBYesterday)
-            ra.setConfig(self.config)
             proc = mp.Process(target=ra.gogo)
             proc.start()
 #             code = self.kiwoom.connect(self.kiwoom, SIGNAL("OnEventConnect(int)"), self.OnEventConnect())
@@ -113,10 +112,10 @@ class Ui_Form(QAxWidget):
     def OnReceiveChejanData(self, sGubun, nItemCnt, sFidList):
         print('===========ChejanData called===========')
         print('sGubun[',sGubun,'] nItemCnt[',nItemCnt,'] sFidList[',sFidList,']')
-        chjang = self.dynamicCall('GetChejanData(QString)',9203)
-        chjang1 = self.dynamicCall('GetChejanData(QString)',302)
-        chjang2 = self.dynamicCall('GetChejanData(QString)',900)
-        chjang3 = self.dynamicCall('GetChejanData(QString)',901)
+        chjang = self.dynamicCall('GetChejanData(QString)',9203) #주문번호
+        chjang1 = self.dynamicCall('GetChejanData(QString)',302) #종목명
+        chjang2 = self.dynamicCall('GetChejanData(QString)',900) #주문수량
+        chjang3 = self.dynamicCall('GetChejanData(QString)',901) #주문가격
         print(chjang,chjang1,chjang2,chjang3)
         
     def OnReceiveRealData(self,sJongmokCode,sRealType,sRealData):
@@ -272,7 +271,7 @@ class Ui_Form(QAxWidget):
             
     def sendOrder (self,code,Position):
         
-        print('SendOrder Called! Position :',Position )
+#         print('SendOrder Called! Position :',Position )
         ACCOUNT_CNT = self.dynamicCall('GetLoginInfo("ACCOUNT_CNT")')
         ACC_NO = self.dynamicCall('GetLoginInfo("ACCNO")')
         sRQName  = "주식주문" # 사용자 구분 요청 명 
@@ -289,9 +288,9 @@ class Ui_Form(QAxWidget):
         Order = self.dynamicCall('SendOrder(QString, QString, QString, int, QString, int, int, QString, QString)', [sRQName,sScreenNo , ACCNO, nOrderType, sCode, nQty,nPrice,sHogaGb,sOrgOrderNo])
         
         if Position =="SELL":
-            print(sCode," 판다")
+            print(sCode,"판다  주문수량[",nQty,"] 주문금액[",nPrice,"] 오더타입[",nOrderType,"]")
         else :
-            print(sCode," 산다")
+            print(sCode,"산다 주문수량[",nQty,"] 주문금액[",nPrice,"] 오더타입[",nOrderType,"]")
         
         '''지정가 매수 - openApi.SendOrder(“RQ_1”, “0101”, “5015123410”, 1, “000660”, 10, 48500, “0”, “”);     '''
         '''시장가 매수 - openApi.SendOrder(“RQ_1”, “0101”, “5015123410”, 1, “000660”, 10, 0, “3”, “”);         '''

@@ -93,7 +93,7 @@ class RealAnalyse(DBSet.DBSet):
             cursor = Cursor
 
             if BS =="BUY":
-                query = self.getSelectQuery(tableName, buySell=BS,count=3,interval=1)
+                query = self.getSelectQuery(tableName, buySell=BS,count=5,interval=1)
             
                 cursor.execute(query)
                 buyListCode= cursor.fetchall()
@@ -103,7 +103,7 @@ class RealAnalyse(DBSet.DBSet):
 #                     print(buyListCode[i][0])
                     
             elif BS == "SELL":
-                query = self.getSelectQuery(tableName, buySell=BS,count=2,interval=3)
+                query = self.getSelectQuery(tableName, buySell=BS,count=3,interval=3)
             
                 cursor.execute(query)
                 buyListCode= cursor.fetchall()
@@ -140,7 +140,7 @@ class RealAnalyse(DBSet.DBSet):
 #         YG=self.YG
 #         if YG =="":
 #             print('YGMAKING')
-        YG = YGBuyListDB.YGGetDbData(self.config)
+        YG = YGBuyListDB.YGGetDbData()
         YG.setProperties(self.DB,YG.BuyListRelativeTable)
         
         conn = sqlite3.connect(self.BuyListDBYesterday)

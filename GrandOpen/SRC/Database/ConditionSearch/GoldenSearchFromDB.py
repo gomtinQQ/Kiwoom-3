@@ -86,6 +86,7 @@ class GoldenSearchFromDB1():
         '''가장 최근일을 기준으로 몇일동안 거래량증가했는지 day로 나타냄'''
         '''ex)최근standard 일동안의 거래량이 condition거래량보다 높은지 확인.'''
         '''높으면 거래량 급증이라 판단, return true 그렇지안으면 false'''
+        '''ex) standard=3, condition=20  3일동안의 거래량>20일동안의 거래량'''
         
         
         st=0
@@ -129,7 +130,7 @@ class GoldenSearchFromDB1():
             date_fmt='%Y-%m-%d'
             end =datetime.datetime.strptime(end,date_fmt)
             
-            if end<dd and self.keepBuying(Code,Data,2):
+            if end<dd and self.keepBuying(Code,Data,3):
                 
 #                 print('keepBuying~ Code',Code,' When: ',dd ,end="")
                 print('keepBuying~ Code',Code,' When: ',dd )
@@ -155,7 +156,7 @@ class GoldenSearchFromDB1():
             print(traceback.print_exc())
 #             YG.debug(traceback.print_exc()) 안먹히는 이유를 모르겠음. 
 
-    def createSearchingDB(self,YG,config):
+    def createSearchingDB(self,YG):
         
 #         YG = YGGetCloseDB.YGGetCloseDB()
 #         YG.setProperties()
@@ -164,10 +165,10 @@ class GoldenSearchFromDB1():
         
         
 #         bld = BuyListDb.BuyListDB()
-        BuyListDb.BuyListDB(config).createDefaultDB()
+        BuyListDb.BuyListDB().createDefaultDB()
 #         print(bld.BuyListDBToday)    16.3.30
 #         bld.createDefaultDB()
-        bld = YGBuyListDB.YGGetDbData(config)
+        bld = YGBuyListDB.YGGetDbData()
         bld.setProperties(bld.BuyListDBToday,bld.BuyListTable)
         i=0
         self.goldenCount = 0
