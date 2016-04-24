@@ -89,16 +89,11 @@ class YGGetDbData(DBSet.DBSet):
         cursor.execute(selQuery)
         buySell = cursor.fetchall()
         
-        if str(buySell[0][0]) == "Y":
+        if str(buySell[0][0]) == "Y" or str(buySell[0][0]) == "B":
             
-        
             query = 'update '+self.BuyListTable+' set "BUYSELL"="S" where StockCode = '+code
             cursor.execute(query)
             conn.commit()
-#             print(code,' sell !')
-        else :
-#             print('팔기전 보유수량이 없음 (',code,')')
-            pass
         
     def sellStock(self,code,time,CurrPrice):
         price=CurrPrice

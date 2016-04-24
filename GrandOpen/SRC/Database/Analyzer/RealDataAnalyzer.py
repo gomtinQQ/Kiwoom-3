@@ -87,23 +87,33 @@ class RealAnalyse(DBSet.DBSet):
         for i in range(len(dd)):
             YG.updateBuy(dd[i][0])
     
-    def checkCodeSet(self,YG,connection,Cursor,tableName,BS):
+    def checkCodeSet(self,YG,connection,Cursor,tableName,BS,count="",interval=""):
         try:            
             conn = connection
             cursor = Cursor
 
+            
             if BS =="BUY":
-                query = self.getSelectQuery(tableName, buySell=BS,count=5,interval=1)
+                if count =="":
+                    count=10
+                if interval =="":
+                    interval=1
+                query = self.getSelectQuery(tableName, buySell=BS,count=count,interval=interval)
             
                 cursor.execute(query)
                 buyListCode= cursor.fetchall()
-#                 print(query)
                 for i in range(len(buyListCode)): 
                     YG.updateBuy(buyListCode[i][0],cursor,conn)
 #                     print(buyListCode[i][0])
                     
             elif BS == "SELL":
-                query = self.getSelectQuery(tableName, buySell=BS,count=3,interval=3)
+                
+                if count =="":
+                    count=3
+                if interval =="":
+                    interval=1
+                    
+                query = self.getSelectQuery(tableName, buySell=BS,count=count,interval=interval)
             
                 cursor.execute(query)
                 buyListCode= cursor.fetchall()
@@ -113,10 +123,11 @@ class RealAnalyse(DBSet.DBSet):
 #                     print(buyListCode[i][0])
             elif BS == "END":
                 
-                query = 'select StockCode from '+tableName+' where "BUYSELL"="Y"'
+                query = 'select StockCode from '+tableName+' where "BUYSELL"="Y" or "BUYSELL"="B"'
                 cursor.execute(query)
                 buyListCode = cursor.fetchall()
                 
+                print("영업종료하자")
                 for i in range(len(buyListCode)):
                     YG.updateSell(buyListCode[i][0],cursor,conn)
                 
@@ -124,7 +135,6 @@ class RealAnalyse(DBSet.DBSet):
             else :
                 print('Select correctly Buy or Sell ')
                 
-#             print(query)
 #             print(buyListCode,BS)
         except :
             self.tracebackLog()
@@ -134,7 +144,7 @@ class RealAnalyse(DBSet.DBSet):
     def setConfig(self,config):
         self.config=config
     
-    def gogo(self):
+    def gogo(self,Test=""):
         
 #         print(YG)
 #         YG=self.YG
@@ -146,37 +156,64 @@ class RealAnalyse(DBSet.DBSet):
         conn = sqlite3.connect(self.BuyListDBYesterday)
         cursor = conn.cursor()
         
+        mode="Real"
+        if Test== "Test":
+            mode="Test"
         
-        while(self.getNowTime()!= "1500"):
-            try:
-#                 self.analyseVolume(YG)
-#                 self.analysePrice(YG)
-                self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'BUY' )
-                self.checkCodeSet(YG,conn,cursor, self.BuyListVolumeRotateTable,'BUY' )
+        if mode =="Real":
+            while(self.getNowTime()!= "1500"):
+                try:
+                    
+                    self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'BUY' )
+                    self.checkCodeSet(YG,conn,cursor, self.BuyListVolumeRotateTable,'BUY' )
+                    
+                    self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'SELL' )
+                    self.checkCodeSet(YG,conn,cursor, self.BuyListVolumeRotateTable,'SELL' )
+                    
+                    if self.getNowTime() == "1449":
+                        self.checkCodeSet(YG,conn,cursor,self.BuyListTable,'END')
+                        break
+                    
+                    time.sleep(0.5)
+                except Exception:
+                    self.tracebackLog()
+                    print("realData Analyzer종료함.")
+#                     break
+                    continue
+                    
+        elif mode=="Test":
+            
+            while(self.getNowTime()!= "1500"):
+                try:
+    #                 self.analyseVolume(YG)
+    #                 self.analysePrice(YG)
+                    self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'BUY')
+                    self.checkCodeSet(YG,conn,cursor, self.BuyListVolumeRotateTable,'BUY')
+                     
+#                     self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'SELL',count=1,interval=1 )
+#                     self.checkCodeSet(YG,conn,cursor, self.BuyListVolumeRotateTable,'SELL' ,count=1,interval=1)
+                    
+#                     if self.getNowTime() == "1449":
+#                     self.checkCodeSet(YG,conn,cursor,self.BuyListTable,'END')
+#                     break
+                    
+                    time.sleep(0.5)
+                except Exception:
+                    self.tracebackLog()
+                    break
+                    continue
+            
                 
-                self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'SELL' )
-                self.checkCodeSet(YG,conn,cursor, self.BuyListVolumeRotateTable,'SELL' )
-                
-                if self.getNowTime() == "1449":
-                    self.checkCodeSet(YG,conn,cursor,self.BuyListTable,'END')
-                
-                
-                time.sleep(0.5)
-                
-            except Exception:
-                self.tracebackLog()
-                break
-                continue
                 
             
 if __name__ == '__main__':
     ra = RealAnalyse()
-    YG = YGBuyListDB.YGGetDbData()
-#     print(YG.BuyListDBYesterday,YG.BuyListRelativeTable)
-    YG.setProperties(YG.BuyListDBToday,YG.BuyListRelativeTable)
     
-    ra.setYG(YG)
-    proc = mp.Process(target=ra.gogo) 
+    YG = YGBuyListDB.YGGetDbData()
+#     YG.setProperties(YG.BuyListDBToday,YG.BuyListRelativeTable)
+    
+    ra.setDB(YG.BuyListDBYesterday)
+    proc = mp.Process(target=ra.gogo,args=["Test",]) 
     proc.start()
 
 #     ra.start()
