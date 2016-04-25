@@ -36,6 +36,10 @@ class YGGetDbData(DBSet.DBSet):
         foTime = str(timeVal[0])
         
         info = str(relative)
+        
+        if info.startswith("-"):
+            info=info[1:]
+        
         query = 'update '+self.BuyListRelativeTable+' set "'+foTime+ '" = '+str(info)+' where StockCode = '+str(Code)
 #         print(query)
         self.cursor.execute(query)
@@ -43,8 +47,11 @@ class YGGetDbData(DBSet.DBSet):
         
     def updateVolumeCode(self,Code,Rotate,timeVal):
         
-        info = str(timeVal[1])
         foTime = str(timeVal[0])
+        info = str(timeVal[1])
+        
+        if info.startswith("-"):
+            info=info[1:]
         
         query = 'update '+self.BuyListVolumeRotateTable+' set "'+foTime+ '" = '+str(info)+' where StockCode = '+str(Code)
 #         print(query)

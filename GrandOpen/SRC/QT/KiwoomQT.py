@@ -127,14 +127,16 @@ class Ui_Form(QAxWidget):
 #         print('sJongmokCode[',sJongmokCode,'] sRealType[',sRealType,'] sRealData[',sRealData,']')
         
 #         Fid = '10;31;29;26;15;12' #현재가,회전율,거래대금증감,전일거래량대비,거래량 체결량 , 등락율
-        CurrPrice = self.dynamicCall('GetCommRealData(QString, int )',sRealType,10)
+        
+        
         VolumeRotate = self.dynamicCall('GetCommRealData(QString, int )',sRealType,31)
         RelativeVolume = self.dynamicCall('GetCommRealData(QString, int )',sRealType,26)
-        
         yester = self.dynamicCall('GetCommRealData(QString, int )',sRealType,11)
-        
         relative = self.dynamicCall('GetCommRealData(QString, int )',sRealType,12)
         
+        
+        
+        CurrPrice = self.dynamicCall('GetCommRealData(QString, int )',sRealType,10)
         volume= self.dynamicCall('GetCommRealData(QString, int )',sRealType,15)
         
 #         print(volume) #체결량이랑 거래량인데 어떻게 들어오는지 확인해야함 그래서 거래량만 파싱해야함.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -157,7 +159,8 @@ class Ui_Form(QAxWidget):
         hour = str(tim.hour)
         minute = str(self.pastMinute)
         
-        if self.perPast[sJongmokCode] !=None:
+#         if self.perPast[sJongmokCode] !=None:  #널체크 2016.04.25 by Yang
+        if self.perPast[sJongmokCode] is not None:
             minute =str(self.perPast[sJongmokCode])
             
         if len(minute)<2:
@@ -165,7 +168,7 @@ class Ui_Form(QAxWidget):
         foTime = hour+minute
         
         self.timeVal[sJongmokCode] = foTime,self.acumulativeVolume[sJongmokCode]
-        if self.perPast[sJongmokCode] ==None:
+        if self.perPast[sJongmokCode] is None:
             self.perPast[sJongmokCode]=minute
 #         if self.pastMinute != self.currMinute :
 #         print(sJongmokCode, self.perPast[sJongmokCode],self.currMinute)
@@ -180,21 +183,6 @@ class Ui_Form(QAxWidget):
             self.timeVal[sJongmokCode] = None
             
         self.checkBuyOrSell(foTime,CurrPrice)
-        
-#         
-#         if float(VolumeRotate) > 6 and float(relative) > 6:
-# #             self.YG.debug('종목코드[%s'%sJongmokCode+']@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-# #             self.YG.updateCode(sJongmokCode,relative,VolumeRotate)
-#             
-#             self.YG.updateRelativeCode(sJongmokCode,relative)
-#             self.YG.updateVolumeCode(sJongmokCode,VolumeRotate)
-#             print('종목코드[%s'%sJongmokCode+'] 현재가[%s'%CurrPrice+'] Rotate[%s'%VolumeRotate+'] 전일대비[%s'%yester+'] 등락율[%s'%relative+']')
-#             self.YG.debug('종목코드[%s'%sJongmokCode+'] 현재가[%s'%CurrPrice+'] Rotate[%s'%VolumeRotate+'] 전일대비[%s'%yester+'] 등락율[%s'%relative+']')
-#             
-            
-#         self.YG.debug('종목코드[%s'%sJongmokCode+'] 현재가[%s'%CurrPrice+'] Rotate[%s'%VolumeRotate+'] 전일대비[%s'%yester+'] 등락율[%s'%relative+']')
-#         print('종목코드[%s'%sJongmokCode+'] 현재가[%s'%CurrPrice+'] Rotate[%s'%VolumeRotate+'] 전일대비[%s'%yester+'] 등락율[%s'%relative+']')
-        
     
         
     

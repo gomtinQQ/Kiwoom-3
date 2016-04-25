@@ -92,7 +92,6 @@ class RealAnalyse(DBSet.DBSet):
             conn = connection
             cursor = Cursor
 
-            
             if BS =="BUY":
                 if count =="":
                     count=5
@@ -161,7 +160,14 @@ class RealAnalyse(DBSet.DBSet):
             mode="Test"
         
         if mode =="Real":
-            while(self.getNowTime()!= "1500"):
+            
+            while(True):
+                if self.getNowTime()=="0901" or self.getNowTime() =="901":
+                    break
+                else:
+                    time.sleep(1)
+                    
+            while(True):
                 try:
                     
                     self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'BUY' )
@@ -180,7 +186,7 @@ class RealAnalyse(DBSet.DBSet):
                     print("realData Analyzer종료함.")
 #                     break
                     continue
-                    
+            print("장 종료되었음.")
         elif mode=="Test":
             
             while(self.getNowTime()!= "1500"):
