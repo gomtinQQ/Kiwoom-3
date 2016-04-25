@@ -95,7 +95,7 @@ class RealAnalyse(DBSet.DBSet):
             
             if BS =="BUY":
                 if count =="":
-                    count=10
+                    count=5
                 if interval =="":
                     interval=1
                 query = self.getSelectQuery(tableName, buySell=BS,count=count,interval=interval)
