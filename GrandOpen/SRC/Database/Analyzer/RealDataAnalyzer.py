@@ -162,14 +162,15 @@ class RealAnalyse(DBSet.DBSet):
         if mode =="Real":
             
             while(True):
+                print("901분 부터 시작합니다.. [현재시각 :",self.getNowTime(),"]")
                 if self.getNowTime()=="0901" or self.getNowTime() =="901":
                     break
                 else:
                     time.sleep(1)
                     
+            print("Real data 분석 시작 !!!!!!!!!!!!!!!!!!!!!!!!!")
             while(True):
                 try:
-                    
                     self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'BUY' )
                     self.checkCodeSet(YG,conn,cursor, self.BuyListVolumeRotateTable,'BUY' )
                     

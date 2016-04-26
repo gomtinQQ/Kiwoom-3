@@ -126,11 +126,12 @@ class DBSet(object):
         
     def getNowTime(self):
         dd = datetime.datetime.today()
-        hours = str(dd.hour)
+#         hours = str(dd.hour)
         
 #         if len(hours)<2:
 #             hours = '0'+hours
         minute = str((dd-datetime.timedelta(minutes=1)).minute)
+        hours = str((dd-datetime.timedelta(minutes=1)).hour)
 #         minute = str(dd.minute-1)
         if len(minute)<2:
             minute ='0'+minute

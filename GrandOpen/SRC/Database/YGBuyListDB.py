@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sqlite3
 import sys,os
+from _sqlite3 import OperationalError
 sys.path.append('../')
 sys.path.append('../DB')
 import time,datetime
@@ -42,8 +43,12 @@ class YGGetDbData(DBSet.DBSet):
         
         query = 'update '+self.BuyListRelativeTable+' set "'+foTime+ '" = '+str(info)+' where StockCode = '+str(Code)
 #         print(query)
-        self.cursor.execute(query)
-        self.conn.commit()
+        try:
+            self.cursor.execute(query)
+            self.conn.commit()
+        except OperationalError:
+            self.tracebackLog()
+            print("relative [",relative,"]")
         
     def updateVolumeCode(self,Code,Rotate,timeVal):
         
@@ -55,8 +60,12 @@ class YGGetDbData(DBSet.DBSet):
         
         query = 'update '+self.BuyListVolumeRotateTable+' set "'+foTime+ '" = '+str(info)+' where StockCode = '+str(Code)
 #         print(query)
-        self.cursor.execute(query)
-        self.conn.commit()
+        try:
+            self.cursor.execute(query)
+            self.conn.commit()
+        except OperationalError:
+            self.tracebackLog()
+            print("info [",info,"]")
     
     def updateBuy(self,code,cursor,conn):
         
