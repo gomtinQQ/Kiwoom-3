@@ -1,0 +1,354 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"g",
+				"gettrace	function"
+			],
+			[
+				"getFileName",
+				"getFileNameForsave	function"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"git",
+				"Git: Init"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"github",
+				"Github: Create Pull Request"
+			],
+			[
+				"github c",
+				"Github: Copy Link To File"
+			],
+			[
+				"svn",
+				"SVN: Checkout…"
+			],
+			[
+				"python",
+				"SublimeREPL: Python - RUN current file"
+			],
+			[
+				"PYTHON",
+				"SublimeREPL: Python - PDB current file"
+			],
+			[
+				"package",
+				"Package Control: Add Channel"
+			]
+		],
+		"width": 464.0
+	},
+	"console":
+	{
+		"height": 481.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/C/Users/thesky/Downloads/eclipse-jee-mars-1-win32-x86_64/eclipse/workspace/Kiwoom/kiwoom/Log/YGLog.log_2016-03-17",
+		"/C/Users/thesky/Downloads/eclipse-jee-mars-1-win32-x86_64/eclipse/workspace/Kiwoom/kiwoom/src/bts.py",
+		"/D/git/git_Kiwoom/Kiwoom/kiwoom/src/BuyListDB.py",
+		"/D/git/git_Kiwoom/Kiwoom/kiwoom/Test/testForExcel.py",
+		"/D/git/git_Kiwoom/Kiwoom/kiwoom/Test/googleapi.py",
+		"/C/Users/thesky/Downloads/eclipse-jee-mars-1-win32-x86_64/eclipse/workspace/Kiwoom/kiwoom/Test/example.png",
+		"/C/Users/thesky/Downloads/eclipse-jee-mars-1-win32-x86_64/eclipse/workspace/Kiwoom/kiwoom/Test/movingaverage4.py",
+		"/C/Users/thesky/AppData/Roaming/Sublime Text 3/Packages/User/Default (Windows).sublime-keymap",
+		"/C/Users/thesky/AppData/Roaming/Sublime Text 3/Packages/Anaconda/Default (Windows).sublime-keymap",
+		"/C/Users/thesky/Downloads/eclipse-jee-mars-1-win32-x86_64/eclipse/workspace/Kiwoom/kiwoom/src/config/config.ini",
+		"/C/Users/thesky/AppData/Roaming/Sublime Text 3/Packages/Default/Default (Windows).sublime-keymap",
+		"/C/Users/thesky/AppData/Roaming/Sublime Text 3/Packages/Anaconda/Anaconda.sublime-settings",
+		"/C/Users/thesky/AppData/Roaming/Sublime Text 3/Packages/Git/Git.sublime-settings",
+		"/D/ensof/eclipse-jee-kepler-SR2-win32-x86_64/ensof_eclipse/workspace/KyoboDigital_mcCUBE/src/mcCUBE/main/enmccube.java",
+		"/D/ensof/eclipse-jee-kepler-SR2-win32-x86_64/ensof_eclipse/workspace/KyoboDigital_mcCUBE/src_ebxml/app/src/mcCUBE/ebxml/app/ibk/IBK_batch.java",
+		"/C/Users/thesky/Downloads/eclipse-jee-mars-1-win32-x86_64/eclipse/workspace/Kiwoom/kiwoom/src/DashinDbMake.py",
+		"/C/Users/thesky/Downloads/eclipse-jee-mars-1-win32-x86_64/eclipse/workspace/Kiwoom/kiwoom/src/BuyListDB.py",
+		"/C/Users/thesky/Downloads/eclipse-jee-mars-1-win32-x86_64/eclipse/workspace/Kiwoom/kiwoom/src/DBMake.py",
+		"/C/Users/thesky/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/C/Users/thesky/AppData/Roaming/Sublime Text 3/Packages/SVN/SVN.sublime-settings",
+		"/C/Users/thesky/AppData/Roaming/Sublime Text 3/Packages/User/SublimeREPL_python.sublime-build",
+		"/C/Users/thesky/AppData/Roaming/Sublime Text 3/Packages/User/SublimeREPL.sublime-settings",
+		"/C/Users/thesky/AppData/Roaming/Sublime Text 3/Packages/SublimeREPL/SublimeREPL.sublime-settings",
+		"/C/Users/thesky/AppData/Roaming/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
+		"/C/Users/thesky/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/C/Users/thesky/Downloads/eclipse-jee-mars-1-win32-x86_64/eclipse/workspace/Kiwoom/kiwoom/src/ExcelMake.py",
+		"/C/Users/thesky/Downloads/eclipse-jee-mars-1-win32-x86_64/eclipse/workspace/Kiwoom/kiwoom/Test/ProcessTest2.py",
+		"/C/Users/thesky/AppData/Roaming/Sublime Text 3/Packages/BracketHighlighter/bh_core.sublime-settings",
+		"/C/Users/thesky/AppData/Roaming/Sublime Text 3/Packages/SublimeCodeIntel/SublimeCodeIntel.sublime-settings",
+		"/C/Users/thesky/AppData/Roaming/Sublime Text 3/Packages/User/winpython.sublime-build",
+		"/C/Users/thesky/AppData/Roaming/Sublime Text 3/Packages/ConvertToUTF8/ConvertToUTF8.sublime-settings",
+		"/C/Users/thesky/AppData/Roaming/Sublime Text 3/Packages/User/Anaconda.sublime-settings",
+		"/C/Users/thesky/AppData/Roaming/Sublime Text 3/Packages/User/ConvertToUTF8.sublime-settings",
+		"/D/WinPython-32bit-3.4.3.7/python-3.4.3/Lib/sqlite3/test/dbapi.py",
+		"/C/Users/thesky/Downloads/eclipse-jee-mars-1-win32-x86_64/eclipse/workspace/Kiwoom/kiwoom/src/kospi.db",
+		"/D/WinPython-32bit-3.4.3.7/python-3.4.3/Lib/sqlite3/test/types.py",
+		"/C/Users/thesky/Anaconda3/lib/unittest/__init__.py",
+		"/C/Users/thesky/Anaconda3/lib/unittest/result.py",
+		"/C/Users/thesky/Downloads/eclipse-jee-mars-1-win32-x86_64/eclipse/workspace/Kiwoom/kiwoom/src/btsForReal.py",
+		"/C/Users/thesky/Downloads/eclipse-jee-mars-1-win32-x86_64/eclipse/workspace/Kiwoom/kiwoom/src/ExcelMakeForProcess.py",
+		"/D/ensof/eclipse-jee-kepler-SR2-win32-x86_64/ensof_eclipse/workspace/IBKVAC_mcCUBE/ini1/msgs/NICE_ON.org/0181_0200_1F003.msg",
+		"/C/Users/thesky/Downloads/eclipse-jee-mars-1-win32-x86_64/eclipse/workspace/Kiwoom/kiwoom/src/btsForFox.py",
+		"/C/Users/thesky/Downloads/eclipse-jee-mars-1-win32-x86_64/eclipse/workspace/Kiwoom/kiwoom/src/ExcelParser.py",
+		"/C/Users/thesky/Downloads/eclipse-jee-mars-1-win32-x86_64/eclipse/workspace/Kiwoom/kiwoom/Test/ThreadTest.py",
+		"/C/Users/thesky/Anaconda3/lib/site-packages/win32com/client/dynamic.py",
+		"/C/Users/thesky/git/Kiwoom/kiwoom/src/bts.py",
+		"/E/교보라이프테스트서버properties/KDI/XMLSERVER/ebxml/ebxml.properties",
+		"/E/교보라이프테스트서버properties/교보테스트서버/온라인/XMLSERVER/ebxml/ebxml.properties",
+		"/E/교보라이프테스트서버properties/교보테스트서버/온라인/services.ini",
+		"/E/교보라이프테스트서버properties/KDIFTP/XMLSERVER/webapps/MSH/WEB-INF/web.xml",
+		"/E/교보라이프테스트서버properties/KDI/ini/services.ini",
+		"/E/교보라이프테스트서버properties/KDIFTP/XMLSERVER/webapps/XML/WEB-INF/web.xml",
+		"/E/교보라이프테스트서버properties/KDIFTP/XMLSERVER/webapps/ROOT/WEB-INF/web.xml",
+		"/E/교보라이프테스트서버properties/KDIFTP/ebxml.properties",
+		"/D/ensof/eclipse-jee-kepler-SR2-win32-x86_64/ensof_eclipse/workspace/KyoboDigital_mcCUBE/KDIFTP/log/mcCUBEFTP.log"
+	],
+	"find":
+	{
+		"height": 23.0
+	},
+	"find_in_files":
+	{
+		"height": 96.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"F3",
+			"line",
+			"result",
+			"build_result",
+			"console",
+			"view",
+			"move",
+			"layout",
+			"break",
+			"ctrl+alt",
+			"g",
+			"alt",
+			"mouse",
+			"ctrl+alt+",
+			"f3",
+			"ctrl+left",
+			"alt+left",
+			"jump_back",
+			"alt+right",
+			"left",
+			"alt+-",
+			"ctrl+g",
+			"ctrl+h",
+			"side",
+			"ctrl+m",
+			"sublime",
+			"readedExcel",
+			"getCodeList",
+			"codelist",
+			"setCodelist",
+			"RQueue",
+			"ExcelMake",
+			"ExcelCode",
+			"DBM",
+			"dbm",
+			"DBM",
+			"dbm",
+			"DBM",
+			"dbm",
+			"getCursor",
+			"Prt",
+			"cons",
+			"console",
+			"interpreter",
+			"cmd",
+			"selectQue",
+			"getCodelist",
+			"tab",
+			"getIndexCode",
+			"codelist",
+			"self.codelist",
+			"getCodeList",
+			"getCodeList()",
+			"getCodeList",
+			"getCodeList()",
+			"codelist",
+			"getCodeList",
+			"getTimePerDict()",
+			"# -*- coding: utf-8 -*-\n\nimport win32com.client\nimport ExcelMake\n\nclass ExcelParser:\n    \n    def __init__(self):\n        self.excel = win32com.client.Dispatch(\"Excel.Application\")\n        self.readedExcel = ExcelMake.ExcelCode(False)\n        self.readedExcel.ExcelRead()\n\n\n        print('hi')\n        \n        \n        \nif __name__ == '__main__':\n    test = ExcelParser()\n    ",
+			"ExcelRead",
+			"            \n",
+			"나올까",
+			"7020",
+			"xml",
+			"servletConfig",
+			"BANC_EIBKS"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "Packages/User/winpython.sublime-build",
+	"project": "YGLog.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"bts",
+				"kiwoom\\src\\bts.py"
+			],
+			[
+				"ibk_batch",
+				"KyoboDigital_mcCUBE\\src_ebxml\\app\\src\\mcCUBE\\ebxml\\app\\ibk\\IBK_batch.java"
+			],
+			[
+				"db",
+				"src\\DBMake.py"
+			],
+			[
+				"excelmak",
+				"src\\ExcelMake.py"
+			],
+			[
+				"dbmake",
+				"src\\DBMake.py"
+			],
+			[
+				"excelma",
+				"src\\ExcelMakeForProcess.py"
+			],
+			[
+				"excelparse",
+				"src\\ExcelParser.py"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 35.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 392.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 212.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

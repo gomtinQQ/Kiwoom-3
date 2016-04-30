@@ -130,10 +130,27 @@ class GoldenSearchFromDB1():
             date_fmt='%Y-%m-%d'
             end =datetime.datetime.strptime(end,date_fmt)
             
-            if end<dd and self.keepBuying(Code,Data,3):
+            if end<dd and self.keepBuying(Code,Data,10,FOREIGNER=True,COMPANY=False):
                 
-#                 print('keepBuying~ Code',Code,' When: ',dd ,end="")
-                print('keepBuying~ Code',Code,' When: ',dd )
+                print('Foreigner keepBuying~ Code',Code,' When: ',dd )
+                self.goldenCount+=1
+                self.keepbuy+=1
+                YG.debug('keepBuying ~ [%s'%Code+'] DATE [ %s'%dd+']')
+                
+                if DBLog:
+                    bld.insertGold(str(Code),name)
+                    
+            elif end<dd and self.keepBuying(Code,Data,10,COMPANY=True,FOREIGNER=False):
+                print('Company keepBuying~ Code',Code,' When: ',dd )
+                self.goldenCount+=1
+                self.keepbuy+=1
+                YG.debug('keepBuying ~ [%s'%Code+'] DATE [ %s'%dd+']')
+                
+                if DBLog:
+                    bld.insertGold(str(Code),name)
+
+            elif end<dd and self.keepBuying(Code,Data,3,COMPANY=True,FOREIGNER=True):
+                print('Both keepBuying~ Code',Code,' When: ',dd )
                 self.goldenCount+=1
                 self.keepbuy+=1
                 YG.debug('keepBuying ~ [%s'%Code+'] DATE [ %s'%dd+']')
