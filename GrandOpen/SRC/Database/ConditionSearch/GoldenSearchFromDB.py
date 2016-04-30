@@ -154,20 +154,14 @@ class GoldenSearchFromDB1():
         
         except Exception as a :
             print(traceback.print_exc())
-#             YG.debug(traceback.print_exc()) 안먹히는 이유를 모르겠음. 
 
     def createSearchingDB(self,YG):
         
-#         YG = YGGetCloseDB.YGGetCloseDB()
-#         YG.setProperties()
         start_time = time.time()
         codeNameCoast = YG.getCodeNameCoast()
         
         
-#         bld = BuyListDb.BuyListDB()
         BuyListDb.BuyListDB().createDefaultDB()
-#         print(bld.BuyListDBToday)    16.3.30
-#         bld.createDefaultDB()
         bld = YGBuyListDB.YGGetDbData()
         bld.setProperties(bld.BuyListDBToday,bld.BuyListTable)
         i=0
@@ -204,31 +198,7 @@ if __name__ == '__main__':
     YG.setProperties()
     YG.setLog()
     
-#     ddf = str(159910)
-#     Data = YG.getClosePriceFromDB(ddf)
-#     print(dd.keepBuying(159910,Data,3))
-#     print(dd.VolumeCheck(Data,3,10))
      
     dd.createSearchingDB(YG)
 
 
-
-#     YG = YGGetCloseDB.YGGetCloseDB()
-#     YG.setProperties()
-#     codeNameCoast = YG.getCodeNameCoast()
-#     
-#     md = GoldenSearchFromDB1()
-#     logger = logging.getLogger("YGLogger")
-#     bld = BuyListDb.BuyListDB()
-# #     bld.setProperties()
-#     bld.createDatabase('../../Sqlite3/BuyList'+str(datetime.datetime.today().date())+'.db','BuyList')
-# 
-#     i=0
-#     for code in range(len(codeNameCoast['Code'])):
-#         code = codeNameCoast['Code'][code]
-#         
-#         md.Search(code,'2016-1-13','2016-02-25',YG,bld)
-#         i+=1
-# #         print('Code[',code,'] (',i,'/',len(codeNameCoast),')')
-#         logger.debug('Code[ %s'%code+'] ( %s'%(i,)+'/ %s'%(len(codeNameCoast))+')')
-#         print(' ',i,len(codeNameCoast))

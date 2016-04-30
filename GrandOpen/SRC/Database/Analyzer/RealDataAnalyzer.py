@@ -94,7 +94,7 @@ class RealAnalyse(DBSet.DBSet):
 
             if BS =="BUY":
                 if count =="":
-                    count=5
+                    count=4
                 if interval =="":
                     interval=1
                 query = self.getSelectQuery(tableName, buySell=BS,count=count,interval=interval)
@@ -137,6 +137,16 @@ class RealAnalyse(DBSet.DBSet):
 #             print(buyListCode,BS)
         except :
             self.tracebackLog()
+    
+    def getSelectQueryMulti(self,tableName,buySell):
+        currTime = self.getNowTime()
+        beforeTime = self.pastAgo(currTime, 1)
+        
+        qwefwefqwef
+        query = 'select StockCode from '+tableName+' where "'+beforeTime+'"*2'
+        
+        return query
+        
         
     def setDB(self,DB):
         self.DB= DB
