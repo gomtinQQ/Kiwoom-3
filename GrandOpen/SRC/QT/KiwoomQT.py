@@ -116,32 +116,24 @@ class Ui_Form(QAxWidget):
         chjang1 = self.dynamicCall('GetChejanData(QString)',302) #종목명
         chjang2 = self.dynamicCall('GetChejanData(QString)',900) #주문수량
         chjang3 = self.dynamicCall('GetChejanData(QString)',901) #주문가격
-        print(chjang,chjang1,chjang2,chjang3)
+        print(chjang,chjang1,chjang2,chjang3," 현재시각 [",datetime.datetime.now(),"]")
         
     def OnReceiveRealData(self,sJongmokCode,sRealType,sRealData):
         
-        
-
 #         print('===========RealData called===========[',datetime.datetime.now(),']')
         sRealData = str(sRealData)
 #         print('sJongmokCode[',sJongmokCode,'] sRealType[',sRealType,'] sRealData[',sRealData,']')
-        
 #         Fid = '10;31;29;26;15;12' #현재가,회전율,거래대금증감,전일거래량대비,거래량 체결량 , 등락율
-        
         
         VolumeRotate = self.dynamicCall('GetCommRealData(QString, int )',sRealType,31)
         RelativeVolume = self.dynamicCall('GetCommRealData(QString, int )',sRealType,26)
         yester = self.dynamicCall('GetCommRealData(QString, int )',sRealType,11)
         relative = self.dynamicCall('GetCommRealData(QString, int )',sRealType,12)
         
-        
-        
         CurrPrice = self.dynamicCall('GetCommRealData(QString, int )',sRealType,10)
         volume= self.dynamicCall('GetCommRealData(QString, int )',sRealType,15)
         
 #         print(volume) #체결량이랑 거래량인데 어떻게 들어오는지 확인해야함 그래서 거래량만 파싱해야함.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        
-        
         try:
             self.acumulativeVolume[sJongmokCode]
             self.perPast[sJongmokCode]
@@ -159,7 +151,6 @@ class Ui_Form(QAxWidget):
         hour = str(tim.hour)
         minute = str(self.pastMinute)
         
-#         if self.perPast[sJongmokCode] !=None:  #널체크 2016.04.25 by Yang
         if self.perPast[sJongmokCode] is not None:
             minute =str(self.perPast[sJongmokCode])
             
@@ -183,9 +174,6 @@ class Ui_Form(QAxWidget):
             self.timeVal[sJongmokCode] = None
             
         self.checkBuyOrSell(foTime,CurrPrice)
-    
-        
-    
         
     def setReal(self):
         
