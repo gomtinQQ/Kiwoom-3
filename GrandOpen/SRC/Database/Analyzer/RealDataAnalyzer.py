@@ -16,7 +16,7 @@ from SRC.Database import YGBuyListDB
 
 class RealAnalyse(DBSet.DBSet):
 
-    def getSelectQuery(self,tableName,buySell,Time="",count="",interval=""):
+    def getSelectQuery(self,tableName,buySell,Time="",count="",interval="",multiplicationCheck="1"):
         '''set SimulatorTime if not,get the current Time'''
         
         if count=="":
@@ -29,7 +29,7 @@ class RealAnalyse(DBSet.DBSet):
         self.tocount = 1
         
         if Time=="":
-            Time = int(self.getNowTime())
+            Time = int(self.getNowTime())       #1분전 시간을 구한다
             
         Time=int(Time)
         currTime = self.getNowTime()
@@ -38,11 +38,16 @@ class RealAnalyse(DBSet.DBSet):
         op=">"
         if buySell =="B" or buySell =="BUY":
             op = "<"
-        self.whereQuery = 'select StockCode,StockName from '+tableName+' where "' + \
-            str(beforeTime) +'"'+op+'"' + str(currTime) + '"'
+        if multiplicationCheck is "1":
+            self.whereQuery = 'select StockCode,StockName from '+tableName+' where "' + \
+                str(beforeTime) +'"'+op+'"' + str(currTime) + '"'   
             
-        self.getSelectQuery_proc(count, beforeTime ,interval,op)
-        return self.whereQuery
+            self.getSelectQuery_proc(count, beforeTime ,interval,op)
+            return self.whereQuery
+        else:
+            self.whereQuery = 'select StockCode,StockName from '+tableName+' where "' + \
+                str(beforeTime) +'"*'+multiplicationCheck+''+op+'"' + str(currTime) +'"'
+            return self.whereQuery
     
     def getSelectQuery_proc(self, count, Time,interval,op):
         '''
@@ -87,17 +92,22 @@ class RealAnalyse(DBSet.DBSet):
         for i in range(len(dd)):
             YG.updateBuy(dd[i][0])
     
-    def checkCodeSet(self,YG,connection,Cursor,tableName,BS,count="",interval=""):
+    def checkCodeSet(self,YG,connection,Cursor,tableName,BS,multiplicationCheck="1",count="",interval=""):
         try:            
             conn = connection
             cursor = Cursor
 
             if BS =="BUY":
                 if count =="":
-                    count=5
+                    count=4
                 if interval =="":
                     interval=1
-                query = self.getSelectQuery(tableName, buySell=BS,count=count,interval=interval)
+                if multiplicationCheck is "1":
+                    query = self.getSelectQuery(tableName, buySell=BS,count=count,interval=interval)
+                    print(query)
+                else:
+                    query = self.getSelectQuery(tableName,buySell=BS,multiplicationCheck=multiplicationCheck,count=count,interval=interval)
+                    print(query)
             
                 cursor.execute(query)
                 buyListCode= cursor.fetchall()
@@ -137,6 +147,16 @@ class RealAnalyse(DBSet.DBSet):
 #             print(buyListCode,BS)
         except :
             self.tracebackLog()
+    
+    def getSelectQueryMulti(self,tableName,buySell):
+        currTime = self.getNowTime()
+        beforeTime = self.pastAgo(currTime, 1)
+        
+        qwefwefqwef
+        query = 'select StockCode from '+tableName+' where "'+beforeTime+'"*2'
+        
+        return query
+        
         
     def setDB(self,DB):
         self.DB= DB
@@ -145,10 +165,6 @@ class RealAnalyse(DBSet.DBSet):
     
     def gogo(self,Test=""):
         
-#         print(YG)
-#         YG=self.YG
-#         if YG =="":
-#             print('YGMAKING')
         YG = YGBuyListDB.YGGetDbData()
         YG.setProperties(self.DB,YG.BuyListRelativeTable)
         
@@ -156,8 +172,8 @@ class RealAnalyse(DBSet.DBSet):
         cursor = conn.cursor()
         
         mode="Real"
-        if Test== "Test":
-            mode="Test"
+        if Test is not None:
+            mode=Test
         
         if mode =="Real":
             
@@ -209,8 +225,40 @@ class RealAnalyse(DBSet.DBSet):
                     self.tracebackLog()
                     break
                     continue
-            
-                
+        elif mode =="RealPart2":
+#             while(True):
+#                 print("901분 부터 시작합니다.. [현재시각 :",self.getNowTime(),"]")
+#                 if self.getNowTime()=="0901" or self.getNowTime() =="901":
+#                     break
+#                 else:
+#                     time.sleep(1)
+            '''select StockCode,StockName,"1252","1253" ,(("1253"-"1252")/CAST ("1253" AS REAL))*100 from Relative where (("1253"-"1252")/CAST ("1253" AS REAL))*100.0>0'''
+            print("RealPart2 분석 시작 !!!!!!!!!!!!!!!!!!!!!!!!!")
+            while(True):
+                try:
+                    self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'BUY',multiplicationCheck="10",count=1,interval=1 ) #1분전보다 1프로 이상 증가?
+                     
+                    
+                    self.checkCodeSet(YG,conn,cursor, self.BuyListVolumeRotateTable,'BUY' ) #1분전 상황보다 거래량이 5배이상 증가 ?
+                    
+                    self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'SELL' )    #산것보다 가격이 2프로이상 증가?
+                    self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'SELL' )    #산것보다 가격이 3프로이상 하락 ?
+                    
+                    self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'SELL' )    #산후 시간이 5분이상 지남 ? 
+                    
+                    self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'SELL' )    #거래량 사기전 5분동안 < 산후 5분동안?
+                    
+                    if self.getNowTime() == "1449":
+                        self.checkCodeSet(YG,conn,cursor,self.BuyListTable,'END')
+                        break
+                    
+                    time.sleep(0.5)
+                except Exception:
+                    self.tracebackLog()
+                    print("realData Analyzer종료함.")
+#                     break
+                    continue
+            print("장 종료되었음.")
                 
             
 if __name__ == '__main__':
@@ -220,7 +268,7 @@ if __name__ == '__main__':
 #     YG.setProperties(YG.BuyListDBToday,YG.BuyListRelativeTable)
     
     ra.setDB(YG.BuyListDBYesterday)
-    proc = mp.Process(target=ra.gogo,args=["Test",]) 
+    proc = mp.Process(target=ra.gogo,args=["RealPart2",]) 
     proc.start()
 
 #     ra.start()
