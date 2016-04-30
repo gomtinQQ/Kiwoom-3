@@ -121,18 +121,19 @@ class RealAnalyse(DBSet.DBSet):
                     interval=1
                 if multiplicationCheck is "1":
                     query = self.getSelectQuery(tableName, buySell=BS,count=count,interval=interval)
+                    cursor.execute(query)
+                    buyListCode= cursor.fetchall()
+                    self.updateBuy(YG, buyListCode, cursor, conn)
+                else:
+                    query = self.getSelectQuery(tableName,buySell=BS,Time="1303",multiplicationCheck=multiplicationCheck,count=count,interval=interval)
 #                     print(query)
                     cursor.execute(query)
                     buyListCode= cursor.fetchall()
-                else:
-                    query = self.getSelectQuery(tableName,buySell=BS,Time="1303",multiplicationCheck=multiplicationCheck,count=count,interval=interval)
-                    print(query)
-                    cursor.execute(query)
-                    buyListCode= cursor.fetchall()
+#                     print(buyListCode)
                     return buyListCode
 #                 for i in range(len(buyListCode)):
 #                     YG.updateBuy(buyListCode[i][0],cursor,conn)
-                self.updateBuy(YG, buyListCode, cursor, conn)
+#                 self.updateBuy(YG, buyListCode, cursor, conn)
 #                     print(buyListCode[i][0])
 
             elif BS == "SELL":
@@ -237,18 +238,13 @@ class RealAnalyse(DBSet.DBSet):
                     break
                     continue
         elif mode =="RealPart2":
-#             while(True):
-#                 print("901분 부터 시작합니다.. [현재시각 :",self.getNowTime(),"]")
-#                 if self.getNowTime()=="0901" or self.getNowTime() =="901":
-#                     break
-#                 else:
-#                     time.sleep(1)
+            
             print("RealPart2 분석 시작 !!!!!!!!!!!!!!!!!!!!!!!!!")
             while(True):
                 try:
                     buyListCode = self.checkCodeSet(YG,conn,cursor, self.BuyListVolumeRotateTable,'BUY' ,multiplicationCheck="5",count=1,interval=1 ) #1분전 상황보다 거래량이 5배이상 증가 ?
-
-                    self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'BUY',multiplicationCheck="0.5",count=1,interval=1 ) #1분전보다 0.5프로 이상 증가?
+                    buyListCode2 = self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'BUY',multiplicationCheck="0.5",count=1,interval=1 ) #1분전보다 0.5프로 이상 증가?
+                    print(buyListCode,buyListCode2)
 
 
                     self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'SELL' )    #산것보다 가격이 2프로이상 증가?
