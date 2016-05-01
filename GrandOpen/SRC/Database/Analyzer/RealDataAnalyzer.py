@@ -52,8 +52,8 @@ class RealAnalyse(DBSet.DBSet):
                 return whereQuery
             
             elif tableName == self.BuyListRelativeTable:
-                whereQuery = 'select StockCode,StockName from {Relative} where (("{currTime}"-"{beforeTime}")/CAST ("{beforeTime}" AS REAL))*100.0>{percentage}'\
-                .format(Relative=self.BuyListRelativeTable,currTime=str(currTime),beforeTime=str(beforeTime),percentage=multiplicationCheck) #percentage이상되는걸 고른다.
+                whereQuery = 'select StockCode,StockName from {Relative} where StockCode="{code}" and (("{currTime}"-"{beforeTime}")/CAST ("{beforeTime}" AS REAL))*100.0>{percentage}'\
+                .format(Relative=self.BuyListRelativeTable,currTime=str(currTime),beforeTime=str(beforeTime),percentage=multiplicationCheck,code=code) #percentage이상되는걸 고른다.
 #                 print(whereQuery)
                 return whereQuery
             
@@ -107,7 +107,7 @@ class RealAnalyse(DBSet.DBSet):
     def updateBuy(self,YG,buyListCode,cursor,conn):
         
         for i in range(len(buyListCode)):
-                    YG.updateBuy(buyListCode[i][0],cursor,conn)
+            YG.updateBuy(buyListCode[i][0],cursor,conn)
         
     def checkCodeSet(self,YG,connection,Cursor,tableName,BS,multiplicationCheck="1",count="",interval=""):
         try:
@@ -126,15 +126,9 @@ class RealAnalyse(DBSet.DBSet):
                     self.updateBuy(YG, buyListCode, cursor, conn)
                 else:
                     query = self.getSelectQuery(tableName,buySell=BS,Time="1303",multiplicationCheck=multiplicationCheck,count=count,interval=interval)
-#                     print(query)
                     cursor.execute(query)
                     buyListCode= cursor.fetchall()
-#                     print(buyListCode)
                     return buyListCode
-#                 for i in range(len(buyListCode)):
-#                     YG.updateBuy(buyListCode[i][0],cursor,conn)
-#                 self.updateBuy(YG, buyListCode, cursor, conn)
-#                     print(buyListCode[i][0])
 
             elif BS == "SELL":
 
@@ -244,7 +238,9 @@ class RealAnalyse(DBSet.DBSet):
                 try:
                     buyListCode = self.checkCodeSet(YG,conn,cursor, self.BuyListVolumeRotateTable,'BUY' ,multiplicationCheck="5",count=1,interval=1 ) #1분전 상황보다 거래량이 5배이상 증가 ?
                     buyListCode2 = self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'BUY',multiplicationCheck="0.5",count=1,interval=1 ) #1분전보다 0.5프로 이상 증가?
-                    print(buyListCode,buyListCode2)
+                    
+                    if buyListCode2[0][0] in buyListCode[0]:
+                        print(buyListCode2[0][0],buyListCode[0])
 
 
                     self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'SELL' )    #산것보다 가격이 2프로이상 증가?
