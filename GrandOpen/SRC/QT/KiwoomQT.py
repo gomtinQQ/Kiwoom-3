@@ -116,7 +116,30 @@ class Ui_Form(QAxWidget):
         chjang1 = self.dynamicCall('GetChejanData(QString)',302) #종목명
         chjang2 = self.dynamicCall('GetChejanData(QString)',900) #주문수량
         chjang3 = self.dynamicCall('GetChejanData(QString)',901) #주문가격
-        print(chjang,chjang1,chjang2,chjang3," 현재시각 [",datetime.datetime.now(),"]")
+        chjang4 = self.dynamicCall('GetChejanData(QString)',910) #체결가
+        chjang5 = self.dynamicCall('GetChejanData(QString)',9001) #종목코드,업종코드
+        chjang6 = self.dynamicCall('GetChejanData(QString)',913) #주문상태(10:원주문, 11:정정주문, 12:취소주문, 20:주문확인, 21:정정확인, 22:취소확 인, 90-92:주문거부) 
+        chjang7 = self.dynamicCall('GetChejanData(QString)',907) #매도수구분 (1:매도,2:매수)
+         
+        timenow = datetime.datetime.now()
+        hours = str(timenow.hour)
+        minute = str(timenow.minute)
+        if len(hours) <2:
+            hours = "0"+hours
+        if len(minute)<2:
+            minute = "0"+minute
+        time = hours+minute
+        print("주문번호[",chjang,"]종목명[",chjang1,"]주문수량[",chjang2,"]주문가격[",chjang3,"]체결가[",chjang4,"]종목코드,업종코드[",chjang5,\
+              "]주문상태[",chjang6,"]매도매수구분[",chjang7," 현재시각 [",timenow,"]")
+        
+        self.YG.buyStock(chjang5,time,chjang4)#dblogging
+    
+        self.YG.sellStock(chjang5,time,chjang4)#dblogging
+                
+    
+
+        
+        
         
     def OnReceiveRealData(self,sJongmokCode,sRealType,sRealData):
         
@@ -137,6 +160,7 @@ class Ui_Form(QAxWidget):
         try:
             self.acumulativeVolume[sJongmokCode]
             self.perPast[sJongmokCode]
+            print("종목코드의 누적거래량",self.acumulativeVolume[sJongmokCode],"각각의 시간",self.perPast[sJongmokCode])
         except :
             self.acumulativeVolume[sJongmokCode]=0
             self.perPast[sJongmokCode]= str(self.pastMinute)
@@ -223,11 +247,11 @@ class Ui_Form(QAxWidget):
                 stockCode = stockCodeList[i][0]
                 
                 if str(stockCodeList[i][1]) =="B":
-                    self.YG.buyStock(stockCode,time,CurrPrice)#dblogging
+#                     self.YG.buyStock(stockCode,time,CurrPrice)#dblogging
                     self.sendOrder(stockCode,"BUY")#sendOrder
                 
                 elif str(stockCodeList[i][1]) =="S":
-                    self.YG.sellStock(stockCode,time,CurrPrice)#dblogging
+#                     self.YG.sellStock(stockCode,time,CurrPrice)#dblogging
                     self.sendOrder(stockCode,"SELL")#sendOrder
                 
                 
