@@ -120,7 +120,8 @@ class Ui_Form(QAxWidget):
         chjang5 = self.dynamicCall('GetChejanData(QString)',9001) #종목코드,업종코드
         chjang6 = self.dynamicCall('GetChejanData(QString)',913) #주문상태(10:원주문, 11:정정주문, 12:취소주문, 20:주문확인, 21:정정확인, 22:취소확 인, 90-92:주문거부) 
         chjang7 = self.dynamicCall('GetChejanData(QString)',907) #매도수구분 (1:매도,2:매수)
-         
+        
+        chjang7=str(chjang7)
         timenow = datetime.datetime.now()
         hours = str(timenow.hour)
         minute = str(timenow.minute)
@@ -132,9 +133,10 @@ class Ui_Form(QAxWidget):
         print("주문번호[",chjang,"]종목명[",chjang1,"]주문수량[",chjang2,"]주문가격[",chjang3,"]체결가[",chjang4,"]종목코드,업종코드[",chjang5,\
               "]주문상태[",chjang6,"]매도매수구분[",chjang7," 현재시각 [",timenow,"]")
         
-        self.YG.buyStock(chjang5,time,chjang4)#dblogging
-    
-        self.YG.sellStock(chjang5,time,chjang4)#dblogging
+        if chjang7 == "2":
+            self.YG.buyStock(chjang5,time,chjang4)#dblogging
+        else:
+            self.YG.sellStock(chjang5,time,chjang4)#dblogging
                 
     
 
