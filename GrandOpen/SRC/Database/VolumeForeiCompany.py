@@ -105,6 +105,7 @@ if __name__ == '__main__':
     Volume.start()
     Company.start()
     closePrice.start()
+    
 #     wor11 = mp.Process(name="Company",target=cp.initAndCreateCompany)
 #     wor12 = mp.Process(name="Foreign",target=cp.initAndCreateForeign)
 #     wor13 = mp.Process(name="Volume",target=cp.initAndCreateVolume)
