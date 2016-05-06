@@ -49,6 +49,28 @@ class YGGetDbData(DBSet.DBSet):
         except OperationalError:
             self.tracebackLog()
             print("relative [",relative,"]")
+            
+            
+    def updateRelativeCode2(self,Code,relative,timeVal):
+#         tim = datetime.datetime.now()
+#         hour = str(tim.hour)
+#         minute = str(pastMinute)
+#         foTime = hour+minute
+        foTime = str(timeVal[0])
+        
+        info = str(relative)
+        
+        if info.startswith("-"):
+            info=info[1:]
+        
+        query = "update {tableName} set '{StockCode}' = '{info}' where StockTime = '{foTime}'".format(tableName=self.BuyListRelativeTable,StockCode =Code,info=info,foTime=foTime)
+#         print(query)
+        try:
+            self.cursor.execute(query)
+            self.conn.commit()
+        except OperationalError:
+            self.tracebackLog()
+            print("relative [",relative,"]")
         
     def updateVolumeCode(self,Code,Rotate,timeVal):
         
@@ -66,7 +88,7 @@ class YGGetDbData(DBSet.DBSet):
         except OperationalError:
             self.tracebackLog()
             print("info [",info,"]")
-    def updateVolumeCode2(self,Code,Rotate,timeVal):
+    def updateVolumeCode2(self,Code,timeVal):
         
         '''변경된소스'''
         
@@ -76,7 +98,7 @@ class YGGetDbData(DBSet.DBSet):
         if info.startswith("-"):
             info=info[1:]
         '''update BuyList set "130960" = "130" where StockTime = "900"'''
-        query = "update BuyList set '{StockCode}' = '{info}' where StockTime = '{foTime}'".format(StockCode =Code,info=info,foTime=foTime)
+        query = "update {tableName} set '{StockCode}' = '{info}' where StockTime = '{foTime}'".format(tableName=self.BuyListVolumeRotateTable,StockCode =Code,info=info,foTime=foTime)
         print(query)
         try:
             self.cursor.execute(query)
@@ -184,20 +206,28 @@ class YGGetDbData(DBSet.DBSet):
     
 if __name__ == '__main__':
     cp =YGGetDbData()
-    cp.insertGold('000222')
+#     cp.insertGold('000222')
 #     DB = '../../Sqlite3/BuyList'+str(datetime.datetime.today().date())+'.db'
     DB = cp.BuyListDBToday
     table = cp.BuyListTable
-    print(DB,table)
     cp.setProperties(DB,table)
+    print(DB,",",table)
     
-    yy = cp.getCodeNameForReaReg()
+    timeVal = {}
+    sJongmokCode = "130960"
+    timeVal[sJongmokCode] = "900","287001"
+    
+    cp.updateVolumeCode2(sJongmokCode, timeVal[sJongmokCode])
+    cp.updateRelativeCode2(sJongmokCode,"1360",timeVal[sJongmokCode])
+    
+    
+#     yy = cp.getCodeNameForReaReg()
 #     print(yy['BuySell'])
 #     cp.buyStock(98120, 903,236200)
 #     cp.updateVolumeCode(227950, 3820,932)
 #     cp.sellStock(19210, 930,12000)
 #     print(cp.getEndCode())
 #     print(yy['Code'][0])
-    dd = cp.getBuySell()
-    for i in range(len(dd)):
-        print(str(dd[i][1]))
+#     dd = cp.getBuySell()
+#     for i in range(len(dd)):
+#         print(str(dd[i][1]))
