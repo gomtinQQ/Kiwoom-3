@@ -202,6 +202,27 @@ class YGGetDbData(DBSet.DBSet):
         except Exception:
             
             self.tracebackLog()
+            
+    def insertGold2(self,code,name):
+        
+        try:
+#             sql = 'insert into '+self.BuyListTable+' (StockCode) values("'+str(code)+'");'
+            
+            sql = self.insertGoldQuery.format(tableName=self.BuyListTable,StockCode=str(code),StockName=str(name))
+            self.cursor.execute(sql)
+            
+#             sql = self.insertGoldQuery.format(tableName=self.BuyListVolumeRotateTable,StockCode=str(code),StockName=str(name))
+# #             sql = 'insert into '+self.BuyListVolumeRotateTable+' (StockCode) values("'+str(code)+'");'
+#             self.cursor.execute(sql)
+#             sql = self.insertGoldQuery.format(tableName=self.BuyListRelativeTable,StockCode=str(code),StockName=str(name))
+#             sql = 'insert into '+self.BuyListRelativeTable+' (StockCode) values("'+str(code)+'");'
+#             self.cursor.execute(sql)
+            
+            self.conn.commit()
+            
+        except Exception:
+            
+            self.tracebackLog()
     
     
 if __name__ == '__main__':

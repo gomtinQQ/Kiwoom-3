@@ -126,26 +126,25 @@ class GoldenSearchFromDB1():
         
         try:
             dd =Gold.to_datetime()
-            StockCodeList=[]
             date_fmt='%Y-%m-%d'
             end =datetime.datetime.strptime(end,date_fmt)
             
             if end<dd and self.keepBuying(Code,Data,10,FOREIGNER=True,COMPANY=False):
                 
                 print('Foreigner keepBuying~ Code',Code,' When: ',dd )
-                StockCodeList.append(Code)
+                
                 self.goldenCount+=1
                 self.keepbuy+=1
                 YG.debug('keepBuying ~ [%s'%Code+'] DATE [ %s'%dd+']')
-                
                 if DBLog:
                     bld.insertGold(str(Code),name)
                 else :
-                    self.StockCodeList.append(str(Code))
+                    codeSet = str(Code),name
+                    self.StockCodeList.append(codeSet)
                     
             elif end<dd and self.keepBuying(Code,Data,10,COMPANY=True,FOREIGNER=False):
                 print('Company keepBuying~ Code',Code,' When: ',dd )
-                StockCodeList.append(Code)
+                
                 self.goldenCount+=1
                 self.keepbuy+=1
                 YG.debug('keepBuying ~ [%s'%Code+'] DATE [ %s'%dd+']')
@@ -153,11 +152,12 @@ class GoldenSearchFromDB1():
                 if DBLog:
                     bld.insertGold(str(Code),name)
                 else :
-                    self.StockCodeList.append(str(Code))
+                    codeSet = str(Code),name
+                    self.StockCodeList.append(codeSet)
 
             elif end<dd and self.keepBuying(Code,Data,3,COMPANY=True,FOREIGNER=True):
                 print('Both keepBuying~ Code',Code,' When: ',dd )
-                StockCodeList.append(Code)
+                
                 self.goldenCount+=1
                 self.keepbuy+=1
                 YG.debug('keepBuying ~ [%s'%Code+'] DATE [ %s'%dd+']')
@@ -165,13 +165,14 @@ class GoldenSearchFromDB1():
                 if DBLog:
                     bld.insertGold(str(Code),name)
                 else :
-                    self.StockCodeList.append(str(Code))
+                    codeSet = str(Code),name
+                    self.StockCodeList.append(codeSet)
                 
             elif end<dd and self.VolumeCheck(Data,3,20):
                 
 #                 print('Volume!~ Code',Code,' When: ',dd ,end="")
                 print('Volume!~ Code',Code,' When: ',dd )
-                StockCodeList.append(Code)
+                
                 self.goldenCount+=1
                 self.volcheck+=1
                 YG.debug('Volume!~ [%s'%Code+'] DATE [ %s'%dd+']')
@@ -179,7 +180,8 @@ class GoldenSearchFromDB1():
                 if DBLog:
                     bld.insertGold(str(Code),name)
                 else :
-                    self.StockCodeList.append(str(Code))
+                    codeSet = str(Code),name
+                    self.StockCodeList.append(codeSet)
         
         except Exception as a :
             print(traceback.print_exc())
@@ -237,12 +239,16 @@ class GoldenSearchFromDB1():
             self.Search(code,'2016-02-25',YG,bld,DBLog,name)
             i+=1
             YG.debug('Code[%s'%code+'] ( %s'%(i,)+'/ %s'%(len(codeNameCoast))+')')
+        BuyListDb.BuyListDB().createDefaultDB2(self.StockCodeList)
+        
+        for i in range(len(self.StockCodeList)):
+            bld.insertGold2(self.StockCodeList[i][0], self.StockCodeList[i][1])
+        
         takeTime=time.time()-start_time
         YG.debug('Total Golden Count [%s'%self.goldenCount+'] keepbuying[%s'%self.keepbuy+'] Volume[%s'%self.volcheck+']')
         YG.debug('Time [%s'%takeTime)
-        BuyListDb.BuyListDB().createDefaultDB2(self.StockCodeList)
         print('Total Golden Count [%s'%self.goldenCount+'] keepbuying[%s'%self.keepbuy+'] Volume[%s'%self.volcheck+']')
-        print('Time [%s'%takeTime)
+        print('Time [%s'%takeTime+']')
         
 def gogo(config):
     dd=  GoldenSearchFromDB1()

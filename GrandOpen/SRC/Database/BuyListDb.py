@@ -47,7 +47,7 @@ class BuyListDB(MakeDB.DBMake):
             
             for i in range(len(StockCodeList)):
                 
-                self.cursor.execute("alter table "+table+" add '"+StockCodeList[i]+"' INTEGER")
+                self.cursor.execute("alter table "+table+" add '"+StockCodeList[i][0]+"' INTEGER")
             self.conn.commit()  
             print("DataColumn Added ["+str(time.time()-_start)+"]")
         except :
@@ -62,7 +62,7 @@ class BuyListDB(MakeDB.DBMake):
                 if j<10:
                     j=str(j)
                     j=j[:0]+str('0')+j[0:]
-                self.cursor.execute("insert into "+table+" (StockTIME,BUYSELL) values ('"+str(i)+str(j)+"','S')")   #전체 다팔고 시작하기위해 S로 시작함.
+                self.cursor.execute("insert into "+table+" (StockTIME) values ('"+str(i)+str(j)+"')")   #전체 다팔고 시작하기위해 S로 시작함.
         self.conn.commit()  
         
 
@@ -75,7 +75,7 @@ class BuyListDB(MakeDB.DBMake):
         
     def createDefaultDB2(self,StockCodeList):
         
-        self.createDatabase2(self.BuyListDBToday, self.BuyListTable,StockCodeList)
+        self.createDatabase(self.BuyListDBToday, self.BuyListTable)
         self.createDatabase2(self.BuyListDBToday ,self.BuyListVolumeRotateTable,StockCodeList)
         self.createDatabase2(self.BuyListDBToday ,self.BuyListRelativeTable,StockCodeList)
             

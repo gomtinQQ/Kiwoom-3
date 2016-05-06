@@ -48,8 +48,7 @@ class DBMake(DBSet.DBSet):
         _start=time.time()
         try:
             self.cursor.execute('CREATE TABLE `'+self.tableName+'` \
-            (`BUYSELL`  TEXT ,\
-            `StockTime` TEXT );')
+            (`StockTime` TEXT );')
              
             print("table created ["+str(time.time()-_start)+"]")
         except :
