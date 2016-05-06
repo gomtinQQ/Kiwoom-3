@@ -159,18 +159,21 @@ class Ui_Form(QAxWidget):
         volume= self.dynamicCall('GetCommRealData(QString, int )',sRealType,15)
         
 #         print(volume) #체결량이랑 거래량인데 어떻게 들어오는지 확인해야함 그래서 거래량만 파싱해야함.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        sJongmokCode = self.addZeroToStockCode(str(sJongmokCode))
         try:
             self.acumulativeVolume[sJongmokCode]
             self.perPast[sJongmokCode]
             print("종목코드의 누적거래량",self.acumulativeVolume[sJongmokCode],"각각의 시간",self.perPast[sJongmokCode])
         except :
-            self.acumulativeVolume[sJongmokCode]=0
-            self.perPast[sJongmokCode]= str(self.pastMinute)
+#             self.acumulativeVolume[sJongmokCode]=0
+#             self.perPast[sJongmokCode]= str(self.pastMinute)
+            traceback.print_exc()
         
         try:
             self.acumulativeVolume[sJongmokCode]+=int(volume)
         except :
             print('거래량 에러',volume)
+            traceback.print_exc()
         self.currMinute = datetime.datetime.now().minute
         
         tim = datetime.datetime.now()
@@ -213,6 +216,8 @@ class Ui_Form(QAxWidget):
         try: 
             for index in range(len(code)):
                 rCode = self.addZeroToStockCode(str(code['Code'][index]))
+                self.acumulativeVolume[rCode]=0             #변수 초기화.
+                self.perPast[rCode]= str(self.pastMinute)   #변수 초기화.
                 strCodeList +=rCode+';'
                 
             strCodeList = strCodeList[:len(strCodeList)-1]  #remove last character = ';'
@@ -299,12 +304,12 @@ class Ui_Form(QAxWidget):
         '''매수 정정 -  openApi.SendOrder(“RQ_1”,“0101”, “5015123410”, 5, “000660”, 10, 49500, “0”, “1”);      '''
         '''매수 취소 -  openApi.SendOrder(“RQ_1”, “0101”, “5015123410”, 3, “000660”, 10, “0”, “2”);            '''
             
-    def addZeroToStockCode(self,str):
-        str=str.strip()
+    def addZeroToStockCode(self,str2):
+        str2=str2.strip()
     
-        if len(str.strip())<=6:
-            while(len(str.strip())!=6):
-                str=str[:0]+"0"+str[0:]
+        if len(str2.strip())<=6:
+            while(len(str2.strip())!=6):
+                str2=str2[:0]+"0"+str2[0:]
         return str
     
 def gogo(config):

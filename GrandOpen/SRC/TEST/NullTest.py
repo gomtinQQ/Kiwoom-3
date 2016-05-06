@@ -10,3 +10,10 @@ if __name__ == '__main__':
     if dd == None:
         df = 21
     print(df)
+    
+    arr ={}
+    jongMok = "0506940"
+    arr[jongMok]=0
+    
+    volume = "-1"
+    print(int(volume))
