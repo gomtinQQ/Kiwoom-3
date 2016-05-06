@@ -22,7 +22,7 @@ class DBMake(DBSet.DBSet):
         self.dbName=DBName
         self.conn = sqlite3.connect(self.dbName)
         self.cursor = self.conn.cursor()
-        
+         
         _start=time.time()
         try:
             self.cursor.execute('CREATE TABLE `'+self.tableName+'` \
@@ -31,13 +31,33 @@ class DBMake(DBSet.DBSet):
             `StockName`  INTEGER UNIQUE,\
             PRIMARY KEY(StockCode)\
             );')
-            
+             
             print("table created ["+str(time.time()-_start)+"]")
         except :
 #             self.PrintException()
             self.tracebackLog()
-        
+         
         self.commit()
+    def createDatabase2(self,DBName,table):
+        
+        self.setTable(table)
+        self.dbName=DBName
+        self.conn = sqlite3.connect(self.dbName)
+        self.cursor = self.conn.cursor()
+         
+        _start=time.time()
+        try:
+            self.cursor.execute('CREATE TABLE `'+self.tableName+'` \
+            (`BUYSELL`  TEXT ,\
+            `StockTime` TEXT );')
+             
+            print("table created ["+str(time.time()-_start)+"]")
+        except :
+#             self.PrintException()
+            self.tracebackLog()
+         
+        self.commit()
+        
     
     def addCodeNameData(self):
         '''테이블 생성후 코드와,이름 삽입'''

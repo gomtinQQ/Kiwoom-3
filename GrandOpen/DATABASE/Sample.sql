@@ -1,0 +1,1 @@
+update BuyList set "130960" = "130" where StockTime = "900"

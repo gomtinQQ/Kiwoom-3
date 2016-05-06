@@ -126,48 +126,60 @@ class GoldenSearchFromDB1():
         
         try:
             dd =Gold.to_datetime()
-            
+            StockCodeList=[]
             date_fmt='%Y-%m-%d'
             end =datetime.datetime.strptime(end,date_fmt)
             
             if end<dd and self.keepBuying(Code,Data,10,FOREIGNER=True,COMPANY=False):
                 
                 print('Foreigner keepBuying~ Code',Code,' When: ',dd )
+                StockCodeList.append(Code)
                 self.goldenCount+=1
                 self.keepbuy+=1
                 YG.debug('keepBuying ~ [%s'%Code+'] DATE [ %s'%dd+']')
                 
                 if DBLog:
                     bld.insertGold(str(Code),name)
+                else :
+                    self.StockCodeList.append(str(Code))
                     
             elif end<dd and self.keepBuying(Code,Data,10,COMPANY=True,FOREIGNER=False):
                 print('Company keepBuying~ Code',Code,' When: ',dd )
+                StockCodeList.append(Code)
                 self.goldenCount+=1
                 self.keepbuy+=1
                 YG.debug('keepBuying ~ [%s'%Code+'] DATE [ %s'%dd+']')
                 
                 if DBLog:
                     bld.insertGold(str(Code),name)
+                else :
+                    self.StockCodeList.append(str(Code))
 
             elif end<dd and self.keepBuying(Code,Data,3,COMPANY=True,FOREIGNER=True):
                 print('Both keepBuying~ Code',Code,' When: ',dd )
+                StockCodeList.append(Code)
                 self.goldenCount+=1
                 self.keepbuy+=1
                 YG.debug('keepBuying ~ [%s'%Code+'] DATE [ %s'%dd+']')
                 
                 if DBLog:
                     bld.insertGold(str(Code),name)
+                else :
+                    self.StockCodeList.append(str(Code))
                 
             elif end<dd and self.VolumeCheck(Data,3,20):
                 
 #                 print('Volume!~ Code',Code,' When: ',dd ,end="")
                 print('Volume!~ Code',Code,' When: ',dd )
+                StockCodeList.append(Code)
                 self.goldenCount+=1
                 self.volcheck+=1
                 YG.debug('Volume!~ [%s'%Code+'] DATE [ %s'%dd+']')
                 
                 if DBLog:
                     bld.insertGold(str(Code),name)
+                else :
+                    self.StockCodeList.append(str(Code))
         
         except Exception as a :
             print(traceback.print_exc())
@@ -199,6 +211,38 @@ class GoldenSearchFromDB1():
         YG.debug('Time [%s'%takeTime)
         print('Total Golden Count [%s'%self.goldenCount+'] keepbuying[%s'%self.keepbuy+'] Volume[%s'%self.volcheck+']')
         print('Time [%s'%takeTime)
+    
+    def createSearchingDB2(self,YG):
+        
+        
+        '''created by Yang in 2016-05-06'''
+        start_time = time.time()
+        codeNameCoast = YG.getCodeNameCoast()
+        
+        
+        bld = YGBuyListDB.YGGetDbData()
+        bld.setProperties(bld.BuyListDBToday,bld.BuyListTable)
+        
+        i=0
+        self.goldenCount = 0
+        self.keepbuy=0
+        self.volcheck=0
+        DBLog=False
+        print("DB LOGGING [",DBLog,"]")
+        self.StockCodeList=[]
+        for index in range(len(codeNameCoast['code'])):
+            code = codeNameCoast['code'][index]
+            name = codeNameCoast['name'][index]
+            
+            self.Search(code,'2016-02-25',YG,bld,DBLog,name)
+            i+=1
+            YG.debug('Code[%s'%code+'] ( %s'%(i,)+'/ %s'%(len(codeNameCoast))+')')
+        takeTime=time.time()-start_time
+        YG.debug('Total Golden Count [%s'%self.goldenCount+'] keepbuying[%s'%self.keepbuy+'] Volume[%s'%self.volcheck+']')
+        YG.debug('Time [%s'%takeTime)
+        BuyListDb.BuyListDB().createDefaultDB2(self.StockCodeList)
+        print('Total Golden Count [%s'%self.goldenCount+'] keepbuying[%s'%self.keepbuy+'] Volume[%s'%self.volcheck+']')
+        print('Time [%s'%takeTime)
         
 def gogo(config):
     dd=  GoldenSearchFromDB1()
@@ -216,6 +260,6 @@ if __name__ == '__main__':
     YG.setLog()
     
      
-    dd.createSearchingDB(YG)
+    dd.createSearchingDB2(YG)
 
 

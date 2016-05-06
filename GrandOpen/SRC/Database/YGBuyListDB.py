@@ -66,6 +66,24 @@ class YGGetDbData(DBSet.DBSet):
         except OperationalError:
             self.tracebackLog()
             print("info [",info,"]")
+    def updateVolumeCode2(self,Code,Rotate,timeVal):
+        
+        '''변경된소스'''
+        
+        foTime = str(timeVal[0])
+        info = str(timeVal[1])
+        
+        if info.startswith("-"):
+            info=info[1:]
+        '''update BuyList set "130960" = "130" where StockTime = "900"'''
+        query = "update BuyList set '{StockCode}' = '{info}' where StockTime = '{foTime}'".format(StockCode =Code,info=info,foTime=foTime)
+        print(query)
+        try:
+            self.cursor.execute(query)
+            self.conn.commit()
+        except OperationalError:
+            self.tracebackLog()
+            print("info [",info,"]")
     
     def updateBuy(self,code,cursor,conn):
         

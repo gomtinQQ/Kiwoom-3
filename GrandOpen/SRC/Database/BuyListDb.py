@@ -37,13 +37,47 @@ class BuyListDB(MakeDB.DBMake):
             print("DataColumn Added ["+str(time.time()-_start)+"]")
         except :
 #             self.PrintException()
-            self.tracebackLog()        
+            self.tracebackLog()
+            
+                    
+    def createDatabase2(self,dbName,table,StockCodeList):
+        super().createDatabase2(dbName,table)
+        try:
+            _start=time.time()
+            
+            for i in range(len(StockCodeList)):
+                
+                self.cursor.execute("alter table "+table+" add '"+StockCodeList[i]+"' INTEGER")
+            self.conn.commit()  
+            print("DataColumn Added ["+str(time.time()-_start)+"]")
+        except :
+#             self.PrintException()
+            self.tracebackLog()
+        self.insertStockTime(table)
+        
+    def insertStockTime(self,table):
+        
+        for i in range(9,15):
+            for j in range(0,60):
+                if j<10:
+                    j=str(j)
+                    j=j[:0]+str('0')+j[0:]
+                self.cursor.execute("insert into "+table+" (StockTIME,BUYSELL) values ('"+str(i)+str(j)+"','S')")   #전체 다팔고 시작하기위해 S로 시작함.
+        self.conn.commit()  
+        
 
     def createDefaultDB(self):
         
         self.createDatabase(self.BuyListDBToday, self.BuyListTable)
         self.createDatabase(self.BuyListDBToday ,self.BuyListVolumeRotateTable)
         self.createDatabase(self.BuyListDBToday ,self.BuyListRelativeTable)
+        
+        
+    def createDefaultDB2(self,StockCodeList):
+        
+        self.createDatabase2(self.BuyListDBToday, self.BuyListTable,StockCodeList)
+        self.createDatabase2(self.BuyListDBToday ,self.BuyListVolumeRotateTable,StockCodeList)
+        self.createDatabase2(self.BuyListDBToday ,self.BuyListRelativeTable,StockCodeList)
             
 #     def insertGold(self,code):
 #         
