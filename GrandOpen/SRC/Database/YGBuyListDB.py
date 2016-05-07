@@ -206,6 +206,7 @@ class YGGetDbData(DBSet.DBSet):
     def insertGold2(self,code,name):
         
         try:
+            '''BuyList에만 넣기위한 쿼리.'''
 #             sql = 'insert into '+self.BuyListTable+' (StockCode) values("'+str(code)+'");'
             
             sql = self.insertGoldQuery.format(tableName=self.BuyListTable,StockCode=str(code),StockName=str(name))
@@ -236,7 +237,7 @@ if __name__ == '__main__':
     
     timeVal = {}
     sJongmokCode = "130960"
-    timeVal[sJongmokCode] = "900","287001"
+    timeVal[sJongmokCode] = "900","287002"
     
     cp.updateVolumeCode2(sJongmokCode, timeVal[sJongmokCode])
     cp.updateRelativeCode2(sJongmokCode,"1360",timeVal[sJongmokCode])
