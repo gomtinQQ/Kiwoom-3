@@ -196,10 +196,10 @@ class Ui_Form(QAxWidget):
 #             print(sJongmokCode,self.acumulativeVolume[sJongmokCode],self.perPast[sJongmokCode])
             self.perPast[sJongmokCode] = str(self.currMinute)
             
-#             self.YG.updateVolumeCode(sJongmokCode,self.acumulativeVolume[sJongmokCode],self.timeVal[sJongmokCode])
-            self.YG.updateVolumeCode2(sJongmokCode,self.acumulativeVolume[sJongmokCode],self.timeVal[sJongmokCode])
-#             self.YG.updateRelativeCode(sJongmokCode,CurrPrice,self.timeVal[sJongmokCode])
-            self.YG.updateRelativeCode2(sJongmokCode,CurrPrice,self.timeVal[sJongmokCode])
+            self.YG.updateVolumeCode(sJongmokCode,self.acumulativeVolume[sJongmokCode],self.timeVal[sJongmokCode])
+            self.YG.updateRelativeCode(sJongmokCode,CurrPrice,self.timeVal[sJongmokCode])
+#             self.YG.updateVolumeCode2(sJongmokCode,self.acumulativeVolume[sJongmokCode],self.timeVal[sJongmokCode])
+#             self.YG.updateRelativeCode2(sJongmokCode,CurrPrice,self.timeVal[sJongmokCode])
             
             self.acumulativeVolume[sJongmokCode] =0 #거래량 다시 초기화
             self.timeVal[sJongmokCode] = None
