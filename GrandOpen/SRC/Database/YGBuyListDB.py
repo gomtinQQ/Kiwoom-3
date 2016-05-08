@@ -132,9 +132,17 @@ class YGGetDbData(DBSet.DBSet):
     def buyStock(self,code,time,CurrPrice):
         '''update BuyList set '900'=0 where StockCode = 19210'''
         price=CurrPrice
-        query = 'update '+self.BuyListTable+' set "'+ str(time) +'" ='+str(price)+', "BUYSELL"="Y"  where StockCode = '+str(code)
-        self.cursor.execute(query)
-        self.conn.commit()
+        try:
+#             query = 'update '+self.BuyListTable+' set "'+ str(time) +'" ='+str(price)+', "BUYSELL"="Y"  where StockCode = '+str(code)
+#             query = 'update '+self.BuyListTable+' set "BSTime" = "'+str(time)+'" where StockCode = '+str(code)
+            query = 'update {tableName} set "{time}" = {price}, "BUYSELL"="Y", "BSTime" = "{time}" where StockCode = {Code}'\
+            .format(tableName=self.BuyListTable,time=str(time),price=str(price),Code=str(code))
+            self.cursor.execute(query)
+            #update BuyList set "BSTime" = 914 where StockCode = "222810"
+#             self.cursor.execute(query)
+            self.conn.commit()
+        except :
+            self.tracebackLog()
         
     def updateSell(self,code,cursor,conn):
         code = str(code)

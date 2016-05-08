@@ -33,6 +33,7 @@ class BuyListDB(MakeDB.DBMake):
                         j=j[:0]+str('0')+j[0:]
                     self.cursor.execute("alter table "+table+" add '"+str(i)+str(j)+"' INTEGER")
             self.cursor.execute(sql)
+            self.cursor.execute("alter table "+table+" add BSTime Text ")
             self.conn.commit()  
             print("DataColumn Added ["+str(time.time()-_start)+"]")
         except :

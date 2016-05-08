@@ -266,6 +266,7 @@ if __name__ == '__main__':
     YG.setLog()
     
      
-    dd.createSearchingDB2(YG)
+    dd.createSearchingDB(YG)
+#     dd.createSearchingDB2(YG)
 
 
