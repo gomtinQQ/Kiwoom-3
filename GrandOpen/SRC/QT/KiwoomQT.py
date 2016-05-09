@@ -131,8 +131,12 @@ class Ui_Form(QAxWidget):
         if len(minute)<2:
             minute = "0"+minute
         time = hours+minute
-        print("주문번호[",chjang,"]종목명[",chjang1,"]주문수량[",chjang2,"]주문가격[",chjang3,"]체결가[",chjang4,"]종목코드,업종코드[",chjang5,\
-              "]주문상태[",chjang6,"]매도매수구분[",chjang7," 현재시각 [",timenow,"]")
+        
+        dd = "주문번호[",chjang,"]종목명[",chjang1,"]주문수량[",chjang2,"]주문가격[",chjang3,"]체결가[",chjang4,"]종목코드,업종코드[",chjang5,\
+              "]주문상태[",chjang6,"]매도매수구분[",chjang7," 현재시각 [",timenow,"]"
+#         print("주문번호[",chjang,"]종목명[",chjang1,"]주문수량[",chjang2,"]주문가격[",chjang3,"]체결가[",chjang4,"]종목코드,업종코드[",chjang5,\
+#               "]주문상태[",chjang6,"]매도매수구분[",chjang7," 현재시각 [",timenow,"]")
+        self.YG.debug(str(dd))
         
         if chjang7 == "2":
             self.YG.buyStock(chjang5,time,chjang4)#dblogging
@@ -161,7 +165,9 @@ class Ui_Form(QAxWidget):
         if volume == '' or len(volume) == 0:
             volume='0'
         orderlimit= self.dynamicCall('GetCommRealData(QString, int )','잔고',933) #주문가능수량
-        print('sJongmokCode[',sJongmokCode,'] sRealType[',sRealType,'] sRealData[',sRealData,'] 주문가능수량 [',orderlimit,']')
+        orderlimit2= self.dynamicCall('GetCommRealData(QString, int )',sRealType,933) #주문가능수량
+        dd = 'sJongmokCode[',sJongmokCode,'] sRealType[',sRealType,'] sRealData[',sRealData,'] 주문가능수량 [',orderlimit,'or ',orderlimit2,']'
+        self.YG.debug(str(dd))
 
         
 #         print(volume) #체결량이랑 거래량인데 어떻게 들어오는지 확인해야함 그래서 거래량만 파싱해야함.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -296,6 +302,8 @@ class Ui_Form(QAxWidget):
         if Position == "SELL":
             nOrderType = 2
         sCode = self.addZeroToStockCode(str(code))      #주식코드
+        orderlimit= self.dynamicCall('GetCommRealData(QString, int )','잔고',933) #주문가능수량
+        print('orderlimit,,,',orderlimit)
         nQty  = 10          #주문수량
         nPrice  = 0         #주문단가
         sHogaGb  = '03'   #0:지정가, 3:시장가, 5:조건부지정가, 6:최유리지정가, 7:최우선지정가, 10:지정가 IOC, 13:시장가IOC, 16:최유리IOC, 20:지정가FOK, 23:시장가FOK, 26:최유리FOK, 61:시간외 단일가매매, 81:시간외종가
