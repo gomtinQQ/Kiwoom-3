@@ -11,6 +11,9 @@ from SRC.Database import DBSet
 
 class YGGetDbData(DBSet.DBSet):
     
+    def __init__(self):
+        pass
+    
     def getCodeNameForReaReg(self):
         '''초기 실시간데이터받기용 쿼리'''
         query = 'select StockCode,BUYSELL from '+self.BuyListTable

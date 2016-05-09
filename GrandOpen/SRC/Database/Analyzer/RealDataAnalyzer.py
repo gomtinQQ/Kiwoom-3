@@ -105,8 +105,9 @@ class RealAnalyse(DBSet.DBSet):
                     buyListCode= cursor.fetchall()
                     self.updateBuy(YG, buyListCode, cursor, conn)
                 else:
-                    query = self.getSelectQuery(tableName,buySell=BS,Time="1303",multiplicationCheck=multiplicationCheck,count=count,interval=interval)
-                    print(query)
+#                     query = self.getSelectQuery(tableName,buySell=BS,Time="1303",multiplicationCheck=multiplicationCheck,count=count,interval=interval)
+                    query = self.getSelectQuery(tableName,buySell=BS,multiplicationCheck=multiplicationCheck,count=count,interval=interval)
+#                     print(query)
                     cursor.execute(query)
                     buyListCode= cursor.fetchall()
                     return buyListCode
@@ -128,7 +129,8 @@ class RealAnalyse(DBSet.DBSet):
                         YG.updateSell(buyListCode[i][0],cursor,conn)
     #                     print(buyListCode[i][0])
                 else:
-                    query = self.getSelectQuery(tableName,buySell=BS,Time="1303",multiplicationCheck=multiplicationCheck,count=count,interval=interval)
+#                     query = self.getSelectQuery(tableName,buySell=BS,Time="1303",multiplicationCheck=multiplicationCheck,count=count,interval=interval)
+                    query = self.getSelectQuery(tableName,buySell=BS,multiplicationCheck=multiplicationCheck,count=count,interval=interval)
                     cursor.execute(query)
                     print(query)
                     buyListCode= cursor.fetchall()
@@ -164,8 +166,8 @@ class RealAnalyse(DBSet.DBSet):
         YG = YGBuyListDB.YGGetDbData()
         YG.setProperties(self.DB,YG.BuyListRelativeTable)
 
-        conn = sqlite3.connect(self.BuyListDBToday)
-#         conn = sqlite3.connect(self.BuyListDBYesterDay)
+#         conn = sqlite3.connect(self.BuyListDBToday)
+        conn = sqlite3.connect(YG.BuyListDBYesterday)
         cursor = conn.cursor()
 
         mode="Real"
@@ -223,16 +225,27 @@ class RealAnalyse(DBSet.DBSet):
                     buyListCode = self.checkCodeSet(YG,conn,cursor, self.BuyListVolumeRotateTable,'BUY' ,multiplicationCheck="5",count=1,interval=1 ) #1분전 상황보다 거래량이 5배이상 증가 ?
                     buyListCode2 = self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'BUY',multiplicationCheck="0.5",count=1,interval=1 ) #1분전보다 가격 0.5프로 이상 증가?
                      
-                    for i in range(len(buyListCode)):
-                        if buyListCode2[i][0] in buyListCode[i]:
-                            YG.updateBuy(buyListCode[i][0],cursor,conn)
+                    
+#                     if buyListCode is not None and buyListCode2 is not None:
+                    if len(buyListCode)  !=0 and len(buyListCode2) != 0:
+#                         print('buyListCode',buyListCode)
+#                         print('buyListCode2',buyListCode2)
+                        if len(buyListCode)>len(buyListCode2):
+                            bc = buyListCode2
+                        else :
+                            bc = buyListCode
+                        for i in range(len(bc)):
+                            if buyListCode2[i][0] in buyListCode[i]:
+#                                 print(' sanda ~ ',buyListCode[i][0])
+                                YG.updateBuy(buyListCode[i][0],cursor,conn)
 
                     #팔것 체크###########
                     
                     BuyListCodeFotime = self.selectSellingQueryCheck(YG,conn,cursor,self.BuyListRelativeTable)
                     
 #                     buyListCode = self.checkCodeSet2(YG,conn,cursor, self.BuyListRelativeTable,'SELL',multiplicationCheck=2 )    #산것보다 가격이 2프로이상 증가?
-                    self.checkCodeSet2(YG, conn, cursor, self.BuyListRelativeTable,'SELL', BuyListCodeFotime)#산것보다 가격이 2프로이상 증가?
+                    if BuyListCodeFotime is not None:
+                        self.checkCodeSet2(YG, conn, cursor, self.BuyListRelativeTable,'SELL', BuyListCodeFotime)#산것보다 가격이 2프로이상 증가?
 #                     if len(buyListCode)!=0:
 #                         YG.updateSell(buyListCode[i][0],cursor,conn)
 #                     buyListCode = self.checkCodeSet2(YG,conn,cursor, self.BuyListRelativeTable,'SELL',multiplicationCheck=3 )    #산것보다 가격이 3프로이상 하락 ?
@@ -290,19 +303,20 @@ class RealAnalyse(DBSet.DBSet):
                     
                     cursor.execute(query)
                     info = cursor.fetchall()
-                    
-                    buyPrice = float(info[0][0]) #산 갸격
-                    nowPrice= float(info[0][1]) #현재 갸격
-                    
-                    print(buyPrice,nowPrice)
-                    
-                    if ((nowPrice-buyPrice)/buyPrice) *100 <-3:
-                        print('가격이 3프로이상하락 하락율 :',((nowPrice-buyPrice)/buyPrice)*100)
-                        YG.updateSell(stockCode, cursor, conn)
-                    
-                    if ((nowPrice-buyPrice)/buyPrice)*100>2:
-                        print('가격이 2프로이상증가 증가율 :',((nowPrice-buyPrice)/buyPrice)*100)
-                        YG.updateSell(stockCode, cursor, conn)
+#                     print(info)
+                    if str(info[0][0]) !='None' :
+                        buyPrice = float(info[0][0]) #산 갸격
+                        nowPrice= float(info[0][1]) #현재 갸격
+                        
+                        print(buyPrice,nowPrice)
+                        
+                        if ((nowPrice-buyPrice)/buyPrice) *100 <-3:
+                            print('가격이 3프로이상하락 하락율 :',((nowPrice-buyPrice)/buyPrice)*100)
+                            YG.updateSell(stockCode, cursor, conn)
+                        
+                        if ((nowPrice-buyPrice)/buyPrice)*100>2:
+                            print('가격이 2프로이상증가 증가율 :',((nowPrice-buyPrice)/buyPrice)*100)
+                            YG.updateSell(stockCode, cursor, conn)
                     
             
         
@@ -314,8 +328,8 @@ if __name__ == '__main__':
     YG = YGBuyListDB.YGGetDbData()
 #     YG.setProperties(YG.BuyListDBToday,YG.BuyListRelativeTable)
 
-#     ra.setDB(YG.BuyListDBYesterday)
-    ra.setDB(YG.BuyListDBToday)
+    ra.setDB(YG.BuyListDBYesterday)
+#     ra.setDB(YG.BuyListDBToday)
     proc = mp.Process(target=ra.gogo,args=["RealPart2",])
     proc.start()
 
