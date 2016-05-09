@@ -122,6 +122,8 @@ class Ui_Form(QAxWidget):
         OrgNo = self.lineEdit_6.text().strip()
         ACCNO = self.lineEdit_2.text().strip()
         Order = self.dynamicCall('SendOrder(QString, QString, QString, int, QString, int, int, QString, QString)', ["주식주문", "0107", ACCNO, Type, Code, Qty, Price, HogaGb, OrgNo])
+        print(ACCNO, Type, Code, Qty, Price, HogaGb, OrgNo)
+        print(type(ACCNO), type(Type), type(Code), type(Qty), type(Price),type(HogaGb), type(OrgNo))
 
         
     def setupUi(self, Form):

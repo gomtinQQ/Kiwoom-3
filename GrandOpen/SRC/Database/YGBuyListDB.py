@@ -12,7 +12,7 @@ from SRC.Database import DBSet
 class YGGetDbData(DBSet.DBSet):
     
     def __init__(self):
-        pass
+        super(YGGetDbData,self).__init__()
     
     def getCodeNameForReaReg(self):
         '''초기 실시간데이터받기용 쿼리'''
