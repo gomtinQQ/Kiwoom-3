@@ -145,8 +145,12 @@ class RealAnalyse(DBSet.DBSet):
                 buyListCode = cursor.fetchall()
 
                 print("영업종료하자")
-                for i in range(len(buyListCode)):
-                    YG.updateSell(buyListCode[i][0],cursor,conn)
+                YG.debug("영업종료하자")
+                try:
+                    for i in range(len(buyListCode)):
+                        YG.updateSell(buyListCode[i][0],cursor,conn)
+                except :
+                    YG.tracebackLog()
 
 
             else :
@@ -255,7 +259,7 @@ class RealAnalyse(DBSet.DBSet):
 
 #                     self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'SELL' )    #거래량 사기전 5분동안 < 산후 5분동안?
 
-                    if self.getNowTime() == "1449":
+                    if self.getNowTime() == "1448" or self.getNowTime() == "1449" or self.getNowTime() == "1447":
                         self.checkCodeSet(YG,conn,cursor,self.BuyListTable,'END')
                         break
 

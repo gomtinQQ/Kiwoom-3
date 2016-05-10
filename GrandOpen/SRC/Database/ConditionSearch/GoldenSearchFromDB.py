@@ -263,7 +263,7 @@ if __name__ == '__main__':
     dd=  GoldenSearchFromDB1()
     YG = YGGetCloseDB.YGGetCloseDB()
     YG.setProperties()
-    YG.setLog()
+    YG.setLog(__name__)
     
      
     dd.createSearchingDB(YG)

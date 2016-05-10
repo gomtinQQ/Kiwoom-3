@@ -17,3 +17,8 @@ if __name__ == '__main__':
     
     volume = "-1"
     print(int(volume))
+    
+    price = 0
+    
+    st = str(price)
+    print(st)

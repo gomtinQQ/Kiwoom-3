@@ -47,6 +47,7 @@ class Ui_Form(QAxWidget):
         self.connect(self, SIGNAL("OnReceiveRealData(QString, QString, QString)"),self.OnReceiveRealData)        
 #         self.YG = YGBuyListDB.YGGetDbData()
         self.YG=YG
+        self.YG.setLog(__name__)
         
         
         
@@ -163,7 +164,7 @@ class Ui_Form(QAxWidget):
         CurrPrice = self.dynamicCall('GetCommRealData(QString, int )',sRealType,10)
         volume= self.dynamicCall('GetCommRealData(QString, int )',sRealType,15)
         if volume == '' or len(volume) == 0:
-            volume='0'
+            volume=0
         orderlimit= self.dynamicCall('GetCommRealData(QString, int )','잔고',933) #주문가능수량
         orderlimit2= self.dynamicCall('GetCommRealData(QString, int )',sRealType,933) #주문가능수량
         dd = 'sJongmokCode[',sJongmokCode,'] sRealType[',sRealType,'] sRealData[',sRealData,'] 주문가능수량 [',orderlimit,'or ',orderlimit2,']'
@@ -319,7 +320,7 @@ class Ui_Form(QAxWidget):
             if len(minute)<2:
                 minute = "0"+minute
             time = hours+minute
-            self.YG.buyStock(sCode,time,0)#dblogging
+            self.YG.buyStock(sCode,time,1)#dblogging
             
         if Position =="SELL":
             print(sCode,"판다  주문수량[",nQty,"] 주문금액[",nPrice,"] 오더타입[",nOrderType,"]")
@@ -356,7 +357,7 @@ if __name__ == "__main__":
     
     YG = YGBuyListDB.YGGetDbData()
     YG.setProperties(YG.BuyListDBYesterday,YG.BuyListTable)
-    YG.setLog()
+#     YG.setLog()
 #     YG.setQueue(q)
     
         

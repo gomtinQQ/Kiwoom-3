@@ -84,11 +84,15 @@ class DBSet(object):
 #                 print('==',items[0],'=',items[1])
         
 
-    def setLog(self):
+    def setLog(self,name=''):
         
 #         logging.basicConfig(filename=self.fName,level = self.loglevel)
         
-        self.logger = logging.getLogger(__name__)
+#         self.logger = logging.getLogger(__name__)
+        
+        if name == '':
+            name=__name__
+        self.logger = logging.getLogger(name)
         fomatter = logging.Formatter("[%(levelname)s|%(filename)s:%(lineno)s] %(asctime)s > %(message)s")
         fileHandler = logging.FileHandler(self.fName)
         fileHandler = RotatingFileHandler(filename=self.fName,maxBytes=int(self.fileSize)*1024*1024)
@@ -100,10 +104,14 @@ class DBSet(object):
         self.logger.debug('*****************************DBMake Logging Start*****************************')
         
     def debug(self,msg):
+#         self.logger.debug(msg,stack_info=True)
         self.logger.debug(msg)
     
-    def tracebackLog(self):
+    def tracebackLog(self,msg=''):
         print(traceback.print_exc())
+        self.logger.error(msg,traceback.format_exc())
+#         self.logger.exception(msg)
+#         logger.error("Houston, we have a %s", "major problem", exc_info=1)
         
     def commit(self):
         self.lock.acquire()

@@ -45,11 +45,11 @@ class YGGetDbData(DBSet.DBSet):
             info=info[1:]
         
         query = 'update '+self.BuyListRelativeTable+' set "'+foTime+ '" = '+str(info)+' where StockCode = '+str(Code)
-#         print(query)
         try:
             self.cursor.execute(query)
             self.conn.commit()
         except OperationalError:
+            print(query)
             self.tracebackLog()
             print("relative [",relative,"]")
             
@@ -130,12 +130,15 @@ class YGGetDbData(DBSet.DBSet):
 #             print(code,' buy !')
         else :
 #             print('사기전 보유수량이 있음 (',code,')')
-            pass
+            self.tracebackLog()
     
     def buyStock(self,code,time,CurrPrice):
         '''update BuyList set '900'=0 where StockCode = 19210'''
         price=CurrPrice
         try:
+            if len(code)>6:
+                code = code[1:]
+                print(code)
 #             query = 'update '+self.BuyListTable+' set "'+ str(time) +'" ='+str(price)+', "BUYSELL"="Y"  where StockCode = '+str(code)
 #             query = 'update '+self.BuyListTable+' set "BSTime" = "'+str(time)+'" where StockCode = '+str(code)
             query = 'update {tableName} set "{time}" = {price}, "BUYSELL"="Y", "BSTime" = "{time}" where StockCode = {Code}'\
@@ -145,7 +148,8 @@ class YGGetDbData(DBSet.DBSet):
 #             self.cursor.execute(query)
             self.conn.commit()
         except :
-            self.tracebackLog()
+            print(query)
+            self.tracebackLog(query)
         
     def updateSell(self,code,cursor,conn):
         code = str(code)
@@ -155,18 +159,26 @@ class YGGetDbData(DBSet.DBSet):
         
         cursor.execute(selQuery)
         buySell = cursor.fetchall()
+        query = 'update '+self.BuyListTable+' set "BUYSELL"="S" where StockCode = '+code
         
-        if str(buySell[0][0]) == "Y" or str(buySell[0][0]) == "B":
-            
-            query = 'update '+self.BuyListTable+' set "BUYSELL"="S" where StockCode = '+code
-            cursor.execute(query)
-            conn.commit()
+        try:
+#             if str(buySell[0][0]) == "Y" or str(buySell[0][0]) == "B":
+            if len(buySell) !=0:
+                cursor.execute(query)
+                conn.commit()
+        except :
+            print(query)
+            self.tracebackLog(query)
         
     def sellStock(self,code,time,CurrPrice):
         price=CurrPrice
         query = 'update '+self.BuyListTable+' set "'+ str(time) +'" ='+str(price)+', "BUYSELL"="N"  where StockCode = '+str(code)
-        self.cursor.execute(query)
-        self.conn.commit()
+        try:
+            self.cursor.execute(query)
+            self.conn.commit()
+        except : 
+            print(query)
+            self.tracebackLog(query)
         
     def getEndCode(self):
         query = 'select StockCode from '+self.BuyListTable+' where "BUYSELL"="Y"'
