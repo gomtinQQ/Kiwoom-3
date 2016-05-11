@@ -47,12 +47,15 @@ class RealAnalyse(DBSet.DBSet):
             return self.whereQuery
         else:
             if tableName ==self.BuyListVolumeRotateTable:
-                whereQuery= 'select StockCode,StockName from '+tableName+' where "' + \
-                str(beforeTime) +'"*'+multiplicationCheck+''+op+'"' + str(currTime) +'"'
+#                 whereQuery= 'select StockCode,StockName from '+tableName+' where "' + \
+#                 str(beforeTime) +'"*'+multiplicationCheck+''+op+'"' + str(currTime) +'"'
+                whereQuery = 'select StockCode,StockName from {tableName} where {beforeTime}*{multiplicationCheck} {op} {currTime}'\
+                .format(tableName=tableName,beforeTime=beforeTime,multiplicationCheck=multiplicationCheck,op=op,currTime=currTime)
                 return whereQuery
             
             elif tableName == self.BuyListRelativeTable:
-                whereQuery = 'select StockCode,StockName from {Relative} where {percentage}{op}(("{currTime}"-"{beforeTime}")/CAST ("{beforeTime}" AS REAL))*100.0'\
+#                 whereQuery = 'select StockCode,StockName from {Relative} where {percentage}{op}(("{currTime}"-"{beforeTime}")/CAST ("{beforeTime}" AS REAL))*100.0'\
+                whereQuery = 'select StockCode,StockName from {Relative} where {percentage}{op}(({currTime}-{beforeTime})/CAST ({beforeTime} AS REAL))*100.0'\
                 .format(Relative=self.BuyListRelativeTable,currTime=str(currTime),beforeTime=str(beforeTime),percentage=multiplicationCheck,op=op) #percentage이상되는걸 고른다.
 #                 print(whereQuery)
                 return whereQuery
@@ -107,7 +110,7 @@ class RealAnalyse(DBSet.DBSet):
                 else:
 #                     query = self.getSelectQuery(tableName,buySell=BS,Time="1303",multiplicationCheck=multiplicationCheck,count=count,interval=interval)
                     query = self.getSelectQuery(tableName,buySell=BS,multiplicationCheck=multiplicationCheck,count=count,interval=interval)
-#                     print(query)
+                    print(query)
                     cursor.execute(query)
                     buyListCode= cursor.fetchall()
                     return buyListCode

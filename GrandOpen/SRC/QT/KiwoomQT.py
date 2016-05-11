@@ -319,8 +319,8 @@ class Ui_Form(QAxWidget):
             timenow = datetime.datetime.now()
             hours = str(timenow.hour)
             minute = str(timenow.minute)
-            if len(hours) <2:
-                hours = "0"+hours
+#             if len(hours) <2:
+#                 hours = "0"+hours
             if len(minute)<2:
                 minute = "0"+minute
             time = hours+minute
