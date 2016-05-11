@@ -108,8 +108,9 @@ class DBSet(object):
         self.logger.debug(msg)
     
     def tracebackLog(self,msg=''):
-        print(traceback.print_exc())
-        self.logger.error(msg,traceback.format_exc())
+#         print(traceback.print_exc())
+#         print(msg,'ddd')
+        self.logger.error(traceback.format_exc())
 #         self.logger.exception(msg)
 #         logger.error("Houston, we have a %s", "major problem", exc_info=1)
         
