@@ -22,3 +22,15 @@ if __name__ == '__main__':
     
     st = str(price)
     print(st)
+    
+    timeVal={}
+    
+    sJoingMok = '1'
+    volume = 32
+    timeVal[sJoingMok]=3,volume
+    
+    print(timeVal)
+    
+    volume = 33
+    
+    print(timeVal)

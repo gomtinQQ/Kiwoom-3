@@ -41,10 +41,12 @@ class YGGetDbData(DBSet.DBSet):
         
         info = str(relative)
         
-        if info.startswith("-"):
+        if info.startswith("-") or info.startswith("+") :
             info=info[1:]
+        if len(info)<=0:
+            info='-1'
         
-        query = 'update '+self.BuyListRelativeTable+' set "'+foTime+ '" = '+str(info)+' where StockCode = '+str(Code)
+        query = 'update '+self.BuyListRelativeTable+' set "'+foTime+ '" = '+info+' where StockCode = '+str(Code)
         try:
             self.cursor.execute(query)
             self.conn.commit()
@@ -79,11 +81,13 @@ class YGGetDbData(DBSet.DBSet):
         
         foTime = str(timeVal[0])
         info = str(timeVal[1])
-        
-        if info.startswith("-"):
+        Code = str(Code)
+        if info.startswith("-") or info.startswith("+"):
             info=info[1:]
+        if len(Code) >6:
+            Code=Code[1:]
         
-        query = 'update '+self.BuyListVolumeRotateTable+' set "'+foTime+ '" = '+str(info)+' where StockCode = '+str(Code)
+        query = 'update '+self.BuyListVolumeRotateTable+' set "'+foTime+ '" = '+info+' where StockCode = '+Code
 #         print(query)
         try:
             self.cursor.execute(query)
@@ -129,6 +133,7 @@ class YGGetDbData(DBSet.DBSet):
             conn.commit()
 #             print(code,' buy !')
         else :
+            print(query)
 #             print('사기전 보유수량이 있음 (',code,')')
             self.tracebackLog()
     
@@ -143,15 +148,16 @@ class YGGetDbData(DBSet.DBSet):
                 print(code)
 #             query = 'update '+self.BuyListTable+' set "'+ str(time) +'" ='+str(price)+', "BUYSELL"="Y"  where StockCode = '+str(code)
 #             query = 'update '+self.BuyListTable+' set "BSTime" = "'+str(time)+'" where StockCode = '+str(code)
-            query = 'update {tableName} set "{time}" = {price}, "BUYSELL"="Y", "BSTime" = "{time}" where StockCode = {Code}'\
-            .format(tableName=self.BuyListTable,time=str(time),price=price,Code=str(code))
+            query = 'update {tableName} set "{time}" ={price} , "BUYSELL"="Y", "BSTime" = "{time2}" where StockCode = {Code}'\
+            .format(tableName=self.BuyListTable,time=str(time),price=price,time2=str(time),Code=str(code))
             self.cursor.execute(query)
             #update BuyList set "BSTime" = 914 where StockCode = "222810"
 #             self.cursor.execute(query)
             self.conn.commit()
         except :
 #             print(query)
-            self.tracebackLog(query)
+            self.debug(query)
+            self.tracebackLog()
         
     def updateSell(self,code,cursor,conn):
         code = str(code)
@@ -159,17 +165,18 @@ class YGGetDbData(DBSet.DBSet):
         '''팔기전 현재 보유상태 체크'''
         selQuery = 'select BUYSELL from '+self.BuyListTable+' where StockCode = '+code
         
-        cursor.execute(selQuery)
-        buySell = cursor.fetchall()
-        query = 'update '+self.BuyListTable+' set "BUYSELL"="S" where StockCode = '+code
-        
         try:
+            cursor.execute(selQuery)
+            buySell = cursor.fetchall()
+            query = 'update '+self.BuyListTable+' set "BUYSELL"="S" where StockCode = '+code
+        
 #             if str(buySell[0][0]) == "Y" or str(buySell[0][0]) == "B":
             if len(buySell) !=0:
                 cursor.execute(query)
                 conn.commit()
         except :
-            print(query)
+#             print(query)
+            self.debug(query)
             self.tracebackLog(query)
         
     def sellStock(self,code,time,CurrPrice):
@@ -179,7 +186,8 @@ class YGGetDbData(DBSet.DBSet):
             self.cursor.execute(query)
             self.conn.commit()
         except : 
-            print(query)
+#             print(query)
+            self.debug(query)
             self.tracebackLog(query)
         
     def getEndCode(self):

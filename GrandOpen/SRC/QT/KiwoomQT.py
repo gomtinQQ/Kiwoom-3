@@ -47,7 +47,7 @@ class Ui_Form(QAxWidget):
         self.connect(self, SIGNAL("OnReceiveRealData(QString, QString, QString)"),self.OnReceiveRealData)        
 #         self.YG = YGBuyListDB.YGGetDbData()
         self.YG=YG
-        self.YG.setLog(__name__)
+        self.YG.setLog('KiwoomQT')
         
         
         
@@ -113,8 +113,8 @@ class Ui_Form(QAxWidget):
             
     def OnReceiveChejanData(self, sGubun, nItemCnt, sFidList):
         print('===========ChejanData called===========')
-#         print('sGubun[',sGubun,'] nItemCnt[',nItemCnt,'] sFidList[',sFidList,']')
         dd = 'sGubun[',sGubun,'] nItemCnt[',nItemCnt,'] sFidList[',sFidList,']'
+        YG.debug('===========ChejanData called===========')
         YG.debug(str(dd))
         chjang = self.dynamicCall('GetChejanData(QString)',9203) #주문번호
         chjang1 = self.dynamicCall('GetChejanData(QString)',302) #종목명
@@ -129,8 +129,7 @@ class Ui_Form(QAxWidget):
         timenow = datetime.datetime.now()
         hours = str(timenow.hour)
         minute = str(timenow.minute)
-        if len(hours) <2:
-            hours = "0"+hours
+        
         if len(minute)<2:
             minute = "0"+minute
         time = hours+minute
@@ -219,7 +218,6 @@ class Ui_Form(QAxWidget):
 #             self.YG.updateRelativeCode2(sJongmokCode,CurrPrice,self.timeVal[sJongmokCode])
             
             self.acumulativeVolume[sJongmokCode] =0 #거래량 다시 초기화
-            self.timeVal[sJongmokCode] = None
             
         self.checkBuyOrSell(foTime,CurrPrice)
         

@@ -49,13 +49,13 @@ class RealAnalyse(DBSet.DBSet):
             if tableName ==self.BuyListVolumeRotateTable:
 #                 whereQuery= 'select StockCode,StockName from '+tableName+' where "' + \
 #                 str(beforeTime) +'"*'+multiplicationCheck+''+op+'"' + str(currTime) +'"'
-                whereQuery = 'select StockCode,StockName from {tableName} where {beforeTime}*{multiplicationCheck} {op} {currTime}'\
+                whereQuery = 'select StockCode,StockName from {tableName} where "{beforeTime}"*{multiplicationCheck} {op} "{currTime}"'\
                 .format(tableName=tableName,beforeTime=beforeTime,multiplicationCheck=multiplicationCheck,op=op,currTime=currTime)
                 return whereQuery
             
             elif tableName == self.BuyListRelativeTable:
 #                 whereQuery = 'select StockCode,StockName from {Relative} where {percentage}{op}(("{currTime}"-"{beforeTime}")/CAST ("{beforeTime}" AS REAL))*100.0'\
-                whereQuery = 'select StockCode,StockName from {Relative} where {percentage}{op}(({currTime}-{beforeTime})/CAST ({beforeTime} AS REAL))*100.0'\
+                whereQuery = 'select StockCode,StockName from {Relative} where {percentage}{op}(("{currTime}"-"{beforeTime}")/CAST ("{beforeTime}" AS REAL))*100.0'\
                 .format(Relative=self.BuyListRelativeTable,currTime=str(currTime),beforeTime=str(beforeTime),percentage=multiplicationCheck,op=op) #percentage이상되는걸 고른다.
 #                 print(whereQuery)
                 return whereQuery
@@ -110,7 +110,7 @@ class RealAnalyse(DBSet.DBSet):
                 else:
 #                     query = self.getSelectQuery(tableName,buySell=BS,Time="1303",multiplicationCheck=multiplicationCheck,count=count,interval=interval)
                     query = self.getSelectQuery(tableName,buySell=BS,multiplicationCheck=multiplicationCheck,count=count,interval=interval)
-                    print(query)
+#                     print(query)
                     cursor.execute(query)
                     buyListCode= cursor.fetchall()
                     return buyListCode
@@ -226,8 +226,15 @@ class RealAnalyse(DBSet.DBSet):
             
             print("RealPart2 분석 시작 !!!!!!!!!!!!!!!!!!!!!!!!!")
             while(True):
-                try:
+                print("910분 부터 시작합니다.. [현재시각 :",self.getNowTime(),"]")
+                if self.getNowTime()=="0910" or self.getNowTime() =="910":
+                    break
+                else:
+                    time.sleep(1)
                     
+            print("분석시작 ")
+            while(True):
+                try:
                     #살것 체크###########
                     buyListCode = self.checkCodeSet(YG,conn,cursor, self.BuyListVolumeRotateTable,'BUY' ,multiplicationCheck="5",count=1,interval=1 ) #1분전 상황보다 거래량이 5배이상 증가 ?
                     buyListCode2 = self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'BUY',multiplicationCheck="0.5",count=1,interval=1 ) #1분전보다 가격 0.5프로 이상 증가?
@@ -253,14 +260,6 @@ class RealAnalyse(DBSet.DBSet):
 #                     buyListCode = self.checkCodeSet2(YG,conn,cursor, self.BuyListRelativeTable,'SELL',multiplicationCheck=2 )    #산것보다 가격이 2프로이상 증가?
                     if BuyListCodeFotime is not None:
                         self.checkCodeSet2(YG, conn, cursor, self.BuyListRelativeTable,'SELL', BuyListCodeFotime)#산것보다 가격이 2프로이상 증가?
-#                     if len(buyListCode)!=0:
-#                         YG.updateSell(buyListCode[i][0],cursor,conn)
-#                     buyListCode = self.checkCodeSet2(YG,conn,cursor, self.BuyListRelativeTable,'SELL',multiplicationCheck=3 )    #산것보다 가격이 3프로이상 하락 ?
-                    
-
-#                     self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'SELL' )    #산후 시간이 5분이상 지남 ?
-
-#                     self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'SELL' )    #거래량 사기전 5분동안 < 산후 5분동안?
 
                     if self.getNowTime() == "1448" or self.getNowTime() == "1449" or self.getNowTime() == "1447":
                         self.checkCodeSet(YG,conn,cursor,self.BuyListTable,'END')
