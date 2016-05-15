@@ -105,7 +105,8 @@ class YGGetDbData(DBSet.DBSet):
         if info.startswith("-"):
             info=info[1:]
         '''update BuyList set "130960" = "130" where StockTime = "900"'''
-        query = "update {tableName} set '{StockCode}' = '{info}' where StockTime = '{foTime}'".format(tableName=self.BuyListVolumeRotateTable,StockCode =Code,info=info,foTime=foTime)
+        query = "update {tableName} set '{StockCode}' = '{info}' where StockTime = '{foTime}'"\
+        .format(tableName=self.BuyListVolumeRotateTable,StockCode =Code,info=info,foTime=foTime)
         print(query)
         try:
             self.cursor.execute(query)
