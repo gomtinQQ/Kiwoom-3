@@ -225,12 +225,12 @@ class RealAnalyse(DBSet.DBSet):
         elif mode =="RealPart2":
             
             print("RealPart2 분석 시작 !!!!!!!!!!!!!!!!!!!!!!!!!")
-            while(True):
-                print("910분 부터 시작합니다.. [현재시각 :",self.getNowTime(),"]")
-                if self.getNowTime()=="0910" or self.getNowTime() =="910":
-                    break
-                else:
-                    time.sleep(1)
+#             while(True):
+#                 print("910분 부터 시작합니다.. [현재시각 :",self.getNowTime(),"]")
+#                 if self.getNowTime()=="0910" or self.getNowTime() =="910":
+#                     break
+#                 else:
+#                     time.sleep(1)
                     
             print("분석시작 ")
             while(True):
