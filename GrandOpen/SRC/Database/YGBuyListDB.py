@@ -52,8 +52,9 @@ class YGGetDbData(DBSet.DBSet):
             self.conn.commit()
         except OperationalError:
             print(query)
+            self.debug(query)
             self.tracebackLog()
-            print("relative [",relative,"]")
+#             print("relative [",relative,"]")
             
             
     def updateRelativeCode2(self,Code,relative,timeVal):
@@ -93,8 +94,9 @@ class YGGetDbData(DBSet.DBSet):
             self.cursor.execute(query)
             self.conn.commit()
         except OperationalError:
+            self.debug(query)
             self.tracebackLog()
-            print("info [",info,"]")
+#             print("info [",info,"]")
     def updateVolumeCode2(self,Code,timeVal):
         
         '''변경된소스'''
@@ -181,8 +183,13 @@ class YGGetDbData(DBSet.DBSet):
         
     def sellStock(self,code,time,CurrPrice):
         price=CurrPrice
-        query = 'update '+self.BuyListTable+' set "'+ str(time) +'" ='+str(price)+', "BUYSELL"="N"  where StockCode = '+str(code)
+        code=str(code)
+        if len(str(price))==0:
+            price='-1'
         try:
+            if len(code)>6:
+                code = code[1:]
+            query = 'update '+self.BuyListTable+' set "'+ str(time) +'" ='+str(price)+', "BUYSELL"="N"  where StockCode = '+code
             self.cursor.execute(query)
             self.conn.commit()
         except : 
