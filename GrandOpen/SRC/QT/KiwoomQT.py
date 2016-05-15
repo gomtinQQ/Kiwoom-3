@@ -88,14 +88,12 @@ class Ui_Form(QAxWidget):
             print("서버에 연결 되었습니다...")
             ra = RealDataAnalyzer.RealAnalyse()
             ra.setDB(self.YG.BuyListDBYesterday)
-#             proc = mp.Process(target=ra.gogo)
+
             proc = mp.Process(target=ra.gogo,args=["RealPart2",])
             proc.start()
-#             code = self.kiwoom.connect(self.kiwoom, SIGNAL("OnEventConnect(int)"), self.OnEventConnect())
-#             self.get10001Info()
+
             self.setReal()
-#             self.checkSendAndRealReg()
-#             self.sendOrder()
+
         else:
             print("서버 연결에 실패 했습니다...")
              
@@ -154,10 +152,10 @@ class Ui_Form(QAxWidget):
         
     def OnReceiveRealData(self,sJongmokCode,sRealType,sRealData):
         
-#         print('===========RealData called===========[',datetime.datetime.now(),']')
+
         sRealData = str(sRealData)
         
-#         Fid = '10;31;29;26;15;12' #현재가,회전율,거래대금증감,전일거래량대비,거래량 체결량 , 등락율
+
         
         VolumeRotate = self.dynamicCall('GetCommRealData(QString, int )',sRealType,31)
         RelativeVolume = self.dynamicCall('GetCommRealData(QString, int )',sRealType,26)
@@ -168,26 +166,19 @@ class Ui_Form(QAxWidget):
         volume= self.dynamicCall('GetCommRealData(QString, int )',sRealType,15)
         if volume == '' or len(volume) == 0:
             volume=0
-#         orderlimit= self.dynamicCall('GetCommRealData(QString, int )','잔고',933) #주문가능수량
-#         orderlimit2= self.dynamicCall('GetCommRealData(QString, int )',sRealType,933) #주문가능수량
+
         dd = 'sJongmokCode[',sJongmokCode,'] sRealType[',sRealType,'] sRealData[',sRealData,']'
         self.YG.debug(str(dd))
 
-        
-#         print(volume) #체결량이랑 거래량인데 어떻게 들어오는지 확인해야함 그래서 거래량만 파싱해야함.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         sJongmokCode = self.addZeroToStockCode(str(sJongmokCode))
         try:
             self.acumulativeVolume[sJongmokCode]
             self.perPast[sJongmokCode]
-#             print("종목코드의 누적거래량",self.acumulativeVolume[sJongmokCode],"각각의 시간",self.perPast[sJongmokCode])
+
         except :
-#             self.acumulativeVolume[sJongmokCode]=0
-#             self.perPast[sJongmokCode]= str(self.pastMinute)
             traceback.print_exc()
         
         try:
-#             if str(volume).startswith('+') or str(volume).startswith('-'):
-#                 volume=str(volume)[1:]
             self.acumulativeVolume[sJongmokCode]+=int(volume)
         except :
             print('거래량 에러[',volume,']')
@@ -243,8 +234,7 @@ class Ui_Form(QAxWidget):
         except Exception:
             traceback.print_exc()
         
-        
-#         strFidList = "10" #실시간 등록할 FID(“FID1;FID2;FID3;…..”) EX) 10:현재가 11:전일대비 12:등락율 13:누적거래량 29:거래대금증감 32:거래비용
+
         strFidList = "9001;10;13;933" #code,currPrice,acumulVolume
         strRealType ="1" #“0”, “1” 타입 
         
@@ -254,15 +244,6 @@ class Ui_Form(QAxWidget):
 
     def checkBuyOrSell(self,time,CurrPrice):
         
-#         self.YG = YGBuyListDB.YGGetDbData()
-#         today = datetime.datetime.today().date()
-#         oneDay = datetime.timedelta(days=1)
-#         
-#         YESTERDAY= str( today - oneDay) 
-#         DB = '../../Sqlite3/BuyList'+YESTERDAY+'.db'
-#         Table='BuyList'
-#         
-#         self.YG.setProperties(DB,Table)
         try:
             
 #             while(True):
@@ -277,27 +258,12 @@ class Ui_Form(QAxWidget):
                 
                 elif str(stockCodeList[i][1]) =="S":
 #                     self.YG.sellStock(stockCode,time,CurrPrice)#dblogging
-                    self.sendOrder(stockCode,"SELL")#sendOrder
-                
-                
-#                 for index in range(len(code)):
-#                     rCode=self.addZeroToStockCode(str(code['Code'][index]))
-#                     buySell = self.YG.getBuySell(rCode)
-#                     if buySell=="N":
-#                         self.sendOrder(rCode,"BUY")
-#                         self.YG.buyStock(rCode,901,12000)                
-#                     if buySell =="Y":
-#                         self.sendOrder(rCode,"SELL")
-#                         self.YG.sellStock(rCode,905,236200)
-#                 time.sleep(5)
-                
+                    self.sendOrder(stockCode,"SELL")#sendOrder                
         except Exception:
             traceback.print_exc()
             
     def sendOrder (self,code,Position):
         
-#         print('SendOrder Called! Position :',Position )
-        ACCOUNT_CNT = self.dynamicCall('GetLoginInfo("ACCOUNT_CNT")')
         ACC_NO = self.dynamicCall('GetLoginInfo("ACCNO")')
         sRQName  = "주식주문" # 사용자 구분 요청 명 
         sScreenNo = "0101" #화면번호[4]
@@ -306,8 +272,6 @@ class Ui_Form(QAxWidget):
         if Position == "SELL":
             nOrderType = 2
         sCode = self.addZeroToStockCode(str(code))      #주식코드
-        orderlimit= self.dynamicCall('GetCommRealData(QString, int )','잔고',933) #주문가능수량
-#         print('orderlimit,,,',orderlimit)
         nQty  = 10          #주문수량
         nPrice  = 0         #주문단가
         sHogaGb  = '03'   #0:지정가, 3:시장가, 5:조건부지정가, 6:최유리지정가, 7:최우선지정가, 10:지정가 IOC, 13:시장가IOC, 16:최유리IOC, 20:지정가FOK, 23:시장가FOK, 26:최유리FOK, 61:시간외 단일가매매, 81:시간외종가
