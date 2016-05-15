@@ -93,7 +93,8 @@ class DBSet(object):
         if name == '':
             name=__name__
         self.logger = logging.getLogger(name)
-        fomatter = logging.Formatter("[%(levelname)s|%(filename)s:%(lineno)s] %(asctime)s > %(message)s")
+#         fomatter = logging.Formatter("[%(levelname)s|%(filename)s:%(lineno)s] %(asctime)s > %(message)s")
+        fomatter = logging.Formatter("[%(levelname)s|%(name)s:%(lineno)s] %(asctime)s > %(message)s")
         fileHandler = logging.FileHandler(self.fName)
         fileHandler = RotatingFileHandler(filename=self.fName,maxBytes=int(self.fileSize)*1024*1024)
         fileHandler.setFormatter(fomatter)
@@ -113,8 +114,10 @@ class DBSet(object):
         try :
             self.logger
         except :
-            self.logger = logging.getLogger(__name__)            
-        self.logger.error(traceback.format_exc())
+            self.logger = logging.getLogger(__name__)
+        if msg is not '':
+            self.logger.debug(msg)            
+        self.logger.error(traceback.format_exc(),stack_info=True)
 #         self.logger.exception(msg)
 #         logger.error("Houston, we have a %s", "major problem", exc_info=1)
         
@@ -142,6 +145,15 @@ class DBSet(object):
         minute = str((dd-datetime.timedelta(minutes=1)).minute)
         hours = str((dd-datetime.timedelta(minutes=1)).hour)
 #         minute = str(dd.minute-1)
+        if len(minute)<2:
+            minute ='0'+minute
+            
+        return hours+minute
+    
+    def getRealTime(self):
+        dd = datetime.datetime.today()
+        minute = str(dd.minute)
+        hours = str(dd.hour)
         if len(minute)<2:
             minute ='0'+minute
             
@@ -183,8 +195,13 @@ class DBSet(object):
     def setQueue(self,q):
         self.dbQueue=q
         
-        
-        
-        
-        
-        
+
+if __name__ == '__main__':
+    dd = DBSet()
+    
+    dd.setLog("dbset")
+    
+    
+    msg = '산가격 [{msg}]'.format(msg="333")
+    dd.debug(msg)
+    

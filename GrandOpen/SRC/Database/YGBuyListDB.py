@@ -78,13 +78,15 @@ class YGGetDbData(DBSet.DBSet):
             self.tracebackLog()
             print("relative [",relative,"]")
         
-    def updateVolumeCode(self,Code,Rotate,timeVal):
+    def updateVolumeCode(self,Code,timeVal):
         
         foTime = str(timeVal[0])
         info = str(timeVal[1])
         Code = str(Code)
-        if info.startswith("-") or info.startswith("+"):
-            info=info[1:]
+#         if info.startswith("-") or info.startswith("+"):
+#             info=info[1:]
+        if len(info) is 0:
+            info='0'
         if len(Code) >6:
             Code=Code[1:]
         
@@ -159,8 +161,8 @@ class YGGetDbData(DBSet.DBSet):
             self.conn.commit()
         except :
 #             print(query)
-            self.debug(query)
-            self.tracebackLog()
+            
+            self.tracebackLog(query)
         
     def updateSell(self,code,cursor,conn):
         code = str(code)

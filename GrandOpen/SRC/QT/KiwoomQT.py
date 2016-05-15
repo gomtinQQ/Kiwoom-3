@@ -136,9 +136,11 @@ class Ui_Form(QAxWidget):
         
         dd = "주문번호[",chjang,"]종목명[",chjang1,"]주문수량[",chjang2,"]주문가격[",chjang3,"]체결가[",chjang4,"]종목코드,업종코드[",chjang5,\
               "]주문상태[",chjang6,"]매도매수구분[",chjang7," 현재시각 [",timenow,"]"
-#         print("주문번호[",chjang,"]종목명[",chjang1,"]주문수량[",chjang2,"]주문가격[",chjang3,"]체결가[",chjang4,"]종목코드,업종코드[",chjang5,\
-#               "]주문상태[",chjang6,"]매도매수구분[",chjang7," 현재시각 [",timenow,"]")
-        self.YG.debug(str(dd))
+        
+        msg ="주문번호[{chjang}],종목명[{chjang1}],주문수량[{chjang2}] 주문가격[{chjang3}] 체결가[{chjang4}]종목코드,업종코드[{chjang5}\
+              ]주문상태[{chjang6}] 매도매수구분[{chjang7} 현재시각 [{timenow}"\
+              .format(chjang=chjang,chjang1=chjang1,chjang2=chjang2,chjang3=chjang3,chjang4=chjang4,chjang5=chjang5,chjang6=chjang6,chjang7=chjang7,timenow=timenow)
+        self.YG.debug(msg)
         
         if chjang7 == "2":
             self.YG.buyStock(chjang5,time,chjang4)#dblogging
@@ -166,9 +168,9 @@ class Ui_Form(QAxWidget):
         volume= self.dynamicCall('GetCommRealData(QString, int )',sRealType,15)
         if volume == '' or len(volume) == 0:
             volume=0
-        orderlimit= self.dynamicCall('GetCommRealData(QString, int )','잔고',933) #주문가능수량
-        orderlimit2= self.dynamicCall('GetCommRealData(QString, int )',sRealType,933) #주문가능수량
-        dd = 'sJongmokCode[',sJongmokCode,'] sRealType[',sRealType,'] sRealData[',sRealData,'] 주문가능수량 [',orderlimit,'or ',orderlimit2,']'
+#         orderlimit= self.dynamicCall('GetCommRealData(QString, int )','잔고',933) #주문가능수량
+#         orderlimit2= self.dynamicCall('GetCommRealData(QString, int )',sRealType,933) #주문가능수량
+        dd = 'sJongmokCode[',sJongmokCode,'] sRealType[',sRealType,'] sRealData[',sRealData,']'
         self.YG.debug(str(dd))
 
         
@@ -184,38 +186,37 @@ class Ui_Form(QAxWidget):
             traceback.print_exc()
         
         try:
-            if str(volume).startswith('+') or str(volume).startswith('-'):
-                volume=str(volume)[1:]
+#             if str(volume).startswith('+') or str(volume).startswith('-'):
+#                 volume=str(volume)[1:]
             self.acumulativeVolume[sJongmokCode]+=int(volume)
         except :
-            print('거래량 에러',volume)
+            print('거래량 에러[',volume,']')
             traceback.print_exc()
-        self.currMinute = datetime.datetime.now().minute
+        currMinuteAc = datetime.datetime.now().minute
         
         tim = datetime.datetime.now()
         hour = str(tim.hour)
         minute = str(self.pastMinute)
         
-        if self.perPast[sJongmokCode] is not None:
-            minute =str(self.perPast[sJongmokCode])
+#         if self.perPast[sJongmokCode] is not None:
+#             minute =str(self.perPast[sJongmokCode])
             
         if len(minute)<2:
             minute='0'+minute
         foTime = hour+minute
         
         self.timeVal[sJongmokCode] = foTime,self.acumulativeVolume[sJongmokCode]
-        if self.perPast[sJongmokCode] is None:
-            self.perPast[sJongmokCode]=minute
-#         if self.pastMinute != self.currMinute :
-#         print(sJongmokCode, self.perPast[sJongmokCode],self.currMinute)
-        if self.perPast[sJongmokCode] != str(self.currMinute):
-#             print(sJongmokCode,self.acumulativeVolume[sJongmokCode],self.perPast[sJongmokCode])
-            self.perPast[sJongmokCode] = str(self.currMinute)
+#         if self.perPast[sJongmokCode] is None:
+#             self.perPast[sJongmokCode]=minute
+
+
+        if self.perPast[sJongmokCode] != str(currMinuteAc):
+
+            self.perPast[sJongmokCode] = str(currMinuteAc)
             
-            self.YG.updateVolumeCode(sJongmokCode,self.acumulativeVolume[sJongmokCode],self.timeVal[sJongmokCode])
+            self.YG.updateVolumeCode(sJongmokCode,self.timeVal[sJongmokCode])
             self.YG.updateRelativeCode(sJongmokCode,CurrPrice,self.timeVal[sJongmokCode])
-#             self.YG.updateVolumeCode2(sJongmokCode,self.acumulativeVolume[sJongmokCode],self.timeVal[sJongmokCode])
-#             self.YG.updateRelativeCode2(sJongmokCode,CurrPrice,self.timeVal[sJongmokCode])
+
             
             self.acumulativeVolume[sJongmokCode] =0 #거래량 다시 초기화
             
@@ -232,13 +233,13 @@ class Ui_Form(QAxWidget):
         strCodeList = "" 
         try: 
             for index in range(len(code)):
-                rCode = self.addZeroToStockCode(str(code['Code'][index]))
-                self.acumulativeVolume[rCode]=0             #변수 초기화.
-                self.perPast[rCode]= str(self.pastMinute)   #변수 초기화.
-                strCodeList +=rCode+';'
-                
+                sJongmokCode = self.addZeroToStockCode(str(code['Code'][index]))
+                self.acumulativeVolume[sJongmokCode]=0             #변수 초기화.
+                self.perPast[sJongmokCode]= str(self.pastMinute)   #변수 초기화.
+                strCodeList +=sJongmokCode+';'
+                print(sJongmokCode)
             strCodeList = strCodeList[:len(strCodeList)-1]  #remove last character = ';'
-            print(strCodeList)
+            print('총갯수 [',len(len(code)),']')
         except Exception:
             traceback.print_exc()
         
