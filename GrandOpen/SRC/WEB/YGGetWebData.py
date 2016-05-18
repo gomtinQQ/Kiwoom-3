@@ -35,7 +35,7 @@ def getStockPriceData(code,date,TIMEOUT="",DATE_FMT=""):
     '''date 이후값을 가져옴'''
     '''TIMEOUT default = 5, DATE_FORMAT default = %Y-%m-%d'''
     '''return Date,open,high,low,close,volume,DataIndex'''
-    TimeOut=5
+    TimeOut=10
     if TIMEOUT !="":
         Timeout=TIMEOUT
         

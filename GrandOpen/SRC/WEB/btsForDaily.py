@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from SRC.WEB import bts
 import datetime
+from h5py._hl.dataset import readtime_dtype
 
 
 class daily(bts.mbts):
@@ -37,12 +38,12 @@ class daily(bts.mbts):
             try:
                 content = requests.get(self.url,timeout=(ConnectTimeout,readTimout)).text
                 break
-            except requests.exceptions.ConnectTimeout as e:
-                print('ConnectTimeout !! count : ',i)
+            except requests.exceptions.ConnectTimeout :
+                print('ConnectTimeout !! count : ',i,' url : ',self.url)
                 
                 continue
-            except requests.exceptions.ReadTimeout as e:
-                print ('ReadTimeout!!! count : ' ,i)
+            except requests.exceptions.ReadTimeout :
+                print ('ReadTimeout!!! count : ' ,i,' url : ',self.url)
                 continue
                 
         bs4     = BeautifulSoup(content,'lxml')
@@ -146,7 +147,7 @@ class daily(bts.mbts):
     def parseForForeignAndCompany(self,page,code,start,Timeout,end=""):
         self.sourceForForeignAndCompany(page, code)
         
-        readTimout = Timeout
+        readTimout = Timeout*2
         ConnectTimeout = Timeout
         retry = 5
         
@@ -154,12 +155,12 @@ class daily(bts.mbts):
             try:
                 content = requests.get(self.urlForFAndC,timeout=(ConnectTimeout,readTimout)).text
                 break
-            except requests.exceptions.ConnectTimeout as e:
-                print('ConnectTimeout !! count : ',i)
+            except requests.exceptions.ConnectTimeout :
+                print('ConnectTimeout !! count : ',i,' url [',self.urlForFAndC,'] ConnectTimeout[',ConnectTimeout,'] readTimeout [',readTimout,']')
                 
                 continue
-            except requests.exceptions.ReadTimeout as e:
-                print ('ReadTimeout!!! count : ' ,i)
+            except requests.exceptions.ReadTimeout :
+                print ('ReadTimeout!!! count : ' ,i,' url [',self.urlForFAndC,'] ConnectTimeout[',ConnectTimeout,'] readTimeout [',readTimout,']')
                 continue
             
         bs4     = BeautifulSoup(content,'lxml')

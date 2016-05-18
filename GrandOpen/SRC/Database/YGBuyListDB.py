@@ -138,7 +138,7 @@ class YGGetDbData(DBSet.DBSet):
             conn.commit()
 #             print(code,' buy !')
         else :
-            print(query)
+#             print(query)
 #             print('사기전 보유수량이 있음 (',code,')')
             self.tracebackLog()
     

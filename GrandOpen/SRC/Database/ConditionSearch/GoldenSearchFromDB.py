@@ -183,7 +183,7 @@ class GoldenSearchFromDB1():
                     codeSet = str(Code),name
                     self.StockCodeList.append(codeSet)
         
-        except Exception as a :
+        except Exception :
             print(traceback.print_exc())
 
     def createSearchingDB(self,YG):
@@ -212,7 +212,7 @@ class GoldenSearchFromDB1():
         YG.debug('Total Golden Count [%s'%self.goldenCount+'] keepbuying[%s'%self.keepbuy+'] Volume[%s'%self.volcheck+']')
         YG.debug('Time [%s'%takeTime)
         print('Total Golden Count [%s'%self.goldenCount+'] keepbuying[%s'%self.keepbuy+'] Volume[%s'%self.volcheck+']')
-        print('Time [%s'%takeTime)
+        print('Time [%s'%takeTime+']')
     
     def createSearchingDB2(self,YG):
         

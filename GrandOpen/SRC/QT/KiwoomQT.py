@@ -189,8 +189,8 @@ class Ui_Form(QAxWidget):
         hour = str(tim.hour)
         minute = str(self.pastMinute)
         
-#         if self.perPast[sJongmokCode] is not None:
-#             minute =str(self.perPast[sJongmokCode])
+        if self.perPast[sJongmokCode] is not None:
+            minute =str(self.perPast[sJongmokCode])
             
         if len(minute)<2:
             minute='0'+minute

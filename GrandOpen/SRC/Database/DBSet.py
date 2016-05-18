@@ -96,7 +96,7 @@ class DBSet(object):
 #         fomatter = logging.Formatter("[%(levelname)s|%(filename)s:%(lineno)s] %(asctime)s > %(message)s")
         fomatter = logging.Formatter("[%(levelname)s|%(name)s:%(lineno)s] %(asctime)s > %(message)s")
         fileHandler = logging.FileHandler(self.fName)
-        fileHandler = RotatingFileHandler(filename=self.fName,maxBytes=int(self.fileSize)*1024*1024)
+        fileHandler = RotatingFileHandler(filename=self.fName,maxBytes=int(self.fileSize)*1024*1024,backupCount=3)
         fileHandler.setFormatter(fomatter)
         
         self.logger.addHandler(fileHandler)
