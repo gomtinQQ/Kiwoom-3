@@ -238,7 +238,8 @@ class RealAnalyse(DBSet.DBSet):
                     buyListCode2 = self.checkCodeSet(YG,conn,cursor, self.BuyListRelativeTable,'BUY',multiplicationCheck="0.5",count=1,interval=1 ) #1분전보다 가격 0.5프로 이상 증가?
                      
                     
-                    if buyListCode is not None and buyListCode2 is not None:
+#                     if buyListCode is not None and buyListCode2 is not None:
+                    if buyListCode[0] is not None and buyListCode2[0] is not None:
                         if len(buyListCode)  !=0 and len(buyListCode2) != 0:
                             if len(buyListCode)>len(buyListCode2):
                                 bc = buyListCode2
@@ -246,6 +247,8 @@ class RealAnalyse(DBSet.DBSet):
                                 bc = buyListCode
                             for i in range(len(bc)):
                                 if buyListCode2[i][0] in buyListCode[i]:
+                                    msg ='buying signal! {code}'.format(code=buyListCode2[i][0])
+                                    self.debug(msg)
                                     YG.updateBuy(buyListCode[i][0],cursor,conn)
 
                     #팔것 체크###########
@@ -253,7 +256,7 @@ class RealAnalyse(DBSet.DBSet):
                     BuyListCodeFotime = self.selectSellingQueryCheck(YG,conn,cursor,self.BuyListRelativeTable)
                     
 #                     buyListCode = self.checkCodeSet2(YG,conn,cursor, self.BuyListRelativeTable,'SELL',multiplicationCheck=2 )    #산것보다 가격이 2프로이상 증가?
-                    if BuyListCodeFotime is not None:
+                    if BuyListCodeFotime[0][0] is not None and BuyListCodeFotime[0][1] is not None:
                         self.checkCodeSet2(YG, conn, cursor, self.BuyListRelativeTable,'SELL', BuyListCodeFotime)#산것보다 가격이 2프로이상 증가?
 
                     if self.getNowTime() == "1448" or self.getNowTime() == "1449" or self.getNowTime() == "1447":
@@ -311,32 +314,38 @@ class RealAnalyse(DBSet.DBSet):
                         stockCode = multiplicationCheck[i][0]   #code
                         foTime = multiplicationCheck[i][1]      #산 시각
                         nowTime = self.getRealTime()
-    #                     nowTime="901"
+#                         nowTime="901"
                         query ='select "{foTime}","{nowTime}" from {tableName} where StockCode="{stockCode}"'\
                         .format(tableName=tableName,foTime=foTime,stockCode=stockCode,nowTime=nowTime)
                         
                         cursor.execute(query)
+                        
                         info = cursor.fetchall()
-    #                     print(info)
-                        if str(info[0][0]) !='None' or info is not None:
-                            if info[0][0] is not None and info[0][1] is not None:
-                                buyPrice = float(info[0][0]) #산 갸격
-                                nowPrice= float(info[0][1]) #현재 갸격
-                                msg = '산가격 :{buyPrice} 현재가격:{nowPrice}'.format(buyPrice=buyPrice,nowPrice=nowPrice)
+                        msg = "queryResult is {info} query [{query}]".format(info=info,query=query)
+                        self.debug(msg)
+                        if info[0][0] !='None' and info is not None and info[0][1] !='None':
+                            
+                            buyPrice = float(info[0][0]) #산 갸격
+                            nowPrice= float(info[0][1]) #현재 갸격
+                            msg = '산가격 :{buyPrice} 현재가격:{nowPrice}'.format(buyPrice=buyPrice,nowPrice=nowPrice)
+                            self.debug(msg)
+                            if ((nowPrice-buyPrice)/buyPrice) *100 <-3:
+                                print('가격이 3프로이상하락 하락율 :',((nowPrice-buyPrice)/buyPrice)*100)
+                                msg = '가격이 3프로이상하락 하락율 : {msg}'.format(msg = ((nowPrice-buyPrice)/buyPrice)*100)
                                 self.debug(msg)
-                                if ((nowPrice-buyPrice)/buyPrice) *100 <-3:
-                                    print('가격이 3프로이상하락 하락율 :',((nowPrice-buyPrice)/buyPrice)*100)
-                                    msg = '가격이 3프로이상하락 하락율 : {msg}'.format(msg = ((nowPrice-buyPrice)/buyPrice)*100)
-                                    self.debug(msg)
-                                    YG.updateSell(stockCode, cursor, conn)
-                                
-                                if ((nowPrice-buyPrice)/buyPrice)*100>2:
-                                    print('가격이 2프로이상증가 증가율 :',((nowPrice-buyPrice)/buyPrice)*100)
-                                    msg = '가격이 2프로이상증가 증가율 : {msg}'.format(msg = ((nowPrice-buyPrice)/buyPrice)*100)
-                                    self.debug(msg)
-                                    YG.updateSell(stockCode, cursor, conn)
-                            else:
-                                YG.debug('info : [',info,']')
+                                YG.updateSell(stockCode, cursor, conn)
+                            
+                            elif ((nowPrice-buyPrice)/buyPrice)*100>2:
+                                print('가격이 2프로이상증가 증가율 :',((nowPrice-buyPrice)/buyPrice)*100)
+                                msg = '가격이 2프로이상증가 증가율 : {msg}'.format(msg = ((nowPrice-buyPrice)/buyPrice)*100)
+                                self.debug(msg)
+                                YG.updateSell(stockCode, cursor, conn)
+                        else:
+                            msg = 'info : [{info}] query : [{query}]'.format(info=info,query=query)
+                            YG.debug(msg)
+                        
+                        
+                            
         except :
             self.tracebackLog()
                     
