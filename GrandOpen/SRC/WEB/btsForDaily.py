@@ -147,7 +147,7 @@ class daily(bts.mbts):
     def parseForForeignAndCompany(self,page,code,start,Timeout,end=""):
         self.sourceForForeignAndCompany(page, code)
         
-        readTimout = Timeout*2
+        readTimout = Timeout
         ConnectTimeout = Timeout
         retry = 5
         
