@@ -160,7 +160,6 @@ class YGGetDbData(DBSet.DBSet):
 #             self.cursor.execute(query)
             self.conn.commit()
         except :
-#             print(query)
             
             self.tracebackLog(query)
         
